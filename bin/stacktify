@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+use Techieni3\StacktifyCli\Console\Commands\NewCommand;
+
+if (file_exists(__DIR__.'/../../../autoload.php')) {
+    require __DIR__.'/../../../autoload.php';
+} else {
+    require __DIR__.'/../vendor/autoload.php';
+}
+
+$application = new Application('Stacktify CLI', '0.0.1');
+$application->add($command = new NewCommand());
+$application->setDefaultCommand($command->getName());
+$application->run();
