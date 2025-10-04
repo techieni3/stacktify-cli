@@ -138,7 +138,7 @@ final readonly class ScaffoldConfig
      */
     public function getAuthentication(): Authentication
     {
-        return $this->authentication;
+        return $this->authentication ?? Authentication::None;
     }
 
     /**
