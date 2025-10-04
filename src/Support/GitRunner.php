@@ -8,10 +8,19 @@ use Symfony\Component\Process\ExecutableFinder;
 use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
 
+/**
+ * A Git client that executes Git commands.
+ */
 final class GitRunner implements GitClient
 {
+    /**
+     * The path to the Git executable.
+     */
     private string $git;
 
+    /**
+     * Create a new GitRunner instance.
+     */
     public function __construct(
         private readonly ProcessRunner $proc,
         private readonly string $cwd,
@@ -19,11 +28,17 @@ final class GitRunner implements GitClient
         $this->git = new ExecutableFinder()->find('git') ?? 'git';
     }
 
+    /**
+     * Initialize a new Git repository.
+     */
     public function init(): void
     {
         $this->proc->execute([$this->git, 'init', '-q'], $this->cwd);
     }
 
+    /**
+     * Perform the initial commit.
+     */
     public function initializeRepository(): void
     {
         $branch = $this->defaultBranch();
@@ -37,21 +52,33 @@ final class GitRunner implements GitClient
         $this->proc->runCommands(commands: $commands, workingPath: $this->cwd);
     }
 
+    /**
+     * Stage all changes.
+     */
     public function addAll(): void
     {
         $this->proc->execute([$this->git, 'add', '-A'], $this->cwd);
     }
 
+    /**
+     * Commit the staged changes.
+     */
     public function commit(string $message): void
     {
         $this->proc->execute([$this->git, 'commit', '-m', $message], $this->cwd);
     }
 
+    /**
+     * Check if Git is available.
+     */
     public function isAvailable(): bool
     {
         return $this->proc->execute([$this->git, '--version'])->isSuccessful();
     }
 
+    /**
+     * Ensure Git is available.
+     */
     public function ensureAvailable(): void
     {
         if ( ! $this->isAvailable()) {
@@ -59,36 +86,57 @@ final class GitRunner implements GitClient
         }
     }
 
+    /**
+     * Check if a Git identity is configured.
+     */
     public function hasIdentityConfigured(): bool
     {
         return $this->name() !== null && $this->email() !== null;
     }
 
+    /**
+     * Configure the Git user name.
+     */
     public function configureName(string $name): void
     {
         $this->setConfig('user.name', $name);
     }
 
+    /**
+     * Configure the Git user email.
+     */
     public function configureEmail(string $email): void
     {
         $this->setConfig('user.email', $email);
     }
 
+    /**
+     * Get the configured Git user name.
+     */
     private function name(): ?string
     {
         return $this->readConfig('user.name');
     }
 
+    /**
+     * Get the configured Git user email.
+     */
     private function email(): ?string
     {
         return $this->readConfig('user.email');
     }
 
+    /**
+     * Get the default Git branch name.
+     */
     private function defaultBranch(): string
     {
         return $this->readConfig('init.defaultBranch') ?? 'main';
     }
 
+    /**
+     * Read a Git configuration value.
+     */
     private function readConfig(string $key): ?string
     {
         $process = $this->proc->execute([$this->git, 'config', '--get', $key]);
@@ -98,6 +146,9 @@ final class GitRunner implements GitClient
         return $process->isSuccessful() && $output ? $output : null;
     }
 
+    /**
+     * Set a Git configuration value.
+     */
     private function setConfig(string $key, string $value): void
     {
         $this->proc->execute([$this->git, 'config', '--local', $key, mb_trim($value)]);

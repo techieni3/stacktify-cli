@@ -36,28 +36,58 @@ final class NewCommand extends Command
     use CollectsScaffoldInputs;
     use ConfiguresLaravelPrompts;
 
+    /**
+     * The output interface implementation.
+     */
     private OutputInterface $output;
 
+    /**
+     * The input interface implementation.
+     */
     private InputInterface $input;
 
+    /**
+     * The Symfony style instance.
+     */
     private SymfonyStyle $io;
 
+    /**
+     * The Git client implementation.
+     */
     private GitClient $git;
 
+    /**
+     * The selected frontend framework.
+     */
     private Frontend $frontend;
 
+    /**
+     * The selected database.
+     */
     private Database $database;
 
+    /**
+     * The selected authentication scaffolding.
+     */
     private Authentication $authentication;
 
+    /**
+     * The selected testing framework.
+     */
     private TestingFramework $testingFramework;
 
+    /**
+     * The Composer instance.
+     */
     private Composer $composer;
 
+    /**
+     * The scaffold configuration instance.
+     */
     private ScaffoldConfig $config;
 
     /**
-     * Configure the command options.
+     * Configure the command's arguments and options.
      */
     protected function configure(): void
     {
@@ -84,7 +114,7 @@ final class NewCommand extends Command
     }
 
     /**
-     * Interact with the user.
+     * Interact with the user to gather input.
      */
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
@@ -100,7 +130,7 @@ final class NewCommand extends Command
     }
 
     /**
-     * Execute the command.
+     * Execute the console command.
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -152,6 +182,9 @@ final class NewCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * Display the welcome message.
+     */
     private function displayWelcomeMessage(OutputInterface $output): void
     {
         $output->write('<fg=red>
@@ -164,6 +197,11 @@ final class NewCommand extends Command
         </>'.PHP_EOL);
     }
 
+    /**
+     * Ensure all required PHP extensions are available.
+     *
+     * @throws RuntimeException
+     */
     private function ensureExtensionsAreAvailable(): void
     {
         $availableExtensions = get_loaded_extensions();
@@ -192,6 +230,9 @@ final class NewCommand extends Command
         );
     }
 
+    /**
+     * Get the commands to install the application.
+     */
     private function getInstallCommands(string $directory, InputInterface $input): array
     {
         $composer = $this->composer->getComposer();
@@ -215,6 +256,9 @@ final class NewCommand extends Command
         return $commands;
     }
 
+    /**
+     * Get the command to force install the application.
+     */
     private function getForceInstallCommand(string $directory): array
     {
         if (PHP_OS_FAMILY === 'Windows') {
@@ -224,6 +268,9 @@ final class NewCommand extends Command
         return ["rm -rf \"{$directory}\""];
     }
 
+    /**
+     * Set up the Git repository.
+     */
     private function setUpGitRepository(ProcessRunner $process, string $directory): void
     {
         $gitEnabled = ! $this->input->getOption('no-git');
@@ -263,6 +310,9 @@ final class NewCommand extends Command
         $this->git = $git;
     }
 
+    /**
+     * Set the APP_URL in the .env file.
+     */
     private function setAppUrlInEnv(): void
     {
         FileEditor::replaceInFile(
@@ -276,6 +326,8 @@ final class NewCommand extends Command
 
     /**
      * Verify that the application does not already exist.
+     *
+     * @throws RuntimeException
      */
     private function verifyApplicationDoesntExist(string $directory): void
     {

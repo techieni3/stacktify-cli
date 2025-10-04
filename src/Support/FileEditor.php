@@ -10,24 +10,43 @@ use RuntimeException;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\PregReplacement;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 
+/**
+ * A utility for editing files.
+ */
 final class FileEditor
 {
+    /**
+     * The path to the file.
+     */
     private string $filePath;
 
+    /**
+     * Indicates if the file has been changed.
+     */
     private bool $isChanged = false;
 
+    /**
+     * The content of the file.
+     */
     private string $content;
 
     /**
-     * @var Collection<Replacement>
+     * The collection of string replacements.
+     *
+     * @var Collection<int, Replacement>
      */
     private Collection $replacements;
 
     /**
-     * @var Collection<PregReplacement>
+     * The collection of regex replacements.
+     *
+     * @var Collection<int, PregReplacement>
      */
     private Collection $pregReplacements;
 
+    /**
+     * Create a new FileEditor instance.
+     */
     public function __construct(string $filePath)
     {
         $this->filePath = $filePath;
@@ -38,7 +57,7 @@ final class FileEditor
     }
 
     /**
-     * Create a new file editor instance
+     * Create a new file editor instance.
      */
     public static function open(string $filePath): self
     {
@@ -46,7 +65,7 @@ final class FileEditor
     }
 
     /**
-     * Copy file to destination
+     * Copy a file to a new location.
      */
     public static function copyFile(string $sourceFile, string $destination): void
     {
@@ -54,7 +73,7 @@ final class FileEditor
     }
 
     /**
-     * Copy directory recursively
+     * Recursively copy a directory.
      */
     public static function copyDirectory(string $directory, string $destination): void
     {
@@ -62,7 +81,7 @@ final class FileEditor
     }
 
     /**
-     * Static helper for simple replacements
+     * Perform a simple string replacement in a file.
      */
     public static function replaceInFile(string $filePath, Replacement $replacement): void
     {
@@ -72,7 +91,7 @@ final class FileEditor
     }
 
     /**
-     * Static helper for regex replacements
+     * Perform a regex replacement in a file.
      */
     public static function pregReplaceInFile(string $filePath, PregReplacement $replacement): void
     {
@@ -82,7 +101,7 @@ final class FileEditor
     }
 
     /**
-     * Append content to the file
+     * Append content to the file.
      */
     public function append(string $data): void
     {
@@ -90,7 +109,7 @@ final class FileEditor
     }
 
     /**
-     * Prepend content to the file
+     * Prepend content to the file.
      */
     public function prepend(string $data): void
     {
@@ -98,7 +117,7 @@ final class FileEditor
     }
 
     /**
-     * Perform string replacement
+     * Add a string replacement to the queue.
      */
     public function replace(Replacement $replacement): self
     {
@@ -108,7 +127,7 @@ final class FileEditor
     }
 
     /**
-     * Perform regex replacement
+     * Add a regex replacement to the queue.
      */
     public function pregReplace(PregReplacement $replacement): self
     {
@@ -117,6 +136,9 @@ final class FileEditor
         return $this;
     }
 
+    /**
+     * Replace the file content with the content of another file.
+     */
     public function replaceWithFile(string $file): void
     {
         $newContent = $this->readFile($file);
@@ -125,7 +147,7 @@ final class FileEditor
     }
 
     /**
-     * Save changes back to the file
+     * Save the changes to the file.
      */
     public function save(): bool
     {
@@ -138,6 +160,9 @@ final class FileEditor
         return $this->isChanged;
     }
 
+    /**
+     * Read the content of a file.
+     */
     private function readFile(string $file): string
     {
         if ( ! file_exists($file)) {
@@ -153,6 +178,9 @@ final class FileEditor
         return $content;
     }
 
+    /**
+     * Process a string replacement.
+     */
     private function processReplacement(Replacement $replacement): void
     {
         $newContent = str_replace(
@@ -165,6 +193,9 @@ final class FileEditor
         $this->content = $newContent;
     }
 
+    /**
+     * Process a regex replacement.
+     */
     private function processPregReplacement(PregReplacement $replacement): void
     {
         $newContent = preg_replace(
@@ -181,6 +212,9 @@ final class FileEditor
         $this->content = $newContent;
     }
 
+    /**
+     * Write content to a file.
+     */
     private function writeFile(string $file, string $content): void
     {
         if (file_put_contents($file, $content) === false) {

@@ -9,12 +9,24 @@ use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\PregReplacement;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 
+/**
+ * Configures the database for the application.
+ */
 final readonly class DatabaseConfigurator
 {
+    /**
+     * The path to the .env file.
+     */
     private string $env;
 
+    /**
+     * The path to the .env.example file.
+     */
     private string $exampleEnv;
 
+    /**
+     * Create a new database configurator instance.
+     */
     public function __construct(
         private ScaffoldConfig $config,
     ) {
@@ -22,6 +34,9 @@ final readonly class DatabaseConfigurator
         $this->exampleEnv = $this->config->getExampleEnvFilePath();
     }
 
+    /**
+     * Configure the database connection.
+     */
     public function configureDatabaseConnection(): void
     {
         // DB_CONNECTION
@@ -93,6 +108,9 @@ final readonly class DatabaseConfigurator
         $envExampleHandler->save();
     }
 
+    /**
+     * Run the database migrations.
+     */
     public function runMigration(ProcessRunner $processRunner): void
     {
         if ( ! in_array($this->config->getDatabase(), [Database::MySQL, Database::SQLite], true)) {
@@ -109,6 +127,9 @@ final readonly class DatabaseConfigurator
         $processRunner->runCommands($commands, workingPath: $this->config->getInstallationDirectory());
     }
 
+    /**
+     * Comment the database configuration for SQLite.
+     */
     private function commentDatabaseConfigurationForSqlite(): void
     {
         $defaults = [
@@ -135,6 +156,9 @@ final readonly class DatabaseConfigurator
             ->save();
     }
 
+    /**
+     * Get the replacement for uncommenting the database configuration.
+     */
     private function uncommentDatabaseConfiguration(): Replacement
     {
         $defaults = [
