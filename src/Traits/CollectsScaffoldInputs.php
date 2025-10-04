@@ -19,6 +19,8 @@ trait CollectsScaffoldInputs
 {
     use GitPrompts;
 
+    abstract protected function verifyApplicationDoesntExist(string $directory): void;
+
     private function collectScaffoldInputs(): void
     {
         $this->config = new ScaffoldConfig($this->input);
@@ -35,7 +37,7 @@ trait CollectsScaffoldInputs
 
                     if ($this->input->getOption('force') !== true) {
                         try {
-                            $this->verifyApplicationDoesntExist($this->getInstallationDirectory($value));
+                            $this->verifyApplicationDoesntExist($this->config->getInstallationDirectory($value));
                         } catch (RuntimeException $e) {
                             return 'Application already exists.';
                         }
