@@ -29,9 +29,9 @@ interface PromptSelectableEnum
      * Returns the corresponding enum case for single-select, or an array of cases for multi-select.
      *
      * @param  string|array  $selection  Selected value(s) returned by the prompt.
-     * @return self|array<self>
+     * @return static|array<static>
      */
-    public static function fromSelection(string|array $selection): self|array;
+    public static function fromSelection(string|array $selection): static|array;
 
     /**
      * Human-readable label for the current enum case.

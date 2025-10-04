@@ -23,13 +23,13 @@ trait BuildsPromptOptions
      */
     public static function options(): array
     {
-        $ref = new ReflectionEnum(self::class);
+        $ref = new ReflectionEnum(static::class);
         if ( ! $ref->isBacked()) {
-            throw new LogicException(self::class.' must be a backed enum to build prompt options.');
+            throw new LogicException(static::class.' must be a backed enum to build prompt options.');
         }
 
         $out = [];
-        foreach (self::cases() as $case) {
+        foreach (static::cases() as $case) {
             $out[$case->value] = $case->label();
         }
 
@@ -43,14 +43,14 @@ trait BuildsPromptOptions
      * For multi-select, pass an array of strings and receive an array of enum cases (in the same order).
      *
      * @param  string|array  $selection  Selected value or list of values.
-     * @return self|array<self> Enum case for single-select or array of cases for multi-select.
+     * @return static|array<static> Enum case for single-select or array of cases for multi-select.
      */
-    public static function fromSelection(string|array $selection): self|array
+    public static function fromSelection(string|array $selection): static|array
     {
         if (is_array($selection)) {
-            return array_map(static fn ($v) => self::from($v), $selection);
+            return array_map(static fn ($v) => static::from($v), $selection);
         }
 
-        return self::from($selection);
+        return static::from($selection);
     }
 }
