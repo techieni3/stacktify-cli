@@ -265,16 +265,13 @@ final class NewCommand extends Command
 
     private function setAppUrlInEnv(): void
     {
-        $envFile = FileEditor::init($this->config->getEnvFilePath());
-
-        $envFile->queueReplacement(
-            new Replacement(
+        FileEditor::replaceInFile(
+            filePath: $this->config->getEnvFilePath(),
+            replacement: new Replacement(
                 search: 'APP_URL=http://localhost',
                 replace: 'APP_URL='.$this->config->getAppUrl(),
             )
         );
-
-        $envFile->applyReplacements();
     }
 
     /**

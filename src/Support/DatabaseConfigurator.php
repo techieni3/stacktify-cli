@@ -25,23 +25,21 @@ final readonly class DatabaseConfigurator
     public function configureDatabaseConnection(): void
     {
         // DB_CONNECTION
-        (FileEditor::init($this->env))
-            ->queuePregReplacement(
-                new PregReplacement(
-                    regex: '/DB_CONNECTION=.*/',
-                    replace: 'DB_CONNECTION='.$this->config->getDatabase()->driver(),
-                )
+        FileEditor::pregReplaceInFile(
+            filePath: $this->env,
+            replacement: new PregReplacement(
+                regex: '/DB_CONNECTION=.*/',
+                replace: 'DB_CONNECTION='.$this->config->getDatabase()->driver(),
             )
-            ->applyReplacements();
+        );
 
-        (FileEditor::init($this->exampleEnv))
-            ->queuePregReplacement(
-                new PregReplacement(
-                    regex: '/DB_CONNECTION=.*/',
-                    replace: 'DB_CONNECTION='.$this->config->getDatabase()->driver(),
-                )
+        FileEditor::pregReplaceInFile(
+            filePath: $this->exampleEnv,
+            replacement: new PregReplacement(
+                regex: '/DB_CONNECTION=.*/',
+                replace: 'DB_CONNECTION='.$this->config->getDatabase()->driver(),
             )
-            ->applyReplacements();
+        );
 
         if ($this->config->getDatabase() === Database::SQLite) {
             $environment = file_get_contents($this->config->getEnvFilePath());
@@ -64,23 +62,23 @@ final readonly class DatabaseConfigurator
             @unlink($this->config->getInstallationDirectory().'/database/database.sqlite');
         }
 
-        $envHandler = FileEditor::init($this->env);
-        $envExampleHandler = FileEditor::init($this->exampleEnv);
+        $envHandler = FileEditor::open($this->env);
+        $envExampleHandler = FileEditor::open($this->exampleEnv);
 
         // Any commented database configuration options should be uncommented when not on SQLite...
         $unCommentReplacement = $this->uncommentDatabaseConfiguration();
 
         // DB_PORT
-        $envHandler->queueReplacement($unCommentReplacement);
-        $envExampleHandler->queueReplacement($unCommentReplacement);
+        $envHandler->replace($unCommentReplacement);
+        $envExampleHandler->replace($unCommentReplacement);
 
         $portReplacement = new Replacement(
             search: 'DB_PORT=3306',
             replace: 'DB_PORT='.$this->config->getDatabase()->defaultPort(),
         );
 
-        $envHandler->queueReplacement($portReplacement);
-        $envExampleHandler->queueReplacement($portReplacement);
+        $envHandler->replace($portReplacement);
+        $envExampleHandler->replace($portReplacement);
 
         // DB_DATABASE
         $dbNameReplacement = new Replacement(
@@ -88,11 +86,11 @@ final readonly class DatabaseConfigurator
             replace: 'DB_DATABASE='.str_replace('-', '_', mb_strtolower($this->config->getAppName())),
         );
 
-        $envHandler->queueReplacement($dbNameReplacement);
-        $envExampleHandler->queueReplacement($dbNameReplacement);
+        $envHandler->replace($dbNameReplacement);
+        $envExampleHandler->replace($dbNameReplacement);
 
-        $envHandler->applyReplacements();
-        $envExampleHandler->applyReplacements();
+        $envHandler->save();
+        $envExampleHandler->save();
     }
 
     public function runMigration(ProcessRunner $processRunner): void
@@ -128,13 +126,13 @@ final readonly class DatabaseConfigurator
             replace: $commentedDefaults
         );
 
-        (FileEditor::init($this->env))
-            ->queueReplacement($commentReplacement)
-            ->applyReplacements();
+        (FileEditor::open($this->env))
+            ->replace($commentReplacement)
+            ->save();
 
-        (FileEditor::init($this->exampleEnv))
-            ->queueReplacement($commentReplacement)
-            ->applyReplacements();
+        (FileEditor::open($this->exampleEnv))
+            ->replace($commentReplacement)
+            ->save();
     }
 
     private function uncommentDatabaseConfiguration(): Replacement
