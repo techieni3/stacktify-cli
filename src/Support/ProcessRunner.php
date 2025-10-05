@@ -9,6 +9,8 @@ use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
+use function Laravel\Prompts\spin;
+
 /**
  * A wrapper for running shell commands.
  */
@@ -19,7 +21,8 @@ final readonly class ProcessRunner
      */
     public function __construct(
         private bool $isQuiet,
-        private bool $isDecorated
+        private bool $isDecorated,
+        private bool $isVerbose,
     ) {}
 
     /**
@@ -28,11 +31,18 @@ final readonly class ProcessRunner
      * @param  list<string>  $commands
      * @param  array<string, string|bool>  $env
      */
-    public function runCommands(array $commands, ?string $workingPath = null, ?callable $onOutput = null, array $env = []): Process
+    public function runCommands(array $commands, ?string $workingPath = null, ?callable $onOutput = null, array $env = [], string $description = ''): Process
     {
         $commands = $this->prepareCommands($commands);
 
         $process = $this->createProcess($commands, $workingPath, $env);
+
+        if ($this->canUseSpinner()) {
+
+            spin(static fn (): int => $process->run(), $description);
+
+            return $process;
+        }
 
         $this->configureProcessTty($process, $onOutput);
 
@@ -147,5 +157,15 @@ final readonly class ProcessRunner
                 $onOutput('  <bg=yellow;fg=black> WARN </> '.$runtimeException->getMessage().PHP_EOL);
             }
         }
+    }
+
+    /**
+     * Determine if the spinner can be used.
+     */
+    private function canUseSpinner(): bool
+    {
+        return function_exists('pcntl_fork')
+            && ! $this->isVerbose
+            && ! $this->isQuiet;
     }
 }

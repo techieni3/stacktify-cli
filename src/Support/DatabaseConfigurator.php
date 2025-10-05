@@ -129,7 +129,11 @@ final readonly class DatabaseConfigurator
             )),
         ];
 
-        $processRunner->runCommands($commands, workingPath: $this->config->getInstallationDirectory());
+        $processRunner->runCommands(
+            commands: $commands,
+            workingPath: $this->config->getInstallationDirectory(),
+            description: 'Running database migrations...'
+        );
     }
 
     /**

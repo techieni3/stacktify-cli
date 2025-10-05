@@ -49,7 +49,11 @@ final readonly class GitRunner implements GitClient
             "git branch -M {$branch}",
         ];
 
-        $this->proc->runCommands(commands: $commands, workingPath: $this->cwd);
+        $this->proc->runCommands(
+            commands: $commands,
+            workingPath: $this->cwd,
+            description: 'Initializing Git repository...'
+        );
     }
 
     /**

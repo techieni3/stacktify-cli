@@ -130,12 +130,16 @@ final class NewCommand extends Command
 
         $process = new ProcessRunner(
             isQuiet: (bool) $this->input->getOption('quiet'),
-            isDecorated: $this->output->isDecorated()
+            isDecorated: $this->output->isDecorated(),
+            isVerbose: $this->output->isVerbose()
         );
 
         $this->composer = new Composer($process, $directory);
 
-        $projectCreation = $process->runCommands($this->getInstallCommands($directory, $input));
+        $projectCreation = $process->runCommands(
+            commands: $this->getInstallCommands($directory, $input),
+            description: 'Creating Laravel application...'
+        );
 
         if ( ! $projectCreation->isSuccessful()) {
             $this->io->error('Failed to create the application');
@@ -143,6 +147,8 @@ final class NewCommand extends Command
 
             return Command::FAILURE;
         }
+
+        $this->success('Application created successfully');
 
         $this->setAppUrlInEnv();
 
@@ -287,6 +293,8 @@ final class NewCommand extends Command
 
         $git->initializeRepository();
 
+        $this->success('Git repository initialized');
+
         $this->git = $git;
     }
 
@@ -314,5 +322,10 @@ final class NewCommand extends Command
         if ($directory !== getcwd() && (is_dir($directory) || is_file($directory))) {
             throw new RuntimeException('Application already exists!');
         }
+    }
+
+    private function success(string $message): void
+    {
+        $this->output->writeln(sprintf('<info> ✅ </info> %s', $message));
     }
 }
