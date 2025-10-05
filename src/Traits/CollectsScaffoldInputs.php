@@ -38,7 +38,7 @@ trait CollectsScaffoldInputs
                     if ($this->input->getOption('force') !== true) {
                         try {
                             $this->verifyApplicationDoesntExist($this->config->getInstallationDirectory($value));
-                        } catch (RuntimeException $e) {
+                        } catch (RuntimeException) {
                             return 'Application already exists.';
                         }
                     }

@@ -11,7 +11,7 @@ use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
 /**
  * A Git client that executes Git commands.
  */
-final class GitRunner implements GitClient
+final readonly class GitRunner implements GitClient
 {
     /**
      * The path to the Git executable.
@@ -22,8 +22,8 @@ final class GitRunner implements GitClient
      * Create a new GitRunner instance.
      */
     public function __construct(
-        private readonly ProcessRunner $proc,
-        private readonly string $cwd,
+        private ProcessRunner $proc,
+        private string $cwd,
     ) {
         $this->git = new ExecutableFinder()->find('git') ?? 'git';
     }

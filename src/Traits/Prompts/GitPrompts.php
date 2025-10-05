@@ -14,7 +14,7 @@ trait GitPrompts
             label: 'Please enter your Git username',
             placeholder: 'techieni3',
             required: 'Git username is required.',
-            validate: static fn ($value) => preg_match('/[^\pL\pN\-_.\s]/u', mb_trim($value)) !== 0
+            validate: static fn ($value): ?string => preg_match('/[^\pL\pN\-_.\s]/u', mb_trim($value)) !== 0
                 ? 'The name may only contain letters, numbers, dashes, underscores, and periods.'
                 : null,
         );
@@ -26,7 +26,7 @@ trait GitPrompts
             label: 'Please enter your Git email',
             placeholder: 'techieni3@example.com',
             required: 'Git email is required.',
-            validate: static fn ($value) => filter_var($value, FILTER_VALIDATE_EMAIL) === false
+            validate: static fn ($value): ?string => filter_var($value, FILTER_VALIDATE_EMAIL) === false
                 ? 'The email is invalid.'
                 : null,
         );

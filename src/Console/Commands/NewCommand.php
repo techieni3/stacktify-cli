@@ -218,7 +218,7 @@ final class NewCommand extends Command
 
         $missingExtensions = array_filter(
             $requiredExtensions,
-            static fn ($extension) => ! in_array($extension, $availableExtensions)
+            static fn (string $extension): bool => ! in_array($extension, $availableExtensions)
         );
 
         if ($missingExtensions === []) {
@@ -246,7 +246,7 @@ final class NewCommand extends Command
         ];
 
         if ($directory !== '.' && $input->getOption('force')) {
-            $commands = array_merge($this->getForceInstallCommand($directory), $commands);
+            $commands = [...$this->getForceInstallCommand($directory), ...$commands];
         }
 
         if (PHP_OS_FAMILY !== 'Windows') {
@@ -280,7 +280,7 @@ final class NewCommand extends Command
             try {
                 $git = new GitRunner($process, $directory);
                 $git->ensureAvailable();
-            } catch (GitNotAvailable $e) {
+            } catch (GitNotAvailable) {
                 $this->io->warning('Git not available; continuing without a repository.');
                 $git = new NullGitRunner();
             } catch (RuntimeException $e) {

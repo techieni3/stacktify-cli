@@ -16,11 +16,6 @@ use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 final class FileEditor
 {
     /**
-     * The path to the file.
-     */
-    private string $filePath;
-
-    /**
      * Indicates if the file has been changed.
      */
     private bool $isChanged = false;
@@ -35,22 +30,25 @@ final class FileEditor
      *
      * @var Collection<int, Replacement>
      */
-    private Collection $replacements;
+    private readonly Collection $replacements;
 
     /**
      * The collection of regex replacements.
      *
      * @var Collection<int, PregReplacement>
      */
-    private Collection $pregReplacements;
+    private readonly Collection $pregReplacements;
 
     /**
      * Create a new FileEditor instance.
      */
-    public function __construct(string $filePath)
-    {
-        $this->filePath = $filePath;
-        $this->content = $this->readFile($filePath);
+    public function __construct(
+        /**
+         * The path to the file.
+         */
+        private readonly string $filePath
+    ) {
+        $this->content = $this->readFile($this->filePath);
 
         $this->replacements = collect();
         $this->pregReplacements = collect();

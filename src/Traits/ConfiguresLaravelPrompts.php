@@ -23,18 +23,18 @@ trait ConfiguresLaravelPrompts
         Prompt::fallbackWhen( ! $input->isInteractive() || PHP_OS_FAMILY === 'Windows');
 
         TextPrompt::fallbackUsing(
-            static fn (TextPrompt $prompt) => new SymfonyStyle($input, $output)->ask($prompt->label, $prompt->default ?: null, $prompt->validate)
+            static fn (TextPrompt $prompt): mixed => new SymfonyStyle($input, $output)->ask($prompt->label, $prompt->default !== '' && $prompt->default !== '0' ? $prompt->default : null, $prompt->validate)
         );
 
         ConfirmPrompt::fallbackUsing(
-            static fn (ConfirmPrompt $prompt) => new SymfonyStyle($input, $output)->confirm($prompt->label, $prompt->default)
+            static fn (ConfirmPrompt $prompt): bool => new SymfonyStyle($input, $output)->confirm($prompt->label, $prompt->default)
         );
 
         SelectPrompt::fallbackUsing(
-            static fn (SelectPrompt $prompt) => new SymfonyStyle($input, $output)->choice($prompt->label, $prompt->options, $prompt->default),
+            static fn (SelectPrompt $prompt): mixed => new SymfonyStyle($input, $output)->choice($prompt->label, $prompt->options, $prompt->default),
         );
 
-        MultiSelectPrompt::fallbackUsing(function (MultiSelectPrompt $prompt) use ($input, $output) {
+        MultiSelectPrompt::fallbackUsing(function (MultiSelectPrompt $prompt) use ($input, $output): array {
             $io = new SymfonyStyle($input, $output);
 
             if ($prompt->default !== []) {
@@ -44,7 +44,7 @@ trait ConfiguresLaravelPrompts
                 // Build choices with a "None" sentinel, so empty selection is possible
                 $isList = array_is_list($prompt->options);
                 $choices = $isList
-                    ? array_merge(['None'], $prompt->options)
+                    ? ['None', ...$prompt->options]
                     : ['none' => 'None'] + $prompt->options;
 
                 $selected = $io->choice($prompt->label, $choices, 'None', true);
@@ -52,9 +52,9 @@ trait ConfiguresLaravelPrompts
 
                 // Remove sentinel
                 if ($isList) {
-                    $selected = array_values(array_filter($selected, static fn ($v) => $v !== 'None'));
+                    $selected = array_values(array_filter($selected, static fn ($v): bool => $v !== 'None'));
                 } else {
-                    $selected = array_values(array_filter($selected, static fn ($v) => $v !== 'none'));
+                    $selected = array_values(array_filter($selected, static fn ($v): bool => $v !== 'none'));
                 }
             }
 

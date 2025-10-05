@@ -43,7 +43,7 @@ final readonly class ProcessRunner
      */
     public function writeOutput(OutputInterface $output): Closure
     {
-        return static function ($type, $line) use ($output): void {
+        return static function ($type, string $line) use ($output): void {
             $output->write('    '.$line);
         };
     }
@@ -70,7 +70,7 @@ final readonly class ProcessRunner
         }
 
         if ($this->isQuiet) {
-            $commands = $this->addQuietOption($commands);
+            return $this->addQuietOption($commands);
         }
 
         return $commands;
@@ -99,7 +99,7 @@ final readonly class ProcessRunner
     {
         $commands = ['chmod', 'rm', 'git', './vendor/bin/pest'];
 
-        if (array_any($commands, fn ($needle) => str_starts_with($value, $needle))) {
+        if (array_any($commands, static fn ($needle): bool => str_starts_with($value, (string) $needle))) {
             return false;
         }
 
@@ -125,9 +125,9 @@ final readonly class ProcessRunner
 
         try {
             $process->setTty(true);
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException $runtimeException) {
             if ($onOutput !== null) {
-                $onOutput('  <bg=yellow;fg=black> WARN </> '.$e->getMessage().PHP_EOL);
+                $onOutput('  <bg=yellow;fg=black> WARN </> '.$runtimeException->getMessage().PHP_EOL);
             }
         }
     }

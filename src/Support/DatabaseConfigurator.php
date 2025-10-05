@@ -140,7 +140,7 @@ final readonly class DatabaseConfigurator
             'DB_PASSWORD=',
         ];
 
-        $commentedDefaults = collect($defaults)->map(static fn ($default) => "# {$default}")->all();
+        $commentedDefaults = collect($defaults)->map(static fn ($default): string => "# {$default}")->all();
 
         $commentReplacement = new Replacement(
             search: $defaults,
@@ -169,7 +169,7 @@ final readonly class DatabaseConfigurator
             '# DB_PASSWORD=',
         ];
 
-        $commentedDefaults = collect($defaults)->map(static fn ($default) => mb_substr($default, 2))->all();
+        $commentedDefaults = collect($defaults)->map(static fn (string $default): string => mb_substr($default, 2))->all();
 
         return new Replacement(
             search: $defaults,
