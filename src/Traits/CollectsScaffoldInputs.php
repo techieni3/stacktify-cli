@@ -46,31 +46,47 @@ trait CollectsScaffoldInputs
             ));
         }
 
-        $this->config->setFrontend(Frontend::fromSelection(select(
-            label: 'Which frontend stack would you like to use?',
-            options: Frontend::options(),
-            default: Frontend::default(),
-        )));
+        $this->config->setFrontend(
+            Frontend::from(
+                (string) select(
+                    label: 'Which frontend stack would you like to use?',
+                    options: Frontend::options(),
+                    default: Frontend::default(),
+                )
+            )
+        );
 
         if ($this->config->getFrontend() !== Frontend::Api) {
-            $this->config->setAuthentication(Authentication::fromSelection(select(
-                label: 'Which authentication provider do you prefer?',
-                options: Authentication::options(),
-                default: Authentication::default(),
-            )));
+            $this->config->setAuthentication(
+                Authentication::from(
+                    (string) select(
+                        label: 'Which authentication provider do you prefer?',
+                        options: Authentication::options(),
+                        default: Authentication::default(),
+                    )
+                )
+            );
         }
 
-        $this->config->setDatabase(Database::fromSelection(select(
-            label: 'Which database will your application use?',
-            options: Database::options(),
-            default: Database::default(),
-        )));
+        $this->config->setDatabase(
+            Database::from(
+                (string) select(
+                    label: 'Which database will your application use?',
+                    options: Database::options(),
+                    default: Database::default(),
+                )
+            )
+        );
 
-        $this->config->setTestingFramework(TestingFramework::fromSelection(select(
-            label: 'Which testing framework do you prefer?',
-            options: TestingFramework::options(),
-            default: TestingFramework::default(),
-        )));
+        $this->config->setTestingFramework(
+            TestingFramework::from(
+                (string) select(
+                    label: 'Which testing framework do you prefer?',
+                    options: TestingFramework::options(),
+                    default: TestingFramework::default(),
+                )
+            )
+        );
     }
 
     private function reviewAndConfirm(): bool

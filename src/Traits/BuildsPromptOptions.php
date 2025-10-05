@@ -42,15 +42,11 @@ trait BuildsPromptOptions
      * For single-select, pass a string and receive the corresponding enum case.
      * For multi-select, pass an array of strings and receive an array of enum cases (in the same order).
      *
-     * @param  string|array  $selection  Selected value or list of values.
-     * @return static|array<static> Enum case for single-select or array of cases for multi-select.
+     * @param  list<string>  $selection  Selected value or list of values.
+     * @return array<static> Enum case for single-select or array of cases for multi-select.
      */
-    public static function fromSelection(string|array $selection): static|array
+    public static function fromSelection(array $selection): array
     {
-        if (is_array($selection)) {
-            return array_map(static fn ($v) => static::from($v), $selection);
-        }
-
-        return static::from($selection);
+        return array_map(static fn (string $v) => static::from($v), $selection);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Support;
 
+use RuntimeException;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\PregReplacement;
@@ -58,6 +59,10 @@ final readonly class DatabaseConfigurator
 
         if ($this->config->getDatabase() === Database::SQLite) {
             $environment = file_get_contents($this->config->getEnvFilePath());
+
+            if ($environment === false) {
+                throw new RuntimeException("Failed to read file: {$this->config->getEnvFilePath()}");
+            }
 
             // If database options aren't commented, comment them for SQLite...
             if ( ! str_contains($environment, '# DB_HOST=127.0.0.1')) {
@@ -140,7 +145,7 @@ final readonly class DatabaseConfigurator
             'DB_PASSWORD=',
         ];
 
-        $commentedDefaults = collect($defaults)->map(static fn ($default): string => "# {$default}")->all();
+        $commentedDefaults = collect($defaults)->map(static fn (string $default): string => "# {$default}")->all();
 
         $commentReplacement = new Replacement(
             search: $defaults,

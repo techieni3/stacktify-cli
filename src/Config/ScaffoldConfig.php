@@ -11,7 +11,7 @@ use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\Enums\Frontend;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 
-final readonly class ScaffoldConfig
+final class ScaffoldConfig
 {
     /**
      * The name of the application.
@@ -41,12 +41,12 @@ final readonly class ScaffoldConfig
     /**
      * The path to the PHP binary.
      */
-    private string $phpBinary;
+    private readonly string $phpBinary;
 
     /**
      * Create a new ScaffoldConfig instance.
      */
-    public function __construct(private InputInterface $input)
+    public function __construct(private readonly InputInterface $input)
     {
         $this->phpBinary = new PhpExecutableFinder()->find(false) ?: 'php';
     }

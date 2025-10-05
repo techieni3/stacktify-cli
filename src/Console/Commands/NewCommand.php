@@ -15,10 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Contracts\GitClient;
-use Techieni3\StacktifyCli\Enums\Authentication;
-use Techieni3\StacktifyCli\Enums\Database;
-use Techieni3\StacktifyCli\Enums\Frontend;
-use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
 use Techieni3\StacktifyCli\Support\Composer;
 use Techieni3\StacktifyCli\Support\DatabaseConfigurator;
@@ -55,26 +51,6 @@ final class NewCommand extends Command
      * The Git client implementation.
      */
     private GitClient $git;
-
-    /**
-     * The selected frontend framework.
-     */
-    private Frontend $frontend;
-
-    /**
-     * The selected database.
-     */
-    private Database $database;
-
-    /**
-     * The selected authentication scaffolding.
-     */
-    private Authentication $authentication;
-
-    /**
-     * The selected testing framework.
-     */
-    private TestingFramework $testingFramework;
 
     /**
      * The Composer instance.
@@ -232,6 +208,8 @@ final class NewCommand extends Command
 
     /**
      * Get the commands to install the application.
+     *
+     * @return list<string>
      */
     private function getInstallCommands(string $directory, InputInterface $input): array
     {
@@ -258,6 +236,8 @@ final class NewCommand extends Command
 
     /**
      * Get the command to force install the application.
+     *
+     * @return list<string>
      */
     private function getForceInstallCommand(string $directory): array
     {

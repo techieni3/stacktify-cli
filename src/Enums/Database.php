@@ -17,7 +17,7 @@ enum Database: string implements PromptSelectableEnum
     case PostgreSQL = 'pgsql';
     case SQLServer = 'sqlsrv';
 
-    public static function default(): ?string
+    public static function default(): string
     {
         return self::SQLite->value;
     }

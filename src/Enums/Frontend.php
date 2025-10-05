@@ -18,7 +18,7 @@ enum Frontend: string implements PromptSelectableEnum
     case Livewire = 'livewire';
     case Filament = 'filament';
 
-    public static function default(): ?string
+    public static function default(): string
     {
         return self::Blade->value;
     }

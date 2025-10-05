@@ -24,6 +24,9 @@ final readonly class ProcessRunner
 
     /**
      * Run a series of commands.
+     *
+     * @param  list<string>  $commands
+     * @param  array<string, string|bool>  $env
      */
     public function runCommands(array $commands, ?string $workingPath = null, ?callable $onOutput = null, array $env = []): Process
     {
@@ -50,6 +53,8 @@ final readonly class ProcessRunner
 
     /**
      * Execute a single command.
+     *
+     * @param  list<string>  $command
      */
     public function execute(array $command, ?string $cwd = null): Process
     {
@@ -62,6 +67,9 @@ final readonly class ProcessRunner
 
     /**
      * Prepare the commands for execution.
+     *
+     * @param  list<string>  $commands
+     * @return list<string>
      */
     private function prepareCommands(array $commands): array
     {
@@ -78,18 +86,24 @@ final readonly class ProcessRunner
 
     /**
      * Add the --no-ansi option to commands.
+     *
+     * @param  list<string>  $commands
+     * @return list<string>
      */
     private function addNoAnsiOption(array $commands): array
     {
-        return array_map(fn ($value) => $this->shouldAddOption($value) ? "{$value} --no-ansi" : $value, $commands);
+        return array_map(fn (string $value): string => $this->shouldAddOption($value) ? "{$value} --no-ansi" : $value, $commands);
     }
 
     /**
      * Add the --quiet option to commands.
+     *
+     * @param  list<string>  $commands
+     * @return list<string>
      */
     private function addQuietOption(array $commands): array
     {
-        return array_map(fn ($value) => $this->shouldAddOption($value) ? "{$value} --quiet" : $value, $commands);
+        return array_map(fn (string $value): string => $this->shouldAddOption($value) ? "{$value} --quiet" : $value, $commands);
     }
 
     /**
@@ -108,6 +122,9 @@ final readonly class ProcessRunner
 
     /**
      * Create a new process instance.
+     *
+     * @param  list<string>  $commands
+     * @param  array<string, string|bool>  $env
      */
     private function createProcess(array $commands, ?string $workingPath, array $env): Process
     {

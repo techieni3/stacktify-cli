@@ -11,6 +11,9 @@ class Replacement
 {
     /**
      * Create a new Replacement instance.
+     *
+     * @param  array<int, string>  $search
+     * @param  array<int, string>  $replace
      */
     public function __construct(
         public string|array $search,

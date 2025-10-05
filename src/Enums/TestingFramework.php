@@ -14,7 +14,7 @@ enum TestingFramework: string implements PromptSelectableEnum
     case PhpUnit = 'phpunit';
     case Pest = 'pest';
 
-    public static function default(): ?string
+    public static function default(): string
     {
         return self::Pest->value;
     }

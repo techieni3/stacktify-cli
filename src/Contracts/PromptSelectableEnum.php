@@ -28,10 +28,10 @@ interface PromptSelectableEnum
      * Converts the user's selection back to enum case(s).
      * Returns the corresponding enum case for single-select, or an array of cases for multi-select.
      *
-     * @param  string|array  $selection  Selected value(s) returned by the prompt.
-     * @return static|array<static>
+     * @param  list<string>  $selection  Selected value(s) returned by the prompt.
+     * @return array<static>
      */
-    public static function fromSelection(string|array $selection): static|array;
+    public static function fromSelection(array $selection): array;
 
     /**
      * Human-readable label for the current enum case.

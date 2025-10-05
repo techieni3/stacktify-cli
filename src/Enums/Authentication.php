@@ -15,7 +15,7 @@ enum Authentication: string implements PromptSelectableEnum
     case Laravel = 'laravel';
     case Socialite = 'socialite';
 
-    public static function default(): ?string
+    public static function default(): string
     {
         return self::None->value;
     }
