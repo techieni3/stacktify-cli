@@ -25,6 +25,11 @@
         "symfony/console": "^7.3",
         "symfony/process": "^7.3"
     },
+    "require-dev": {
+        "laravel/pint": "^1.25",
+        "phpstan/phpstan": "^2.1",
+        "rector/rector": "2.2"
+    },
     "bin": [
         "bin/stacktify"
     ],
@@ -40,14 +45,9 @@
         ],
         "test:types": "phpstan analyse"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "config": {
         "sort-packages": true
     },
-    "require-dev": {
-        "laravel/pint": "^1.25",
-        "phpstan/phpstan": "^2.1",
-        "rector/rector": "dev-main"
-    }
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
