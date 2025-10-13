@@ -21,8 +21,10 @@ interface PromptSelectableEnum
     /**
      * The default selected value to preselect in the prompt, or null for no default.
      * This must correspond to one of the option "value" keys returned by options().
+     *
+     * @return string|list<static>|null
      */
-    public static function default(): ?string;
+    public static function default(): string|array|null;
 
     /**
      * Converts the user's selection back to enum case(s).

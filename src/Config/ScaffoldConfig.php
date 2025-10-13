@@ -8,8 +8,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Techieni3\StacktifyCli\Enums\Authentication;
 use Techieni3\StacktifyCli\Enums\Database;
+use Techieni3\StacktifyCli\Enums\DeveloperTool;
 use Techieni3\StacktifyCli\Enums\Frontend;
+use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
+use Techieni3\StacktifyCli\Enums\ToolingPreference;
 
 final class ScaffoldConfig
 {
@@ -42,6 +45,25 @@ final class ScaffoldConfig
      * The path to the PHP binary.
      */
     private readonly string $phpBinary;
+
+    /**
+     * Selected tooling preference.
+     */
+    private ToolingPreference $toolingPreference;
+
+    /**
+     * Developer tools chosen when using a custom setup.
+     *
+     * @var array<DeveloperTool>
+     */
+    private array $devTools = [];
+
+    /**
+     * Pest plugins to install.
+     *
+     * @var array<int, PestPlugin>
+     */
+    private array $pestPlugins = [];
 
     /**
      * Create a new ScaffoldConfig instance.
@@ -171,6 +193,58 @@ final class ScaffoldConfig
     public function getTestingFramework(): TestingFramework
     {
         return $this->testingFramework;
+    }
+
+    /**
+     * Set the tooling preference.
+     */
+    public function setToolingPreference(ToolingPreference $toolingPreference): void
+    {
+        $this->toolingPreference = $toolingPreference;
+    }
+
+    /**
+     * Get the tooling preference.
+     */
+    public function getToolingPreference(): ToolingPreference
+    {
+        return $this->toolingPreference;
+    }
+
+    /**
+     * Set the developer tools to install.
+     *
+     * @param  array<DeveloperTool>  $tools
+     */
+    public function setDevTools(array $tools): void
+    {
+        $this->devTools = $tools;
+    }
+
+    /**
+     * Get the developer tools to install.
+     *
+     * @return array<DeveloperTool>
+     */
+    public function getDevTools(): array
+    {
+        return $this->devTools;
+    }
+
+    /**
+     * @param  array<int, PestPlugin>  $plugins
+     */
+    public function setPestPlugins(array $plugins): void
+    {
+        $this->pestPlugins = array_values($plugins);
+    }
+
+    /**
+     * @return array<int, PestPlugin>
+     */
+    public function getPestPlugins(): array
+    {
+        return $this->pestPlugins;
     }
 
     /**

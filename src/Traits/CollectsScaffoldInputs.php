@@ -8,10 +8,14 @@ use RuntimeException;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Enums\Authentication;
 use Techieni3\StacktifyCli\Enums\Database;
+use Techieni3\StacktifyCli\Enums\DeveloperTool;
 use Techieni3\StacktifyCli\Enums\Frontend;
+use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
+use Techieni3\StacktifyCli\Enums\ToolingPreference;
 use Techieni3\StacktifyCli\Traits\Prompts\GitPrompts;
 
+use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
 
@@ -82,15 +86,48 @@ trait CollectsScaffoldInputs
             )
         );
 
-        $this->config->setTestingFramework(
-            TestingFramework::from(
-                (string) select(
-                    label: 'Which testing framework do you prefer?',
-                    options: TestingFramework::options(),
-                    default: TestingFramework::default(),
-                )
+        $testingFramework = TestingFramework::from(
+            (string) select(
+                label: 'Which testing framework do you prefer?',
+                options: TestingFramework::options(),
+                default: TestingFramework::default(),
             )
         );
+
+        $this->config->setTestingFramework($testingFramework);
+
+        if ($testingFramework === TestingFramework::Pest) {
+            $selectedPlugins = multiselect(
+                label: 'Which Pest plugins would you like to install?',
+                options: PestPlugin::options(),
+                default: PestPlugin::default(),
+            );
+
+            $this->config->setPestPlugins(PestPlugin::fromSelection($selectedPlugins));
+        } else {
+            $this->config->setPestPlugins([]);
+        }
+
+        $toolingPreference = ToolingPreference::from(
+            (string) select(
+                label: 'Would you like Stacktify to apply recommended settings and developer tools?',
+                options: ToolingPreference::options(),
+                default: ToolingPreference::default(),
+            )
+        );
+
+        $this->config->setToolingPreference($toolingPreference);
+
+        if ($toolingPreference === ToolingPreference::Custom) {
+            $selectedTools = multiselect(
+                label: 'Select the tools you want to include:',
+                options: DeveloperTool::options(),
+            );
+
+            $this->config->setDevTools(DeveloperTool::fromSelection($selectedTools));
+        } else {
+            $this->config->setDevTools([]);
+        }
     }
 
     private function reviewAndConfirm(): bool
@@ -106,9 +143,55 @@ trait CollectsScaffoldInputs
             ['Authentication' => $this->config->getAuthentication()->label()],
             ['Database' => $this->config->getDatabase()->label()],
             ['Testing framework' => $this->config->getTestingFramework()->label()],
+            ['Pest plugins' => $this->pestPluginsSummary()],
+            ['Tooling setup' => $this->toolingSummary()],
+            ['Developer tools' => $this->developerToolsSummary()],
             ['Git' => $this->config->isGitEnabled() ? 'Enabled' : 'Skipped'],
         );
 
         return $this->io->confirm('Proceed with installation?');
+    }
+
+    private function toolingSummary(): string
+    {
+        return match ($this->config->getToolingPreference()) {
+            ToolingPreference::Recommended => 'Recommended settings and tools',
+            ToolingPreference::Custom => 'Custom selection',
+            ToolingPreference::Skip => 'Installation only',
+        };
+    }
+
+    private function developerToolsSummary(): string
+    {
+        $tools = $this->config->getDevTools();
+
+        if ($tools === []) {
+            return $this->config->getToolingPreference() === ToolingPreference::Custom
+                ? 'None selected'
+                : 'Managed automatically';
+        }
+
+        return implode(', ', array_map(
+            static fn (DeveloperTool $tool): string => $tool->label(),
+            $tools
+        ));
+    }
+
+    private function pestPluginsSummary(): string
+    {
+        if ($this->config->getTestingFramework() !== TestingFramework::Pest) {
+            return 'Not applicable';
+        }
+
+        $plugins = $this->config->getPestPlugins();
+
+        if ($plugins === []) {
+            return 'None selected';
+        }
+
+        return implode(', ', array_map(
+            static fn (PestPlugin $plugin): string => $plugin->label(),
+            $plugins
+        ));
     }
 }
