@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services\Git;
 
-use Symfony\Component\Process\ExecutableFinder;
 use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
+use Techieni3\StacktifyCli\Services\ExecutableLocator;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
 
 /**
@@ -26,7 +26,7 @@ final readonly class GitRunner implements GitClient
         private ProcessRunner $proc,
         private string $cwd,
     ) {
-        $this->git = new ExecutableFinder()->find('git') ?? 'git';
+        $this->git = new ExecutableLocator()->findGit();
     }
 
     /**

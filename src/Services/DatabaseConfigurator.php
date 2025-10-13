@@ -26,11 +26,17 @@ final readonly class DatabaseConfigurator
     private string $exampleEnv;
 
     /**
+     * The path to the PHP binary.
+     */
+    private string $php;
+
+    /**
      * Create a new database configurator instance.
      */
     public function __construct(
         private ScaffoldConfig $config,
     ) {
+        $this->php = new ExecutableLocator()->findPhp();
         $this->env = $this->config->getEnvFilePath();
         $this->exampleEnv = $this->config->getExampleEnvFilePath();
     }
@@ -124,7 +130,7 @@ final readonly class DatabaseConfigurator
 
         $commands = [
             mb_trim(sprintf(
-                $this->config->getPhpBinary().' artisan migrate %s',
+                $this->php.' artisan migrate %s',
                 $this->config->isInteractiveMode() ? '' : '--no-interaction',
             )),
         ];

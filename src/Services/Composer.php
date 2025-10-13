@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services;
 
-use Symfony\Component\Process\ExecutableFinder;
-
 /**
  * A wrapper for running Composer commands.
  */
@@ -21,7 +19,7 @@ final readonly class Composer
      */
     public function __construct(private ProcessRunner $process, private string $cwd)
     {
-        $this->composer = new ExecutableFinder()->find('composer') ?? 'composer';
+        $this->composer = new ExecutableLocator()->findComposer();
     }
 
     /**
