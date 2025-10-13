@@ -9,7 +9,7 @@ use Symfony\Component\Process\ExecutableFinder;
 /**
  * A wrapper for running Composer commands.
  */
-class Composer
+final readonly class Composer
 {
     /**
      * The path to the Composer executable.
@@ -19,9 +19,9 @@ class Composer
     /**
      * Create a new Composer instance.
      */
-    public function __construct(private readonly ProcessRunner $process, private readonly string $cwd)
+    public function __construct(private ProcessRunner $process, private string $cwd)
     {
-        $this->initializeComposer();
+        $this->composer = new ExecutableFinder()->find('composer') ?? 'composer';
     }
 
     /**
@@ -42,13 +42,5 @@ class Composer
             "{$this->composer} bump",
             "{$this->composer} update",
         ], $this->cwd);
-    }
-
-    /**
-     * Find the Composer executable.
-     */
-    private function initializeComposer(): void
-    {
-        $this->composer = new ExecutableFinder()->find('composer') ?? 'composer';
     }
 }
