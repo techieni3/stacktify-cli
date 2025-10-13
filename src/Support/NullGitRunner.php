@@ -19,7 +19,7 @@ final class NullGitRunner implements GitClient
     /**
      * Perform the initial commit.
      */
-    public function initializeRepository(): void {}
+    public function createInitialCommit(): void {}
 
     /**
      * Stage all changes.

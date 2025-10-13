@@ -39,7 +39,7 @@ final readonly class GitRunner implements GitClient
     /**
      * Perform the initial commit.
      */
-    public function initializeRepository(): void
+    public function createInitialCommit(): void
     {
         $branch = $this->defaultBranch();
 

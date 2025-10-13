@@ -291,7 +291,7 @@ final class NewCommand extends Command
             }
         }
 
-        $git->initializeRepository();
+        $git->createInitialCommit();
 
         $this->success('Git repository initialized');
 
