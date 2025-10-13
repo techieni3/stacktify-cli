@@ -35,6 +35,10 @@ trait CollectsScaffoldInputs
                         return 'The name may only contain letters, numbers, dashes, underscores, and periods.';
                     }
 
+                    if ($value === '.' && $this->input->getOption('force')) {
+                        return 'Cannot use --force option when using current directory for installation.';
+                    }
+
                     if ($this->input->getOption('force') !== true) {
                         try {
                             $this->verifyApplicationDoesntExist($this->config->getInstallationDirectory($value));
