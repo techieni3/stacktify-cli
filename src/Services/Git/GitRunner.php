@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Techieni3\StacktifyCli\Support;
+namespace Techieni3\StacktifyCli\Services\Git;
 
 use Symfony\Component\Process\ExecutableFinder;
 use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
+use Techieni3\StacktifyCli\Services\ProcessRunner;
 
 /**
  * A Git client that executes Git commands.

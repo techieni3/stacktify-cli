@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Techieni3\StacktifyCli\Support;
+namespace Techieni3\StacktifyCli\Services;
 
 use Closure;
 use RuntimeException;
