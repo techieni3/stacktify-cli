@@ -78,7 +78,7 @@ final class NewCommand extends Command
             new InputOption(
                 name: 'no-git',
                 mode: InputOption::VALUE_NONE,
-                description: ' Skip all Git operations (init, commit, branch rename). Default: perform Git actions'
+                description: 'Skip all Git operations (init, commit, branch rename). Default: perform Git actions'
             ),
             new InputOption(
                 name: 'force',
@@ -170,12 +170,12 @@ final class NewCommand extends Command
     private function displayWelcomeMessage(OutputInterface $output): void
     {
         $output->write('<fg=red>
- ███████╗ ████████╗  █████╗   ██████╗ ██╗  ██╗ ████████╗ ██╗███████╗ ██╗   ██╗
- ██╔════╝ ╚══██╔══╝ ██╔══██╗ ██╔════╝ ██║ ██╔╝ ╚══██╔══╝ ██║██╔════╝ ╚██╗ ██╔╝
- ███████╗    ██║    ███████║ ██║      █████╔╝     ██║    ██║█████╗    ╚████╔╝
- ╚════██║    ██║    ██╔══██║ ██║      ██╔═██╗     ██║    ██║██╔══╝     ╚██╔╝
- ███████║    ██║    ██║  ██║ ╚██████╗ ██║  ██╗    ██║    ██║██║         ██║
- ╚══════╝    ╚═╝    ╚═╝  ╚═╝  ╚═════╝ ╚═╝  ╚═╝    ╚═╝    ╚═╝╚═╝         ╚═╝
+ ███████╗ ████████╗  █████╗   ██████╗ ██╗  ██╗ ████████╗ ██╗ ███████╗ ██╗   ██╗
+ ██╔════╝ ╚══██╔══╝ ██╔══██╗ ██╔════╝ ██║ ██╔╝ ╚══██╔══╝ ██║ ██╔════╝ ╚██╗ ██╔╝
+ ███████╗    ██║    ███████║ ██║      █████╔╝     ██║    ██║ █████╗    ╚████╔╝
+ ╚════██║    ██║    ██╔══██║ ██║      ██╔═██╗     ██║    ██║ ██╔══╝     ╚██╔╝
+ ███████║    ██║    ██║  ██║ ╚██████╗ ██║  ██╗    ██║    ██║ ██║         ██║
+ ╚══════╝    ╚═╝    ╚═╝  ╚═╝  ╚═════╝ ╚═╝  ╚═╝    ╚═╝    ╚═╝ ╚═╝         ╚═╝
         </>'.PHP_EOL);
     }
 
