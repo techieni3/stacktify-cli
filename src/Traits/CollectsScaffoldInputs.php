@@ -13,7 +13,7 @@ use Techieni3\StacktifyCli\Enums\Frontend;
 use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Enums\ToolingPreference;
-use Techieni3\StacktifyCli\Traits\Prompts\GitPrompts;
+use Techieni3\StacktifyCli\Traits\Prompts\PromptsForGitCredentials;
 
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
@@ -21,7 +21,7 @@ use function Laravel\Prompts\text;
 
 trait CollectsScaffoldInputs
 {
-    use GitPrompts;
+    use PromptsForGitCredentials;
 
     abstract protected function verifyApplicationDoesntExist(string $directory): void;
 

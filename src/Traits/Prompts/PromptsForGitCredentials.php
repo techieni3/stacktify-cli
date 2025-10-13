@@ -6,7 +6,7 @@ namespace Techieni3\StacktifyCli\Traits\Prompts;
 
 use function Laravel\Prompts\text;
 
-trait GitPrompts
+trait PromptsForGitCredentials
 {
     private function askGitUserName(): string
     {
