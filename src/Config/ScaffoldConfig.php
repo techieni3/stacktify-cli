@@ -61,7 +61,7 @@ final class ScaffoldConfig
      *
      * @var array<DeveloperTool>
      */
-    private array $devTools = [];
+    private array $developerTools = [];
 
     /**
      * Pest plugins to install.
@@ -237,9 +237,9 @@ final class ScaffoldConfig
      *
      * @param  array<DeveloperTool>  $tools
      */
-    public function setDevTools(array $tools): void
+    public function setDeveloperTools(array $tools): void
     {
-        $this->devTools = $tools;
+        $this->developerTools = $tools;
     }
 
     /**
@@ -247,9 +247,9 @@ final class ScaffoldConfig
      *
      * @return array<DeveloperTool>
      */
-    public function getDevTools(): array
+    public function getDeveloperTools(): array
     {
-        return $this->devTools;
+        return $this->developerTools;
     }
 
     /**

@@ -132,9 +132,9 @@ trait CollectsScaffoldInputs
                 options: DeveloperTool::options(),
             );
 
-            $this->config->setDevTools(DeveloperTool::fromSelection($selectedTools));
+            $this->config->setDeveloperTools(DeveloperTool::fromSelection($selectedTools));
         } else {
-            $this->config->setDevTools([]);
+            $this->config->setDeveloperTools([]);
         }
     }
 
@@ -171,7 +171,7 @@ trait CollectsScaffoldInputs
 
     private function developerToolsSummary(): string
     {
-        $tools = $this->config->getDevTools();
+        $tools = $this->config->getDeveloperTools();
 
         if ($tools === []) {
             return $this->config->getToolingPreference() === ToolingPreference::Custom
