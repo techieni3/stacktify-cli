@@ -14,6 +14,7 @@ use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Enums\ToolingPreference;
 use Techieni3\StacktifyCli\Traits\Prompts\PromptsForGitCredentials;
+use Techieni3\StacktifyCli\Traits\Prompts\PromptsForPackageManager;
 
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
@@ -22,6 +23,7 @@ use function Laravel\Prompts\text;
 trait CollectsScaffoldInputs
 {
     use PromptsForGitCredentials;
+    use PromptsForPackageManager;
 
     abstract protected function verifyApplicationDoesntExist(string $directory): void;
 
@@ -63,6 +65,12 @@ trait CollectsScaffoldInputs
                 )
             )
         );
+
+        if ($this->config->getFrontend() !== Frontend::Api) {
+            $this->config->setPackageManager($this->detectOrAskPackageManager());
+        } else {
+            $this->config->setPackageManager('npm');
+        }
 
         if ($this->config->getFrontend() !== Frontend::Api) {
             $this->config->setAuthentication(

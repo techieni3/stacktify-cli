@@ -37,6 +37,11 @@ final class ScaffoldConfig
     private Authentication $authentication;
 
     /**
+     * The selected package manager executable name (e.g., "npm", "pnpm", "bun").
+     */
+    private string $packageManager = 'npm';
+
+    /**
      * The selected testing framework.
      */
     private TestingFramework $testingFramework;
@@ -161,6 +166,22 @@ final class ScaffoldConfig
     public function getAuthentication(): Authentication
     {
         return $this->authentication ?? Authentication::None;
+    }
+
+    /**
+     * Set the package manager.
+     */
+    public function setPackageManager(string $packageManager): void
+    {
+        $this->packageManager = $packageManager;
+    }
+
+    /**
+     * Get the package manager.
+     */
+    public function getPackageManager(): string
+    {
+        return $this->packageManager;
     }
 
     /**
