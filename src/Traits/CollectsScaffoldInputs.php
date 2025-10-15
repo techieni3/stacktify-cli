@@ -31,7 +31,7 @@ trait CollectsScaffoldInputs
 
     private function collectScaffoldInputs(): void
     {
-        $this->config = new ScaffoldConfig($this->input);
+        $this->config = new ScaffoldConfig();
 
         if ( ! $this->input->getArgument('name')) {
             $this->input->setArgument('name', text(
@@ -138,6 +138,13 @@ trait CollectsScaffoldInputs
         } else {
             $this->config->setDeveloperTools([]);
         }
+
+        $this->config->setName(mb_rtrim($this->input->getArgument('name'), '/\\'));
+
+        $this->config->setVersion($this->input->getOption('dev') ? 'dev-master' : '');
+
+        $this->config->setIsGitEnabled( ! (bool) $this->input->getOption('no-git'));
+
     }
 
     private function reviewAndConfirm(): bool
@@ -145,7 +152,7 @@ trait CollectsScaffoldInputs
         $projectPath = $this->paths->getInstallationDirectory();
 
         $selections = [
-            ['Project name' => $this->config->getAppName()],
+            ['Project name' => $this->config->getName()],
             ['Path' => realpath($projectPath) ?: $projectPath],
             ['Frontend stack' => $this->config->getFrontend()->label()],
         ];

@@ -110,7 +110,7 @@ final readonly class DatabaseConfigurator
         // DB_DATABASE
         $dbNameReplacement = new Replacement(
             search: 'DB_DATABASE=laravel',
-            replace: 'DB_DATABASE='.str_replace('-', '_', mb_strtolower($this->config->getAppName())),
+            replace: 'DB_DATABASE='.str_replace('-', '_', mb_strtolower($this->config->getName())),
         );
 
         $envHandler->replace($dbNameReplacement);

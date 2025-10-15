@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Config;
 
-use Symfony\Component\Console\Input\InputInterface;
 use Techieni3\StacktifyCli\Enums\Authentication;
 use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\Enums\DeveloperTool;
@@ -19,7 +18,12 @@ final class ScaffoldConfig
     /**
      * The name of the application.
      */
-    public string $name;
+    private string $name;
+
+    /**
+     * Version to be used.
+     */
+    private string $version;
 
     /**
      * The selected frontend framework.
@@ -66,28 +70,40 @@ final class ScaffoldConfig
     private array $pestPlugins = [];
 
     /**
-     * Create a new ScaffoldConfig instance.
+     * Git enabled status.
      */
-    public function __construct(private readonly InputInterface $input) {}
+    private bool $gitEnabled;
+
+    /**
+     * Set the application name.
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Get the application name.
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the version constraint for the application.
+     */
+    public function setVersion(string $version): void
+    {
+        $this->version = $version;
+    }
 
     /**
      * Get the version constraint for the application.
      */
     public function getVersion(): string
     {
-        if ($this->input->getOption('dev')) {
-            return 'dev-master';
-        }
-
-        return '';
-    }
-
-    /**
-     * Get the application name.
-     */
-    public function getAppName(): string
-    {
-        return mb_rtrim($this->input->getArgument('name'), '/\\');
+        return $this->version;
     }
 
     /**
@@ -223,10 +239,18 @@ final class ScaffoldConfig
     }
 
     /**
-     * Determine if Git is enabled.
+     * Set git enabled status
+     */
+    public function setIsGitEnabled(bool $enabled): void
+    {
+        $this->gitEnabled = $enabled;
+    }
+
+    /**
+     * Get git enabled status.
      */
     public function isGitEnabled(): bool
     {
-        return ! (bool) $this->input->getOption('no-git');
+        return $this->gitEnabled;
     }
 }

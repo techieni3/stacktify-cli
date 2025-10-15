@@ -118,7 +118,7 @@ final class NewCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->paths = new PathResolver($this->config->getAppName());
+        $this->paths = new PathResolver($this->config->getName());
 
         $confirmed = $this->reviewAndConfirm();
 
@@ -313,7 +313,7 @@ final class NewCommand extends Command
      */
     private function setAppUrlInEnv(): void
     {
-        $url = new AppUrlGenerator($this->config->getAppName())->generate();
+        $url = new AppUrlGenerator($this->config->getName())->generate();
 
         FileEditor::replaceInFile(
             filePath: $this->paths->getEnvPath(),
