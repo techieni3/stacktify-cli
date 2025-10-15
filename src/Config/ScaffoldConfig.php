@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Techieni3\StacktifyCli\Config;
 
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Techieni3\StacktifyCli\Enums\Authentication;
 use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\Enums\DeveloperTool;
@@ -47,11 +46,6 @@ final class ScaffoldConfig
     private TestingFramework $testingFramework;
 
     /**
-     * The path to the PHP binary.
-     */
-    private readonly string $phpBinary;
-
-    /**
      * Selected tooling preference.
      */
     private ToolingPreference $toolingPreference;
@@ -73,18 +67,7 @@ final class ScaffoldConfig
     /**
      * Create a new ScaffoldConfig instance.
      */
-    public function __construct(private readonly InputInterface $input)
-    {
-        $this->phpBinary = new PhpExecutableFinder()->find(false) ?: 'php';
-    }
-
-    /**
-     * Determine if the command is running in interactive mode.
-     */
-    public function isInteractiveMode(): bool
-    {
-        return $this->input->isInteractive();
-    }
+    public function __construct(private readonly InputInterface $input) {}
 
     /**
      * Get the version constraint for the application.
@@ -104,24 +87,6 @@ final class ScaffoldConfig
     public function getAppName(): string
     {
         return mb_rtrim($this->input->getArgument('name'), '/\\');
-    }
-
-    /**
-     * Get the installation directory for the application.
-     */
-    public function getInstallationDirectory(?string $name = null): string
-    {
-        $appName = $name !== null ? mb_rtrim($name, '/\\') : $this->getAppName();
-
-        return $appName !== '.' ? getcwd().'/'.$appName : '.';
-    }
-
-    /**
-     * Get the path to the PHP binary.
-     */
-    public function getPhpBinary(): string
-    {
-        return $this->phpBinary;
     }
 
     /**
@@ -274,22 +239,6 @@ final class ScaffoldConfig
     public function isGitEnabled(): bool
     {
         return ! (bool) $this->input->getOption('no-git');
-    }
-
-    /**
-     * Get the path to the .env file.
-     */
-    public function getEnvFilePath(): string
-    {
-        return $this->getInstallationDirectory().'/.env';
-    }
-
-    /**
-     * Get the path to the .env.example file.
-     */
-    public function getExampleEnvFilePath(): string
-    {
-        return $this->getInstallationDirectory().'/.env.example';
     }
 
     /**

@@ -13,6 +13,7 @@ use Techieni3\StacktifyCli\Enums\Frontend;
 use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Enums\ToolingPreference;
+use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Traits\Prompts\PromptsForGitCredentials;
 use Techieni3\StacktifyCli\Traits\Prompts\PromptsForPackageManager;
 
@@ -47,7 +48,7 @@ trait CollectsScaffoldInputs
 
                     if ($this->input->getOption('force') !== true) {
                         try {
-                            $this->verifyApplicationDoesntExist($this->config->getInstallationDirectory($value));
+                            $this->verifyApplicationDoesntExist(new PathResolver($value)->getInstallationDirectory());
                         } catch (RuntimeException) {
                             return 'Application already exists.';
                         }
@@ -140,7 +141,7 @@ trait CollectsScaffoldInputs
 
     private function reviewAndConfirm(): bool
     {
-        $projectPath = $this->config->getInstallationDirectory();
+        $projectPath = $this->paths->getInstallationDirectory();
 
         $this->io->section('Review your selections');
 

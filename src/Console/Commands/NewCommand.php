@@ -18,9 +18,11 @@ use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
 use Techieni3\StacktifyCli\Services\Composer;
 use Techieni3\StacktifyCli\Services\DatabaseConfigurator;
+use Techieni3\StacktifyCli\Services\ExecutableLocator;
 use Techieni3\StacktifyCli\Services\FileEditor;
 use Techieni3\StacktifyCli\Services\Git\GitRunner;
 use Techieni3\StacktifyCli\Services\Git\NullGitRunner;
+use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
 use Techieni3\StacktifyCli\Traits\CollectsScaffoldInputs;
 use Techieni3\StacktifyCli\Traits\ConfiguresLaravelPrompts;
@@ -61,6 +63,11 @@ final class NewCommand extends Command
      * The scaffold configuration instance.
      */
     private ScaffoldConfig $config;
+
+    /**
+     * The path resolver instance.
+     */
+    private PathResolver $paths;
 
     /**
      * Configure the command's arguments and options.
@@ -118,7 +125,8 @@ final class NewCommand extends Command
 
         $this->ensureExtensionsAreAvailable();
 
-        $directory = $this->config->getInstallationDirectory();
+        $this->paths = new PathResolver($this->config->getAppName());
+        $directory = $this->paths->getInstallationDirectory();
 
         if ( ! $input->getOption('force')) {
             $this->verifyApplicationDoesntExist($directory);
@@ -152,10 +160,10 @@ final class NewCommand extends Command
 
         $this->setAppUrlInEnv();
 
-        $databaseConfigurator = new DatabaseConfigurator($this->config);
+        $databaseConfigurator = new DatabaseConfigurator($this->config, $this->paths);
 
         $databaseConfigurator->configureDatabaseConnection();
-        $databaseConfigurator->runMigration($process);
+        $databaseConfigurator->runMigration($process, $this->input->isInteractive());
 
         $this->setUpGitRepository($process, $directory);
 
@@ -220,7 +228,7 @@ final class NewCommand extends Command
     private function getInstallCommands(string $directory, InputInterface $input): array
     {
         $composer = $this->composer->getComposer();
-        $phpBinary = $this->config->getPhpBinary();
+        $phpBinary = new ExecutableLocator()->findPhp();
         $version = $this->config->getVersion();
 
         $commands = [
@@ -304,7 +312,7 @@ final class NewCommand extends Command
     private function setAppUrlInEnv(): void
     {
         FileEditor::replaceInFile(
-            filePath: $this->config->getEnvFilePath(),
+            filePath: $this->paths->getEnvPath(),
             replacement: new Replacement(
                 search: 'APP_URL=http://localhost',
                 replace: 'APP_URL='.$this->config->getAppUrl(),

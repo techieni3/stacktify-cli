@@ -35,10 +35,11 @@ final readonly class DatabaseConfigurator
      */
     public function __construct(
         private ScaffoldConfig $config,
+        private PathResolver $paths,
     ) {
         $this->php = new ExecutableLocator()->findPhp();
-        $this->env = $this->config->getEnvFilePath();
-        $this->exampleEnv = $this->config->getExampleEnvFilePath();
+        $this->env = $this->paths->getEnvPath();
+        $this->exampleEnv = $this->paths->getEnvExamplePath();
     }
 
     /**
@@ -64,10 +65,10 @@ final readonly class DatabaseConfigurator
         );
 
         if ($this->config->getDatabase() === Database::SQLite) {
-            $environment = file_get_contents($this->config->getEnvFilePath());
+            $environment = file_get_contents($this->env);
 
             if ($environment === false) {
-                throw new RuntimeException("Failed to read file: {$this->config->getEnvFilePath()}");
+                throw new RuntimeException("Failed to read file: {$this->env}");
             }
 
             // If database options aren't commented, comment them for SQLite...
@@ -76,16 +77,16 @@ final readonly class DatabaseConfigurator
             }
 
             // create database.sqlite file if doesn't exist
-            if ( ! file_exists($this->config->getInstallationDirectory().'/database/database.sqlite')) {
-                touch($this->config->getInstallationDirectory().'/database/database.sqlite');
+            if ( ! file_exists($this->paths->getSqliteDatabasePath())) {
+                touch($this->paths->getSqliteDatabasePath());
             }
 
             return;
         }
 
         // delete default database.sqlite file if exists
-        if (file_exists($this->config->getInstallationDirectory().'/database/database.sqlite')) {
-            @unlink($this->config->getInstallationDirectory().'/database/database.sqlite');
+        if (file_exists($this->paths->getSqliteDatabasePath())) {
+            @unlink($this->paths->getSqliteDatabasePath());
         }
 
         $envHandler = FileEditor::open($this->env);
@@ -122,7 +123,7 @@ final readonly class DatabaseConfigurator
     /**
      * Run the database migrations.
      */
-    public function runMigration(ProcessRunner $processRunner): void
+    public function runMigration(ProcessRunner $processRunner, bool $isInteractiveMode): void
     {
         if ( ! in_array($this->config->getDatabase(), [Database::MySQL, Database::SQLite], true)) {
             return;
@@ -131,13 +132,13 @@ final readonly class DatabaseConfigurator
         $commands = [
             mb_trim(sprintf(
                 $this->php.' artisan migrate %s',
-                $this->config->isInteractiveMode() ? '' : '--no-interaction',
+                $isInteractiveMode ? '' : '--no-interaction',
             )),
         ];
 
         $processRunner->runCommands(
             commands: $commands,
-            workingPath: $this->config->getInstallationDirectory(),
+            workingPath: $this->paths->getInstallationDirectory(),
             description: 'Running database migrations...'
         );
     }
