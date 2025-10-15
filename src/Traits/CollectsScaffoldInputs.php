@@ -144,20 +144,30 @@ trait CollectsScaffoldInputs
     {
         $projectPath = $this->paths->getInstallationDirectory();
 
-        $this->io->section('Review your selections');
-
-        $this->io->definitionList(
+        $selections = [
             ['Project name' => $this->config->getAppName()],
             ['Path' => realpath($projectPath) ?: $projectPath],
             ['Frontend stack' => $this->config->getFrontend()->label()],
-            ['Authentication' => $this->config->getAuthentication()->label()],
-            ['Database' => $this->config->getDatabase()->label()],
-            ['Testing framework' => $this->config->getTestingFramework()->label()],
-            ['Pest plugins' => $this->pestPluginsSummary()],
-            ['Tooling setup' => $this->toolingSummary()],
-            ['Developer tools' => $this->developerToolsSummary()],
-            ['Git' => $this->config->isGitEnabled() ? 'Enabled' : 'Skipped'],
-        );
+        ];
+
+        if ($this->config->getFrontend() !== Frontend::Api) {
+            $selections[] = ['Package manager' => $this->config->getPackageManager()->label()];
+        }
+
+        $selections[] = ['Authentication provider' => $this->config->getAuthentication()->label()];
+        $selections[] = ['Database' => $this->config->getDatabase()->label()];
+        $selections[] = ['Testing framework' => $this->config->getTestingFramework()->label()];
+
+        if ($this->config->getTestingFramework() === TestingFramework::Pest) {
+            $selections[] = ['Pest plugins' => $this->pestPluginsSummary()];
+        }
+
+        $selections[] = ['Tooling setup' => $this->toolingSummary()];
+        $selections[] = ['Developer tools' => $this->developerToolsSummary()];
+        $selections[] = ['Git' => $this->config->isGitEnabled() ? 'Enabled' : 'Skipped'];
+
+        $this->io->section('Review your selections');
+        $this->io->definitionList(...$selections);
 
         return $this->io->confirm('Proceed with installation?');
     }
