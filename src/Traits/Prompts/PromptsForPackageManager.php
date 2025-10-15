@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Traits\Prompts;
 
-use Symfony\Component\Process\ExecutableFinder;
+use Techieni3\StacktifyCli\Enums\NodePackageManager;
+use Techieni3\StacktifyCli\Services\ExecutableLocator;
 
 use function Laravel\Prompts\select;
 
@@ -14,26 +15,30 @@ trait PromptsForPackageManager
      * Detect available Node package managers and either return the single detected
      * one or prompt the user to choose among multiple options.
      */
-    private function detectOrAskPackageManager(): string
+    private function detectOrAskPackageManager(): NodePackageManager
     {
-        $finder = new ExecutableFinder();
-        $available = [];
-        foreach (['pnpm', 'bun', 'npm'] as $candidate) {
-            if ($finder->find($candidate) !== null) {
-                $available[] = $candidate;
+        $finder = new ExecutableLocator();
+        $availablePackageManagers = [];
+        foreach (NodePackageManager::cases() as $packageManager) {
+            if ($finder->findExecutable($packageManager->executable()) !== null) {
+                $availablePackageManagers[] = $packageManager;
             }
         }
 
-        if ($available === [] || $available === ['npm'] || count($available) === 1) {
-            return $available[0] ?? 'npm';
+        if ($availablePackageManagers === [] || $availablePackageManagers === [NodePackageManager::Npm] || count($availablePackageManagers) === 1) {
+            return $availablePackageManagers[0] ?? NodePackageManager::Npm;
         }
 
-        $default = in_array('npm', $available, true) ? 'npm' : $available[0];
-
-        return (string) select(
-            label: 'Which package manager would you like to use?',
-            options: $available,
-            default: $default,
+        return NodePackageManager::from(
+            (string) select(
+                label: 'Which package manager would you like to use?',
+                options: array_reduce(
+                    $availablePackageManagers,
+                    static fn ($carry, $packageManager): array => $carry + [$packageManager->value => $packageManager->label()],
+                    []
+                ),
+                default: NodePackageManager::default(),
+            )
         );
     }
 }

@@ -9,6 +9,7 @@ use Techieni3\StacktifyCli\Enums\Authentication;
 use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\Enums\DeveloperTool;
 use Techieni3\StacktifyCli\Enums\Frontend;
+use Techieni3\StacktifyCli\Enums\NodePackageManager;
 use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Enums\ToolingPreference;
@@ -36,9 +37,9 @@ final class ScaffoldConfig
     private Authentication $authentication;
 
     /**
-     * The selected package manager executable name (e.g., "npm", "pnpm", "bun").
+     * The selected package manager.
      */
-    private string $packageManager = 'npm';
+    private NodePackageManager $packageManager;
 
     /**
      * The selected testing framework.
@@ -136,7 +137,7 @@ final class ScaffoldConfig
     /**
      * Set the package manager.
      */
-    public function setPackageManager(string $packageManager): void
+    public function setPackageManager(NodePackageManager $packageManager): void
     {
         $this->packageManager = $packageManager;
     }
@@ -144,7 +145,7 @@ final class ScaffoldConfig
     /**
      * Get the package manager.
      */
-    public function getPackageManager(): string
+    public function getPackageManager(): NodePackageManager
     {
         return $this->packageManager;
     }

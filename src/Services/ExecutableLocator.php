@@ -56,4 +56,12 @@ final readonly class ExecutableLocator
     {
         return $this->finder->find('git') ?? 'git';
     }
+
+    /**
+     * Find an executable binary.
+     */
+    public function findExecutable(string $binary): ?string
+    {
+        return $this->finder->find($binary);
+    }
 }

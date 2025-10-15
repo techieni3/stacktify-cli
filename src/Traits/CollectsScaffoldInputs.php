@@ -10,6 +10,7 @@ use Techieni3\StacktifyCli\Enums\Authentication;
 use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\Enums\DeveloperTool;
 use Techieni3\StacktifyCli\Enums\Frontend;
+use Techieni3\StacktifyCli\Enums\NodePackageManager;
 use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Enums\ToolingPreference;
@@ -70,7 +71,7 @@ trait CollectsScaffoldInputs
         if ($this->config->getFrontend() !== Frontend::Api) {
             $this->config->setPackageManager($this->detectOrAskPackageManager());
         } else {
-            $this->config->setPackageManager('npm');
+            $this->config->setPackageManager(NodePackageManager::Npm);
         }
 
         if ($this->config->getFrontend() !== Frontend::Api) {

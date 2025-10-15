@@ -117,6 +117,8 @@ final class NewCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->paths = new PathResolver($this->config->getAppName());
+
         $confirmed = $this->reviewAndConfirm();
 
         if ( ! $confirmed) {
@@ -125,7 +127,6 @@ final class NewCommand extends Command
 
         $this->ensureExtensionsAreAvailable();
 
-        $this->paths = new PathResolver($this->config->getAppName());
         $directory = $this->paths->getInstallationDirectory();
 
         if ( ! $input->getOption('force')) {
