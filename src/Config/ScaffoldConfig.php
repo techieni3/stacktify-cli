@@ -91,18 +91,6 @@ final class ScaffoldConfig
     }
 
     /**
-     * Get the application URL.
-     */
-    public function getAppUrl(): string
-    {
-        $hostname = mb_strtolower($this->getAppName()).'.test';
-
-        return $this->canResolveHostname($hostname)
-            ? 'http://'.$hostname
-            : 'http://localhost';
-    }
-
-    /**
      * Set the frontend framework.
      */
     public function setFrontend(Frontend $frontend): void
@@ -240,13 +228,5 @@ final class ScaffoldConfig
     public function isGitEnabled(): bool
     {
         return ! (bool) $this->input->getOption('no-git');
-    }
-
-    /**
-     * Determine if the given hostname can be resolved.
-     */
-    private function canResolveHostname(string $hostname): bool
-    {
-        return gethostbyname($hostname.'.') !== $hostname.'.';
     }
 }

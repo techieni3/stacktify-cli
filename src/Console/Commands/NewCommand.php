@@ -16,6 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
+use Techieni3\StacktifyCli\Services\AppUrlGenerator;
 use Techieni3\StacktifyCli\Services\Composer;
 use Techieni3\StacktifyCli\Services\DatabaseConfigurator;
 use Techieni3\StacktifyCli\Services\ExecutableLocator;
@@ -312,11 +313,13 @@ final class NewCommand extends Command
      */
     private function setAppUrlInEnv(): void
     {
+        $url = new AppUrlGenerator($this->config->getAppName())->generate();
+
         FileEditor::replaceInFile(
             filePath: $this->paths->getEnvPath(),
             replacement: new Replacement(
                 search: 'APP_URL=http://localhost',
-                replace: 'APP_URL='.$this->config->getAppUrl(),
+                replace: 'APP_URL='.$url,
             )
         );
     }
