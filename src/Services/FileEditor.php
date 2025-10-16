@@ -187,7 +187,7 @@ final class FileEditor
             subject: $this->content
         );
 
-        if($newContent !== $this->content) {
+        if ($newContent !== $this->content) {
             $this->isChanged = true;
         }
 

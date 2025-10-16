@@ -152,10 +152,9 @@ trait CollectsScaffoldInputs
         $this->config->setGitEnabled( ! (bool) $this->input->getOption('no-git'));
     }
 
-
     private function reviewAndConfirm(): bool
     {
-        if (! $this->input->isInteractive()) {
+        if ( ! $this->input->isInteractive()) {
             return true;
         }
 
@@ -191,7 +190,7 @@ trait CollectsScaffoldInputs
 
     private function getNameFromInput(): string
     {
-       return mb_rtrim((string) $this->input->getArgument('name'), '/\\');
+        return mb_rtrim((string) $this->input->getArgument('name'), '/\\');
     }
 
     private function toolingSummary(): string

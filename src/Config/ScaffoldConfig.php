@@ -53,21 +53,21 @@ final class ScaffoldConfig
     /**
      * Selected tooling preference.
      */
-    private ToolingPreference $toolingPreference;
+    private ToolingPreference $toolingPreference = ToolingPreference::Skip;
 
     /**
      * Developer tools chosen when using a custom setup.
      *
      * @var array<DeveloperTool>
      */
-    private array $developerTools;
+    private array $developerTools = [];
 
     /**
      * Pest plugins to install.
      *
      * @var array<int, PestPlugin>
      */
-    private array $pestPlugins;
+    private array $pestPlugins = [];
 
     /**
      * Git enabled status.
@@ -81,9 +81,6 @@ final class ScaffoldConfig
         $this->authentication = Authentication::from(Authentication::default());
         $this->packageManager = NodePackageManager::from(NodePackageManager::default());
         $this->testingFramework = TestingFramework::from(TestingFramework::default());
-        $this->toolingPreference = ToolingPreference::Skip;
-        $this->developerTools = [];
-        $this->pestPlugins = [];
     }
 
     /**
