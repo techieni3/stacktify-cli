@@ -70,6 +70,13 @@ final class NewCommand extends Command
      */
     private PathResolver $paths;
 
+    public function __construct(?string $name = null)
+    {
+        $this->config = new ScaffoldConfig();
+
+        parent::__construct($name);
+    }
+
     /**
      * Configure the command's arguments and options.
      */
@@ -97,16 +104,23 @@ final class NewCommand extends Command
         ]));
     }
 
+    protected function initialize(InputInterface $input, OutputInterface $output): void
+    {
+        $this->input = $input;
+        $this->output = $output;
+        $this->io = new SymfonyStyle($input, $output);
+
+        if ( ! $input->isInteractive()) {
+            $this->prepareNonInteractiveConfiguration();
+        }
+    }
+
     /**
      * Interact with the user to gather input.
      */
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $this->configurePrompts($input, $output);
-
-        $this->input = $input;
-        $this->output = $output;
-        $this->io = new SymfonyStyle($input, $output);
 
         $this->displayWelcomeMessage($output);
 

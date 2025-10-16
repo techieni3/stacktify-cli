@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Techieni3\StacktifyCli\Traits;
 
 use RuntimeException;
-use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Enums\Authentication;
 use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\Enums\DeveloperTool;
@@ -31,8 +30,6 @@ trait CollectsScaffoldInputs
 
     private function collectScaffoldInputs(): void
     {
-        $this->config = new ScaffoldConfig();
-
         if ( ! $this->input->getArgument('name')) {
             $this->input->setArgument('name', text(
                 label: 'What is the name of your project?',
@@ -57,6 +54,8 @@ trait CollectsScaffoldInputs
                 }
             ));
         }
+
+        $this->config->setName($this->getNameFromInput());
 
         $this->config->setFrontend(
             Frontend::from(
@@ -139,16 +138,27 @@ trait CollectsScaffoldInputs
             $this->config->setDeveloperTools([]);
         }
 
-        $this->config->setName(mb_rtrim($this->input->getArgument('name'), '/\\'));
+        $this->config->setVersion($this->input->getOption('dev') ? 'dev-master' : '');
+
+        $this->config->setGitEnabled( ! (bool) $this->input->getOption('no-git'));
+    }
+
+    private function prepareNonInteractiveConfiguration(): void
+    {
+        $this->config->setName($this->getNameFromInput());
 
         $this->config->setVersion($this->input->getOption('dev') ? 'dev-master' : '');
 
-        $this->config->setIsGitEnabled( ! (bool) $this->input->getOption('no-git'));
-
+        $this->config->setGitEnabled( ! (bool) $this->input->getOption('no-git'));
     }
+
 
     private function reviewAndConfirm(): bool
     {
+        if (! $this->input->isInteractive()) {
+            return true;
+        }
+
         $projectPath = $this->paths->getInstallationDirectory();
 
         $selections = [
@@ -177,6 +187,11 @@ trait CollectsScaffoldInputs
         $this->io->definitionList(...$selections);
 
         return $this->io->confirm('Proceed with installation?');
+    }
+
+    private function getNameFromInput(): string
+    {
+       return mb_rtrim((string) $this->input->getArgument('name'), '/\\');
     }
 
     private function toolingSummary(): string

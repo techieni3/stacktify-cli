@@ -60,19 +60,31 @@ final class ScaffoldConfig
      *
      * @var array<DeveloperTool>
      */
-    private array $developerTools = [];
+    private array $developerTools;
 
     /**
      * Pest plugins to install.
      *
      * @var array<int, PestPlugin>
      */
-    private array $pestPlugins = [];
+    private array $pestPlugins;
 
     /**
      * Git enabled status.
      */
     private bool $gitEnabled;
+
+    public function __construct()
+    {
+        $this->frontend = Frontend::from(Frontend::default());
+        $this->database = Database::from(Database::default());
+        $this->authentication = Authentication::from(Authentication::default());
+        $this->packageManager = NodePackageManager::from(NodePackageManager::default());
+        $this->testingFramework = TestingFramework::from(TestingFramework::default());
+        $this->toolingPreference = ToolingPreference::Skip;
+        $this->developerTools = [];
+        $this->pestPlugins = [];
+    }
 
     /**
      * Set the application name.
@@ -241,7 +253,7 @@ final class ScaffoldConfig
     /**
      * Set git enabled status
      */
-    public function setIsGitEnabled(bool $enabled): void
+    public function setGitEnabled(bool $enabled): void
     {
         $this->gitEnabled = $enabled;
     }
