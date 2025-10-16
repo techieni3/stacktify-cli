@@ -187,7 +187,10 @@ final class FileEditor
             subject: $this->content
         );
 
-        $this->isChanged = $newContent !== $this->content;
+        if($newContent !== $this->content) {
+            $this->isChanged = true;
+        }
+
         $this->content = $newContent;
     }
 
@@ -206,7 +209,10 @@ final class FileEditor
             throw new RuntimeException("Regex error in pattern: {$replacement->regex}");
         }
 
-        $this->isChanged = $newContent !== $this->content;
+        if ($newContent !== $this->content) {
+            $this->isChanged = true;
+        }
+
         $this->content = $newContent;
     }
 
