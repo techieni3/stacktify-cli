@@ -127,7 +127,7 @@ final readonly class ProcessRunner
             return false;
         }
 
-        return ! str_contains('./vendor/bin/pest', $value);
+        return ! str_contains($value, './vendor/bin/pest');
     }
 
     /**
