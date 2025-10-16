@@ -57,4 +57,12 @@ final readonly class PathResolver
     {
         return $this->getDatabasePath().DIRECTORY_SEPARATOR.'database.sqlite';
     }
+
+    /**
+     * Get the path to a configuration file.
+     */
+    public function getConfigPath(string $filename): string
+    {
+        return $this->directory.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.$filename;
+    }
 }
