@@ -13,6 +13,9 @@ use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Enums\ToolingPreference;
 
+/**
+ * Store the scaffold configuration selections for a new project.
+ */
 final class ScaffoldConfig
 {
     /**
@@ -144,7 +147,7 @@ final class ScaffoldConfig
      */
     public function getAuthentication(): Authentication
     {
-        return $this->authentication ?? Authentication::None;
+        return $this->authentication;
     }
 
     /**
@@ -232,6 +235,8 @@ final class ScaffoldConfig
     }
 
     /**
+     * Set the Pest plugins to install.
+     *
      * @param  array<int, PestPlugin>  $plugins
      */
     public function setPestPlugins(array $plugins): void
@@ -240,6 +245,8 @@ final class ScaffoldConfig
     }
 
     /**
+     * Get the Pest plugins to install.
+     *
      * @return array<int, PestPlugin>
      */
     public function getPestPlugins(): array
@@ -248,7 +255,7 @@ final class ScaffoldConfig
     }
 
     /**
-     * Set git enabled status
+     * Set the Git enabled status.
      */
     public function setGitEnabled(bool $enabled): void
     {
@@ -256,7 +263,7 @@ final class ScaffoldConfig
     }
 
     /**
-     * Get git enabled status.
+     * Get the Git enabled status.
      */
     public function isGitEnabled(): bool
     {

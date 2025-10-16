@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services;
 
+/**
+ * Generate sensible APP_URL values for new projects.
+ */
 final readonly class AppUrlGenerator
 {
+    /**
+     * Create a new URL generator instance.
+     */
     public function __construct(private string $appName) {}
 
     /**

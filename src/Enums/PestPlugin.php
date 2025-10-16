@@ -7,6 +7,9 @@ namespace Techieni3\StacktifyCli\Enums;
 use Techieni3\StacktifyCli\Contracts\PromptSelectableEnum;
 use Techieni3\StacktifyCli\Traits\BuildsPromptOptions;
 
+/**
+ * Optional Pest plugins that can be scaffolded.
+ */
 enum PestPlugin: string implements PromptSelectableEnum
 {
     use BuildsPromptOptions;

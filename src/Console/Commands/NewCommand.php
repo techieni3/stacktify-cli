@@ -70,6 +70,9 @@ final class NewCommand extends Command
      */
     private PathResolver $paths;
 
+    /**
+     * Create a new command instance.
+     */
     public function __construct(?string $name = null)
     {
         $this->config = new ScaffoldConfig();
@@ -350,6 +353,9 @@ final class NewCommand extends Command
         }
     }
 
+    /**
+     * Write a formatted success message to the output.
+     */
     private function success(string $message): void
     {
         $this->output->writeln(sprintf('<info> ✅ </info> %s', $message));

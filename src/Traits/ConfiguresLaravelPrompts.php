@@ -13,6 +13,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Configure Laravel Prompts to gracefully fall back to Symfony styles.
+ */
 trait ConfiguresLaravelPrompts
 {
     /**

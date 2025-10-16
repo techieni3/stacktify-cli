@@ -7,6 +7,9 @@ namespace Techieni3\StacktifyCli\Enums;
 use Techieni3\StacktifyCli\Contracts\PromptSelectableEnum;
 use Techieni3\StacktifyCli\Traits\BuildsPromptOptions;
 
+/**
+ * Frontend stacks available during project scaffolding.
+ */
 enum Frontend: string implements PromptSelectableEnum
 {
     use BuildsPromptOptions;

@@ -9,11 +9,13 @@ use Techieni3\StacktifyCli\Services\ExecutableLocator;
 
 use function Laravel\Prompts\select;
 
+/**
+ * Provide reusable prompts for selecting a Node package manager.
+ */
 trait PromptsForPackageManager
 {
     /**
-     * Detect available Node package managers and either return the single detected
-     * one or prompt the user to choose among multiple options.
+     * Detect an available package manager or prompt the user to choose one.
      */
     private function detectOrAskPackageManager(): NodePackageManager
     {

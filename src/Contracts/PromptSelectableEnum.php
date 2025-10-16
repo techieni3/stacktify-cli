@@ -6,12 +6,14 @@ namespace Techieni3\StacktifyCli\Contracts;
 
 /**
  * Contract for CLI-selectable enums used in interactive prompts.
+ *
  * Intended for use with console prompt libraries that support single- and multi-select inputs.
  */
 interface PromptSelectableEnum
 {
     /**
      * Returns the selectable options for prompting.
+     *
      * For multi-select prompts, values must be unique.
      *
      * @return array<string,string>|list<string>
@@ -20,6 +22,7 @@ interface PromptSelectableEnum
 
     /**
      * The default selected value to preselect in the prompt, or null for no default.
+     *
      * This must correspond to one of the option "value" keys returned by options().
      *
      * @return string|list<static>|null
@@ -28,6 +31,7 @@ interface PromptSelectableEnum
 
     /**
      * Converts the user's selection back to enum case(s).
+     *
      * Returns the corresponding enum case for single-select, or an array of cases for multi-select.
      *
      * @param  list<string>  $selection  Selected value(s) returned by the prompt.

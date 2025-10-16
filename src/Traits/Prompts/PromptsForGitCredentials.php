@@ -6,8 +6,14 @@ namespace Techieni3\StacktifyCli\Traits\Prompts;
 
 use function Laravel\Prompts\text;
 
+/**
+ * Provide reusable prompts for gathering Git credentials.
+ */
 trait PromptsForGitCredentials
 {
+    /**
+     * Prompt the user for their Git username.
+     */
     private function askGitUserName(): string
     {
         return text(
@@ -20,6 +26,9 @@ trait PromptsForGitCredentials
         );
     }
 
+    /**
+     * Prompt the user for their Git email address.
+     */
     private function askGitEmail(): string
     {
         return text(

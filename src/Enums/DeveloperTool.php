@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\Enums;
 
 use Techieni3\StacktifyCli\Traits\BuildsPromptOptions;
 
+/**
+ * Optional developer tooling that can be scaffolded.
+ */
 enum DeveloperTool: string
 {
     use BuildsPromptOptions;

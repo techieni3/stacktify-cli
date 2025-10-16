@@ -7,6 +7,9 @@ namespace Techieni3\StacktifyCli\Enums;
 use Techieni3\StacktifyCli\Contracts\PromptSelectableEnum;
 use Techieni3\StacktifyCli\Traits\BuildsPromptOptions;
 
+/**
+ * Supported Node package managers for frontend tooling.
+ */
 enum NodePackageManager: string implements PromptSelectableEnum
 {
     use BuildsPromptOptions;

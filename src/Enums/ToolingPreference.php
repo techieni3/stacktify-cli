@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\Enums;
 
 use Techieni3\StacktifyCli\Traits\BuildsPromptOptions;
 
+/**
+ * Preferences for applying additional tooling during scaffolding.
+ */
 enum ToolingPreference: string
 {
     use BuildsPromptOptions;

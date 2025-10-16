@@ -21,13 +21,22 @@ use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
 
+/**
+ * Gather scaffold configuration input from the user.
+ */
 trait CollectsScaffoldInputs
 {
     use PromptsForGitCredentials;
     use PromptsForPackageManager;
 
+    /**
+     * Ensure the application directory does not already exist.
+     */
     abstract protected function verifyApplicationDoesntExist(string $directory): void;
 
+    /**
+     * Collect all scaffold selections from interactive prompts.
+     */
     private function collectScaffoldInputs(): void
     {
         if ( ! $this->input->getArgument('name')) {
@@ -143,6 +152,9 @@ trait CollectsScaffoldInputs
         $this->config->setGitEnabled( ! (bool) $this->input->getOption('no-git'));
     }
 
+    /**
+     * Configure defaults when the command is run non-interactively.
+     */
     private function prepareNonInteractiveConfiguration(): void
     {
         $this->config->setName($this->getNameFromInput());
@@ -152,6 +164,9 @@ trait CollectsScaffoldInputs
         $this->config->setGitEnabled( ! (bool) $this->input->getOption('no-git'));
     }
 
+    /**
+     * Present a summary of selections and ask for confirmation.
+     */
     private function reviewAndConfirm(): bool
     {
         if ( ! $this->input->isInteractive()) {
@@ -188,11 +203,17 @@ trait CollectsScaffoldInputs
         return $this->io->confirm('Proceed with installation?');
     }
 
+    /**
+     * Resolve the project name provided via input.
+     */
     private function getNameFromInput(): string
     {
         return mb_rtrim((string) $this->input->getArgument('name'), '/\\');
     }
 
+    /**
+     * Build a description of the tooling preference selection.
+     */
     private function toolingSummary(): string
     {
         return match ($this->config->getToolingPreference()) {
@@ -202,6 +223,9 @@ trait CollectsScaffoldInputs
         };
     }
 
+    /**
+     * Build a description of the selected developer tools.
+     */
     private function developerToolsSummary(): string
     {
         $tools = $this->config->getDeveloperTools();
@@ -218,6 +242,9 @@ trait CollectsScaffoldInputs
         ));
     }
 
+    /**
+     * Build a description of the selected Pest plugins.
+     */
     private function pestPluginsSummary(): string
     {
         if ($this->config->getTestingFramework() !== TestingFramework::Pest) {
