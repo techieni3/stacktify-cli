@@ -37,7 +37,7 @@ final readonly class ProcessRunner
 
         $process = $this->createProcess($commands, $workingPath, $env);
 
-        if ($this->canUseSpinner()) {
+        if ($this->canDisplaySpinner()) {
 
             spin(static fn (): int => $process->run(), $description);
 
@@ -160,9 +160,9 @@ final readonly class ProcessRunner
     }
 
     /**
-     * Determine if the spinner can be used.
+     * Determine if the spinner can be displayed.
      */
-    private function canUseSpinner(): bool
+    private function canDisplaySpinner(): bool
     {
         return function_exists('pcntl_fork')
             && ! $this->isVerbose
