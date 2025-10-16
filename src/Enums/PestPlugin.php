@@ -11,11 +11,11 @@ enum PestPlugin: string implements PromptSelectableEnum
 {
     use BuildsPromptOptions;
 
-    case ArcTest = 'arcTest';
-    case BrowserTest = 'browsertest';
-    case Profanity = 'Profanity';
-    case TypeCoverage = 'Type Coverage';
-    case StressTesting = 'Stress Testing';
+    case ArcTest = 'arc test';
+    case BrowserTest = 'browser test';
+    case Profanity = 'profanity';
+    case TypeCoverage = 'type coverage';
+    case StressTesting = 'stress testing';
 
     /**
      * @return array<int, string>
