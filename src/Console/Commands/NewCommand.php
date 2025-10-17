@@ -15,10 +15,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Contracts\GitClient;
+use Techieni3\StacktifyCli\Enums\DeveloperTool;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
 use Techieni3\StacktifyCli\Services\AppUrlGenerator;
 use Techieni3\StacktifyCli\Services\Composer;
 use Techieni3\StacktifyCli\Services\DatabaseConfigurator;
+use Techieni3\StacktifyCli\Services\DeveloperTools\DeveloperToolsInstaller;
 use Techieni3\StacktifyCli\Services\ExecutableLocator;
 use Techieni3\StacktifyCli\Services\FileEditor;
 use Techieni3\StacktifyCli\Services\Git\GitRunner;
@@ -183,6 +185,21 @@ final class NewCommand extends Command
 
         $databaseConfigurator->configureDatabaseConnection();
         $databaseConfigurator->runMigration($process, $this->input->isInteractive());
+
+        // Install developer tools
+        $toolsInstaller = new DeveloperToolsInstaller($process, $this->composer, $directory);
+        $developerTools = $this->config->getDeveloperTools();
+
+        // Set Default tools if mode is interactive
+        if ($this->input->isInteractive()) {
+           $developerTools = [...$developerTools, ...DeveloperTool::default()];
+        }
+
+        // Install selected tools
+        if (! empty($developerTools)) {
+            $toolsInstaller->install($developerTools);
+            $this->success('Developer tools installed successfully');
+        }
 
         $this->setUpGitRepository($process, $directory);
 

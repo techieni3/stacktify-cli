@@ -41,4 +41,24 @@ final readonly class Composer
             "{$this->composer} update",
         ], $this->cwd);
     }
+
+    /**
+     * Install given dependencies
+     */
+    public function installDependencies(array $dependencies): void
+    {
+        $this->process->runCommands([
+        sprintf("%s require %s", $this->composer, implode(" ", $dependencies)),
+        ], $this->cwd);
+    }
+
+    /**
+     * Install given dev dependencies
+     */
+    public function installDevDependencies(array $dependencies): void
+    {
+        $this->process->runCommands([
+        sprintf("%s require --dev %s", $this->composer, implode(" ", $dependencies))
+        ], $this->cwd);
+    }
 }
