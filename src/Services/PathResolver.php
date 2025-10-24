@@ -65,4 +65,26 @@ final readonly class PathResolver
     {
         return $this->directory.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.$filename;
     }
+
+    /**
+     * Get the path to the app directory or a file within it.
+     */
+    public function getAppPath(string $path = ''): string
+    {
+        $appPath = $this->directory.DIRECTORY_SEPARATOR.'app';
+
+        if ($path === '') {
+            return $appPath;
+        }
+
+        return $appPath.DIRECTORY_SEPARATOR.str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+    }
+
+    /**
+     * Get the path to the app directory or a file within it.
+     */
+    public function getPath(string $path): string
+    {
+        return $this->directory.DIRECTORY_SEPARATOR.str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+    }
 }

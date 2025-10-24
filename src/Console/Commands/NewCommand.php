@@ -15,16 +15,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Contracts\GitClient;
-use Techieni3\StacktifyCli\Enums\DeveloperTool;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
 use Techieni3\StacktifyCli\Services\AppUrlGenerator;
 use Techieni3\StacktifyCli\Services\Composer;
 use Techieni3\StacktifyCli\Services\DatabaseConfigurator;
-use Techieni3\StacktifyCli\Services\DeveloperTools\DeveloperToolsInstaller;
 use Techieni3\StacktifyCli\Services\ExecutableLocator;
 use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
 use Techieni3\StacktifyCli\Services\Git\GitRunner;
 use Techieni3\StacktifyCli\Services\Git\NullGitRunner;
+use Techieni3\StacktifyCli\Services\Installers\BaseApplicationInstaller;
+use Techieni3\StacktifyCli\Services\Installers\DeveloperToolsInstaller;
+use Techieni3\StacktifyCli\Services\Installers\TestingFrameworkInstaller;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
 use Techieni3\StacktifyCli\Traits\CollectsScaffoldInputs;
@@ -186,22 +187,18 @@ final class NewCommand extends Command
         $databaseConfigurator->configureDatabaseConnection();
         $databaseConfigurator->runMigration($process, $this->input->isInteractive());
 
-        // Install developer tools
-        $toolsInstaller = new DeveloperToolsInstaller($process, $this->composer, $directory);
-        $developerTools = $this->config->getDeveloperTools();
-
-        // Set Default tools if mode is interactive
-        if ($this->input->isInteractive()) {
-           $developerTools = [...$developerTools, ...DeveloperTool::default()];
-        }
-
-        // Install selected tools
-        if (! empty($developerTools)) {
-            $toolsInstaller->install($developerTools);
-            $this->success('Developer tools installed successfully');
-        }
-
         $this->setUpGitRepository($process, $directory);
+
+        // Install testing framework
+        new TestingFrameworkInstaller($process, $this->composer, $this->config, $this->paths, $this->git)->install();
+
+        // Install Stacktify Recommendations
+        new BaseApplicationInstaller($process, $this->composer, $this->config, $this->paths, $this->git)->install();
+
+        // Install developer tools
+        new DeveloperToolsInstaller($process, $this->composer, $this->config, $this->paths, $this->git)->install();
+
+        $this->io->newLine();
 
         $this->io->success('Successfully created new application');
 
@@ -263,7 +260,7 @@ final class NewCommand extends Command
      */
     private function getInstallCommands(string $directory, InputInterface $input): array
     {
-        $composer = $this->composer->getComposer();
+        $composer = $this->composer->path();
         $phpBinary = new ExecutableLocator()->findPhp();
         $version = $this->config->getVersion();
 

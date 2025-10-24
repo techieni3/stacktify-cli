@@ -1,7 +1,8 @@
 <?php
 
-namespace Techieni3\StacktifyCli\Contracts;
+declare(strict_types=1);
 
+namespace Techieni3\StacktifyCli\Contracts;
 
 interface Installable
 {

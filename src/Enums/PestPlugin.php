@@ -14,7 +14,6 @@ enum PestPlugin: string implements PromptSelectableEnum
 {
     use BuildsPromptOptions;
 
-    case ArcTest = 'arc test';
     case BrowserTest = 'browser test';
     case Profanity = 'profanity';
     case TypeCoverage = 'type coverage';
@@ -26,8 +25,6 @@ enum PestPlugin: string implements PromptSelectableEnum
     public static function default(): array
     {
         return [
-            self::ArcTest->value,
-            self::BrowserTest->value,
             self::Profanity->value,
             self::TypeCoverage->value,
         ];
@@ -36,11 +33,20 @@ enum PestPlugin: string implements PromptSelectableEnum
     public function label(): string
     {
         return match ($this) {
-            self::ArcTest => 'Arc Test',
             self::BrowserTest => 'Browser Test',
             self::Profanity => 'Profanity',
             self::TypeCoverage => 'Type Coverage',
             self::StressTesting => 'Stress Testing',
+        };
+    }
+
+    public function package(): string
+    {
+        return match ($this) {
+            self::BrowserTest => 'pestphp/pest-plugin-browser',
+            self::Profanity => 'pestphp/pest-plugin-profanity',
+            self::TypeCoverage => 'pestphp/pest-plugin-type-coverage',
+            self::StressTesting => 'pestphp/pest-plugin-stressless',
         };
     }
 }

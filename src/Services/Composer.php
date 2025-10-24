@@ -25,7 +25,7 @@ final readonly class Composer
     /**
      * Get the Composer executable path.
      */
-    public function getComposer(): string
+    public function path(): string
     {
         return $this->composer;
     }
@@ -33,32 +33,101 @@ final readonly class Composer
     /**
      * Update the Composer dependencies.
      */
-    public function updateDependencies(): void
+    public function updateDependencies(array $env = []): void
     {
-        $this->process->runCommands([
-            "{$this->composer} update",
-            "{$this->composer} bump",
-            "{$this->composer} update",
-        ], $this->cwd);
+        $this->process->runCommands(
+            commands: [
+                "{$this->composer} update",
+                "{$this->composer} bump",
+                "{$this->composer} update",
+            ],
+            workingPath: $this->cwd,
+            env: $env,
+            description: 'Updating Composer dependencies...'
+        );
     }
 
     /**
      * Install given dependencies
+     *
+     * @param  array<int, mixed>  $dependencies
      */
-    public function installDependencies(array $dependencies): void
+    public function installDependencies(array $dependencies, array $env = []): void
     {
-        $this->process->runCommands([
-        sprintf("%s require %s", $this->composer, implode(" ", $dependencies)),
-        ], $this->cwd);
+        if ($dependencies === []) {
+            return;
+        }
+
+        $this->process->runCommands(
+            commands: [
+                sprintf('%s require %s', $this->composer, implode(' ', $dependencies)),
+            ],
+            workingPath: $this->cwd,
+            env: $env,
+            description: sprintf('Installing %s', count($dependencies) > 1 ? $dependencies[0].'...' : $dependencies[0])
+        );
+    }
+
+    /**
+     * Remove given dependencies
+     *
+     * @param  array<int, mixed>  $dependencies
+     */
+    public function removeDependencies(array $dependencies, array $env = []): void
+    {
+        if ($dependencies === []) {
+            return;
+        }
+
+        $this->process->runCommands(
+            commands: [
+                sprintf('%s remove %s', $this->composer, implode(' ', $dependencies)),
+            ],
+            workingPath: $this->cwd,
+            env: $env,
+            description: sprintf('Removing %s', count($dependencies) > 1 ? $dependencies[0].'...' : $dependencies[0])
+        );
     }
 
     /**
      * Install given dev dependencies
+     *
+     * @param  array<int, mixed>  $dependencies
      */
-    public function installDevDependencies(array $dependencies): void
+    public function installDevDependencies(array $dependencies, array $env = []): void
     {
-        $this->process->runCommands([
-        sprintf("%s require --dev %s", $this->composer, implode(" ", $dependencies))
-        ], $this->cwd);
+        if ($dependencies === []) {
+            return;
+        }
+
+        $this->process->runCommands(
+            commands: [
+                sprintf('%s require --dev %s', $this->composer, implode(' ', $dependencies)),
+            ],
+            workingPath: $this->cwd,
+            env: $env,
+            description: sprintf('Installing %s', count($dependencies) > 1 ? $dependencies[0].'...' : $dependencies[0])
+        );
+    }
+
+    /**
+     * Remove given dev dependencies
+     *
+     * @param  array<int, mixed>  $dependencies
+     */
+    public function removeDevDependencies(array $dependencies, array $env = []): void
+    {
+        if ($dependencies === []) {
+            return;
+        }
+
+        $this->process->runCommands(
+            commands: [
+                sprintf('%s remove --dev %s', $this->composer, implode(' ', $dependencies)),
+            ],
+            workingPath: $this->cwd,
+            env: $env,
+            description: sprintf('Removing %s', count($dependencies) > 1 ? $dependencies[0].'...' : $dependencies[0])
+        );
     }
 }

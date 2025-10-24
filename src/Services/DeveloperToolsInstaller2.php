@@ -1,17 +1,15 @@
 <?php
 
-namespace Techieni3\StacktifyCli\Services\DeveloperTools;
+declare(strict_types=1);
+
+namespace Techieni3\StacktifyCli\Services;
 
 use Techieni3\StacktifyCli\Contracts\Installable;
 use Techieni3\StacktifyCli\Enums\DeveloperTool;
-use Techieni3\StacktifyCli\Services\Composer;
-use Techieni3\StacktifyCli\Services\FileEditor;
-use Techieni3\StacktifyCli\Services\ProcessRunner;
 
-final readonly class DeveloperToolsInstaller
+final readonly class DeveloperToolsInstaller2
 {
     public function __construct(
-        private ProcessRunner $process,
         private Composer $composer,
         private string $projectPath
     ) {}
@@ -19,36 +17,36 @@ final readonly class DeveloperToolsInstaller
     /**
      * Install selected developer tools.
      *
-     * @param array<DeveloperTool> $tools
+     * @param  array<DeveloperTool>  $tools
      */
     public function install(array $tools): void
     {
-        if (empty($tools)) {
+        if ($tools === []) {
             return;
         }
 
         $installables = collect($tools)
-            ->map(fn(DeveloperTool $tool) => $tool->installable());
+            ->map(static fn (DeveloperTool $tool): ?Installable => $tool->installable());
 
         // Phase 1: Collect all package names
         $dependencies = $installables
-            ->flatMap(fn(Installable $installable) => $installable->dependencies())
+            ->flatMap(static fn (Installable $installable): array => $installable->dependencies())
             ->unique()
             ->values()
             ->all();
 
         $devDependencies = $installables
-            ->flatMap(fn(Installable $installable) => $installable->devDependencies())
+            ->flatMap(static fn (Installable $installable): array => $installable->devDependencies())
             ->unique()
             ->values()
             ->all();
 
         // Phase 2: Install all packages at once
-        if (!empty($dependencies)) {
+        if ( ! empty($dependencies)) {
             $this->composer->installDependencies($dependencies);
         }
 
-        if (!empty($devDependencies)) {
+        if ( ! empty($devDependencies)) {
             $this->composer->installDevDependencies($devDependencies);
         }
 
@@ -57,6 +55,7 @@ final readonly class DeveloperToolsInstaller
             if (empty($stubs = $installable->stubs())) {
                 continue;
             }
+
             $this->publishStubs($stubs);
         }
     }
@@ -68,9 +67,9 @@ final readonly class DeveloperToolsInstaller
     {
 
         foreach ($stubs as $source => $destination) {
-            $destinationPath = $this->projectPath . DIRECTORY_SEPARATOR . $destination;
+            $destinationPath = $this->projectPath.DIRECTORY_SEPARATOR.$destination;
 
-           FileEditor::copyFile($source, $destinationPath);
+            FileEditor::copyFile($source, $destinationPath);
         }
     }
 }
