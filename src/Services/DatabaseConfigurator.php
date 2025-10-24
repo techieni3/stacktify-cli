@@ -7,6 +7,7 @@ namespace Techieni3\StacktifyCli\Services;
 use RuntimeException;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Enums\Database;
+use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\PregReplacement;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 
@@ -76,7 +77,7 @@ final readonly class DatabaseConfigurator
                 $this->commentDatabaseConfigurationForSqlite();
             }
 
-            // create database.sqlite file if doesn't exist
+            // create the database.sqlite file if it doesn't exist
             if ( ! file_exists($this->paths->getSqliteDatabasePath())) {
                 touch($this->paths->getSqliteDatabasePath());
             }
@@ -89,8 +90,8 @@ final readonly class DatabaseConfigurator
             @unlink($this->paths->getSqliteDatabasePath());
         }
 
-        $envHandler = FileEditor::open($this->env);
-        $envExampleHandler = FileEditor::open($this->exampleEnv);
+        $envHandler = FileEditor::text($this->env);
+        $envExampleHandler = FileEditor::text($this->exampleEnv);
 
         // Any commented database configuration options should be uncommented when not on SQLite...
         $unCommentReplacement = $this->uncommentDatabaseConfiguration();
@@ -163,11 +164,11 @@ final readonly class DatabaseConfigurator
             replace: $commentedDefaults
         );
 
-        (FileEditor::open($this->env))
+        (FileEditor::text($this->env))
             ->replace($commentReplacement)
             ->save();
 
-        (FileEditor::open($this->exampleEnv))
+        (FileEditor::text($this->exampleEnv))
             ->replace($commentReplacement)
             ->save();
     }

@@ -22,7 +22,7 @@ use Techieni3\StacktifyCli\Services\Composer;
 use Techieni3\StacktifyCli\Services\DatabaseConfigurator;
 use Techieni3\StacktifyCli\Services\DeveloperTools\DeveloperToolsInstaller;
 use Techieni3\StacktifyCli\Services\ExecutableLocator;
-use Techieni3\StacktifyCli\Services\FileEditor;
+use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
 use Techieni3\StacktifyCli\Services\Git\GitRunner;
 use Techieni3\StacktifyCli\Services\Git\NullGitRunner;
 use Techieni3\StacktifyCli\Services\PathResolver;
