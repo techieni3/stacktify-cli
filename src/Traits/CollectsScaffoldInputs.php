@@ -115,10 +115,20 @@ trait CollectsScaffoldInputs
         $this->config->setTestingFramework($testingFramework);
 
         if ($testingFramework === TestingFramework::Pest) {
+            $pestPluginOptions = PestPlugin::options();
+
+            if ($this->config->getFrontend() === Frontend::Api) {
+                unset($pestPluginOptions[PestPlugin::BrowserTest->value]);
+            }
+
+            $defaultPestPlugins = array_values(
+                array_filter(PestPlugin::default(), static fn (string $plugin): bool => array_key_exists($plugin, $pestPluginOptions))
+            );
+
             $selectedPlugins = multiselect(
                 label: 'Which Pest plugins would you like to install?',
-                options: PestPlugin::options(),
-                default: PestPlugin::default(),
+                options: $pestPluginOptions,
+                default: $defaultPestPlugins,
             );
 
             $this->config->setPestPlugins(PestPlugin::fromSelection($selectedPlugins));
