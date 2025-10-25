@@ -27,18 +27,13 @@ final readonly class DatabaseConfigurator
     private string $exampleEnv;
 
     /**
-     * The path to the PHP binary.
-     */
-    private string $php;
-
-    /**
      * Create a new database configurator instance.
      */
     public function __construct(
         private ScaffoldConfig $config,
         private PathResolver $paths,
+        private string $php
     ) {
-        $this->php = new ExecutableLocator()->findPhp();
         $this->env = $this->paths->getEnvPath();
         $this->exampleEnv = $this->paths->getEnvExamplePath();
     }

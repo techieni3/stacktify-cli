@@ -1,22 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Techieni3\StacktifyCli\Installables;
 
 use Techieni3\StacktifyCli\Contracts\Installable;
 
 final readonly class PintInstallable implements Installable
 {
-
+    /**
+     * @return array{}
+     */
     public function dependencies(): array
     {
         return [];
     }
 
+    /**
+     * @return array{}
+     */
     public function devDependencies(): array
     {
         return [];
     }
 
+    /**
+     * @return array{}
+     */
     public function environmentVariables(): array
     {
         return [];
@@ -29,19 +39,28 @@ final readonly class PintInstallable implements Installable
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function composerScripts(): array
     {
         return [
             'lint' => 'pint',
-            'test:lint' => 'pint --test'
+            'test:lint' => 'pint --test',
         ];
     }
 
+    /**
+     * @return array{}
+     */
     public function postInstall(): array
     {
         return [];
     }
 
+    /**
+     * @return array{}
+     */
     public function postUpdate(): array
     {
         return [];

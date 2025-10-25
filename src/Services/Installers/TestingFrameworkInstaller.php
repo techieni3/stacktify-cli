@@ -20,7 +20,7 @@ final class TestingFrameworkInstaller extends AbstractInstaller
 
     public function install(): void
     {
-        if ($this->config->getTestingFramework() === TestingFramework::PhpUnit) {
+        if ($this->config()->getTestingFramework() === TestingFramework::PhpUnit) {
             return;
         }
 
@@ -42,35 +42,35 @@ final class TestingFrameworkInstaller extends AbstractInstaller
     private function installPest(): void
     {
         // Remove phpunit dependency
-        $this->composer->removeDevDependencies(['phpunit/phpunit --no-update'], $this->env);
+        $this->composer()->removeDevDependencies(['phpunit/phpunit --no-update'], $this->env);
         // Add pest dependency
-        $this->composer->installDevDependencies(['pestphp/pest', 'pestphp/pest-plugin-laravel'], $this->env);
+        $this->composer()->installDevDependencies(['pestphp/pest', 'pestphp/pest-plugin-laravel'], $this->env);
         // Update dependencies
-        $this->composer->updateDependencies($this->env);
+        $this->composer()->updateDependencies($this->env);
         // Init pest
-        $this->process->runCommands(
-            commands: [sprintf('%s ./vendor/bin/pest --init', $this->php)],
-            workingPath: $this->paths->getInstallationDirectory(),
+        $this->process()->runCommands(
+            commands: [sprintf('%s ./vendor/bin/pest --init', $this->php())],
+            workingPath: $this->paths()->getInstallationDirectory(),
             env: $this->env
         );
     }
 
     private function convertExistingTestsToPest(): void
     {
-        $this->composer->installDevDependencies(['pestphp/pest-plugin-drift'], $this->env);
+        $this->composer()->installDevDependencies(['pestphp/pest-plugin-drift'], $this->env);
 
-        $this->process->runCommands(
-            commands: [sprintf('%s ./vendor/bin/pest --drift', $this->php)],
-            workingPath: $this->paths->getInstallationDirectory(),
+        $this->process()->runCommands(
+            commands: [sprintf('%s ./vendor/bin/pest --drift', $this->php())],
+            workingPath: $this->paths()->getInstallationDirectory(),
             env: $this->env
         );
 
-        $this->composer->removeDevDependencies(['pestphp/pest-plugin-drift'], $this->env);
+        $this->composer()->removeDevDependencies(['pestphp/pest-plugin-drift'], $this->env);
     }
 
     private function updatePestConfiguration(): void
     {
-        $pestConfigPath = $this->paths->getPath('tests/Pest.php');
+        $pestConfigPath = $this->paths()->getPath('tests/Pest.php');
 
         FileEditor::replaceInFile($pestConfigPath, new Replacement(
             search: ' // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)',
@@ -80,7 +80,7 @@ final class TestingFrameworkInstaller extends AbstractInstaller
 
     private function removeRefreshDatabaseTraitFromTests(): void
     {
-        $testsDirectory = $this->paths->getPath('tests');
+        $testsDirectory = $this->paths()->getPath('tests');
         $directoryIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($testsDirectory));
 
         /** @var SplFileInfo $testFile */
@@ -98,7 +98,7 @@ final class TestingFrameworkInstaller extends AbstractInstaller
 
     private function installPestPlugins(): void
     {
-        $plugins = $this->config->getPestPlugins();
+        $plugins = $this->config()->getPestPlugins();
 
         $dependencies = [];
 
@@ -107,7 +107,7 @@ final class TestingFrameworkInstaller extends AbstractInstaller
         }
 
         if ($dependencies !== []) {
-            $this->composer->installDevDependencies($dependencies, $this->env);
+            $this->composer()->installDevDependencies($dependencies, $this->env);
         }
     }
 }

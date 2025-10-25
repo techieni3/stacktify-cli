@@ -11,7 +11,7 @@ final class DeveloperToolsInstaller extends AbstractInstaller
      */
     public function install(): void
     {
-        $tools = $this->config->getDeveloperTools();
+        $tools = $this->config()->getDeveloperTools();
 
         if ($tools === []) {
             return;

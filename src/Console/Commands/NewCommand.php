@@ -25,6 +25,7 @@ use Techieni3\StacktifyCli\Services\Git\GitRunner;
 use Techieni3\StacktifyCli\Services\Git\NullGitRunner;
 use Techieni3\StacktifyCli\Services\Installers\BaseApplicationInstaller;
 use Techieni3\StacktifyCli\Services\Installers\DeveloperToolsInstaller;
+use Techieni3\StacktifyCli\Services\Installers\InstallerContext;
 use Techieni3\StacktifyCli\Services\Installers\TestingFrameworkInstaller;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
@@ -72,6 +73,8 @@ final class NewCommand extends Command
      * The path resolver instance.
      */
     private PathResolver $paths;
+
+    private string $php;
 
     /**
      * Create a new command instance.
@@ -139,6 +142,7 @@ final class NewCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->paths = new PathResolver($this->config->getName());
+        $this->php = new ExecutableLocator()->findPhp();
 
         $confirmed = $this->reviewAndConfirm();
 
@@ -182,7 +186,7 @@ final class NewCommand extends Command
 
         $this->setAppUrlInEnv();
 
-        $databaseConfigurator = new DatabaseConfigurator($this->config, $this->paths);
+        $databaseConfigurator = new DatabaseConfigurator($this->config, $this->paths, $this->php);
 
         $databaseConfigurator->configureDatabaseConnection();
         $databaseConfigurator->runMigration($process, $this->input->isInteractive());
@@ -190,32 +194,21 @@ final class NewCommand extends Command
         $this->setUpGitRepository($process, $directory);
 
         if ($this->input->isInteractive()) {
+            $context = new InstallerContext(
+                process: $process,
+                composer: $this->composer,
+                config: $this->config,
+                paths: $this->paths,
+                git: $this->git,
+            );
             // Install testing framework
-            new TestingFrameworkInstaller(
-                $process,
-                $this->composer,
-                $this->config,
-                $this->paths,
-                $this->git
-            )->install();
+            new TestingFrameworkInstaller($context)->install();
 
             // Install Stacktify Recommendations
-            new BaseApplicationInstaller(
-                $process,
-                $this->composer,
-                $this->config,
-                $this->paths,
-                $this->git
-            )->install();
+            new BaseApplicationInstaller($context)->install();
 
             // Install developer tools
-            new DeveloperToolsInstaller(
-                $process,
-                $this->composer,
-                $this->config,
-                $this->paths,
-                $this->git
-            )->install();
+            new DeveloperToolsInstaller($context)->install();
         }
 
         $this->io->newLine();
@@ -281,7 +274,7 @@ final class NewCommand extends Command
     private function getInstallCommands(string $directory, InputInterface $input): array
     {
         $composer = $this->composer->path();
-        $phpBinary = new ExecutableLocator()->findPhp();
+        $phpBinary = $this->php;
         $version = $this->config->getVersion();
 
         $commands = [
