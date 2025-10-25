@@ -19,7 +19,7 @@ final class JsonFileEditor extends BaseFileEditor
     /**
      * @throws JsonException
      */
-    public function __construct(protected readonly string $filePath)
+    public function __construct(string $filePath)
     {
         parent::__construct($filePath);
 
@@ -33,6 +33,8 @@ final class JsonFileEditor extends BaseFileEditor
         }
 
         $this->jsonContent['scripts'][$name] = $command;
+
+        $this->isChanged = true;
 
         return $this;
     }
