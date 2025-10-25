@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\Services\FileEditors;
 
 use JsonException;
 
+/**
+ * A file editor for JSON files.
+ */
 final class JsonFileEditor extends BaseFileEditor
 {
     /**

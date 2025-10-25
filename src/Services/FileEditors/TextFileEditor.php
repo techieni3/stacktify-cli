@@ -10,6 +10,9 @@ use RuntimeException;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\PregReplacement;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 
+/**
+ * A file editor for text files.
+ */
 final class TextFileEditor extends BaseFileEditor
 {
     /**

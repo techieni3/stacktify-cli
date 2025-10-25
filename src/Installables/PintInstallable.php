@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\Installables;
 
 use Techieni3\StacktifyCli\Contracts\Installable;
 
+/**
+ * An installable for Pint.
+ */
 final readonly class PintInstallable implements Installable
 {
     /**

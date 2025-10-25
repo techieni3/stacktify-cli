@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\Services\FileEditors;
 
 use RuntimeException;
 
+/**
+ * Base class for file editors.
+ */
 abstract class BaseFileEditor
 {
     /**
