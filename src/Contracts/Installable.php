@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Contracts;
 
+/**
+ * Defines the contract for an installable package.
+ */
 interface Installable
 {
     /**
@@ -20,6 +23,11 @@ interface Installable
      */
     public function devDependencies(): array;
 
+    /**
+     * Get the environment variables to add to .env.
+     *
+     * @return array<string, string>
+     */
     public function environmentVariables(): array;
 
     /**

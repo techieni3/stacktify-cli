@@ -27,6 +27,7 @@ use Techieni3\StacktifyCli\Services\Installers\BaseApplicationInstaller;
 use Techieni3\StacktifyCli\Services\Installers\DeveloperToolsInstaller;
 use Techieni3\StacktifyCli\Services\Installers\InstallerContext;
 use Techieni3\StacktifyCli\Services\Installers\TestingFrameworkInstaller;
+use Techieni3\StacktifyCli\Services\NodePackageManagerRunner;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
 use Techieni3\StacktifyCli\Traits\CollectsScaffoldInputs;
@@ -168,6 +169,12 @@ final class NewCommand extends Command
             isVerbose: $this->output->isVerbose()
         );
 
+        $nodePackageManager = new NodePackageManagerRunner(
+            packageManager: $this->config->getPackageManager(),
+            process: $process,
+            cwd: $this->paths->getInstallationDirectory(),
+        );
+
         $this->composer = new Composer($process, $directory);
 
         $projectCreation = $process->runCommands(
@@ -197,6 +204,7 @@ final class NewCommand extends Command
             $context = new InstallerContext(
                 process: $process,
                 composer: $this->composer,
+                nodePackageManager: $nodePackageManager,
                 config: $this->config,
                 paths: $this->paths,
                 git: $this->git,
@@ -210,6 +218,9 @@ final class NewCommand extends Command
             // Install developer tools
             new DeveloperToolsInstaller($context)->install();
         }
+
+        // build assets
+        $nodePackageManager->build();
 
         $this->io->newLine();
 

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services\Installers;
 
+/**
+ * Installs the selected developer tools.
+ */
 final class DeveloperToolsInstaller extends AbstractInstaller
 {
     /**
@@ -30,7 +33,7 @@ final class DeveloperToolsInstaller extends AbstractInstaller
 
             $this->installPackages(
                 dependencies: $installable->dependencies(),
-                devDependencies: $installable->devDependencies()
+                devDependencies: $installable->devDependencies(),
             );
 
             $this->publishStubs($installable->stubs());

@@ -19,6 +19,9 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->configurePint();
     }
 
+    /**
+     * Configure Pint for the project.
+     */
     private function configurePint(): void
     {
         $installable = new PintInstallable();

@@ -8,12 +8,15 @@ use Exception;
 use RuntimeException;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Contracts\GitClient;
-use Techieni3\StacktifyCli\Enums\NodePackageManager;
 use Techieni3\StacktifyCli\Services\Composer;
 use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
+use Techieni3\StacktifyCli\Services\NodePackageManagerRunner;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
 
+/**
+ * Base class for installers.
+ */
 abstract class AbstractInstaller
 {
     public function __construct(protected InstallerContext $context) {}
@@ -50,9 +53,9 @@ abstract class AbstractInstaller
         return $this->context->phpBinary();
     }
 
-    protected function node(): NodePackageManager
+    protected function node(): NodePackageManagerRunner
     {
-        return $this->config()->getPackageManager();
+        return $this->context->nodePackageManager();
     }
 
     /**
@@ -80,6 +83,11 @@ abstract class AbstractInstaller
         }
     }
 
+    /**
+     * Add scripts to the composer.json file.
+     *
+     * @param  array<string, string>  $scripts
+     */
     protected function addScripts(array $scripts): void
     {
         try {

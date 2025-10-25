@@ -8,6 +8,7 @@ use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Services\Composer;
 use Techieni3\StacktifyCli\Services\ExecutableLocator;
+use Techieni3\StacktifyCli\Services\NodePackageManagerRunner;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
 
@@ -21,6 +22,7 @@ final readonly class InstallerContext
     public function __construct(
         private ProcessRunner $process,
         private Composer $composer,
+        private NodePackageManagerRunner $nodePackageManager,
         private ScaffoldConfig $config,
         private PathResolver $paths,
         private GitClient $git,
@@ -57,5 +59,10 @@ final readonly class InstallerContext
     public function phpBinary(): string
     {
         return $this->phpBinary;
+    }
+
+    public function nodePackageManager(): NodePackageManagerRunner
+    {
+        return $this->nodePackageManager;
     }
 }

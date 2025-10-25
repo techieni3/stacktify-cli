@@ -7,10 +7,14 @@ namespace Techieni3\StacktifyCli\Services\Installers;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 
+/**
+ * Installs the testing framework for the project.
+ */
 final class TestingFrameworkInstaller extends AbstractInstaller
 {
     /**
@@ -37,8 +41,14 @@ final class TestingFrameworkInstaller extends AbstractInstaller
         $this->addComposerScripts();
     }
 
+    /**
+     * Adds the composer scripts for running tests.
+     */
     private function addComposerScripts(): void {}
 
+    /**
+     * Installs Pest and its dependencies.
+     */
     private function installPest(): void
     {
         // Remove phpunit dependency
@@ -55,6 +65,9 @@ final class TestingFrameworkInstaller extends AbstractInstaller
         );
     }
 
+    /**
+     * Converts existing PHPUnit tests to Pest tests.
+     */
     private function convertExistingTestsToPest(): void
     {
         $this->composer()->installDevDependencies(['pestphp/pest-plugin-drift'], $this->env);
@@ -68,6 +81,9 @@ final class TestingFrameworkInstaller extends AbstractInstaller
         $this->composer()->removeDevDependencies(['pestphp/pest-plugin-drift'], $this->env);
     }
 
+    /**
+     * Updates the Pest configuration file.
+     */
     private function updatePestConfiguration(): void
     {
         $pestConfigPath = $this->paths()->getPath('tests/Pest.php');
@@ -78,6 +94,9 @@ final class TestingFrameworkInstaller extends AbstractInstaller
         ));
     }
 
+    /**
+     * Removes the RefreshDatabase trait from the tests.
+     */
     private function removeRefreshDatabaseTraitFromTests(): void
     {
         $testsDirectory = $this->paths()->getPath('tests');
@@ -96,18 +115,41 @@ final class TestingFrameworkInstaller extends AbstractInstaller
         }
     }
 
+    /**
+     * Installs the configured Pest plugins.
+     */
     private function installPestPlugins(): void
     {
         $plugins = $this->config()->getPestPlugins();
 
         $dependencies = [];
+        $requiresBrowserDependencies = false;
 
         foreach ($plugins as $plugin) {
             $dependencies[] = $plugin->package();
+
+            if ($plugin === PestPlugin::BrowserTest) {
+                $requiresBrowserDependencies = true;
+            }
         }
 
         if ($dependencies !== []) {
             $this->composer()->installDevDependencies($dependencies, $this->env);
         }
+
+        if ($requiresBrowserDependencies) {
+            $this->installBrowserTestingDependencies();
+        }
+    }
+
+    /**
+     * Installs the browser testing dependencies.
+     */
+    private function installBrowserTestingDependencies(): void
+    {
+        $packageManager = $this->node();
+
+        $packageManager->installDevDependencies(['playwright@latest']);
+        $packageManager->execute('playwright', ['install']);
     }
 }
