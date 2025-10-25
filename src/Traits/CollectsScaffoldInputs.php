@@ -150,6 +150,7 @@ trait CollectsScaffoldInputs
             $selectedTools = multiselect(
                 label: 'Select the tools you want to include:',
                 options: DeveloperTool::options(),
+                default: DeveloperTool::recommended()
             );
 
             $this->config->setDeveloperTools(DeveloperTool::fromSelection($selectedTools));
