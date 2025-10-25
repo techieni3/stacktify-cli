@@ -21,38 +21,62 @@ abstract class AbstractInstaller
 {
     public function __construct(protected InstallerContext $context) {}
 
+    /**
+     * Install the service.
+     */
     abstract public function install(): void;
 
+    /**
+     * Get the process runner.
+     */
     protected function process(): ProcessRunner
     {
         return $this->context->processRunner();
     }
 
+    /**
+     * Get the composer instance.
+     */
     protected function composer(): Composer
     {
         return $this->context->composer();
     }
 
+    /**
+     * Get the scaffold config.
+     */
     protected function config(): ScaffoldConfig
     {
         return $this->context->config();
     }
 
+    /**
+     * Get the path resolver.
+     */
     protected function paths(): PathResolver
     {
         return $this->context->paths();
     }
 
+    /**
+     * Get the git client.
+     */
     protected function git(): GitClient
     {
         return $this->context->git();
     }
 
+    /**
+     * Get the PHP binary path.
+     */
     protected function php(): string
     {
         return $this->context->phpBinary();
     }
 
+    /**
+     * Get the node package manager runner.
+     */
     protected function node(): NodePackageManagerRunner
     {
         return $this->context->nodePackageManager();

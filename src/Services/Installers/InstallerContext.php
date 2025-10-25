@@ -31,36 +31,57 @@ final readonly class InstallerContext
         $this->phpBinary = $phpBinary ?? new ExecutableLocator()->findPhp();
     }
 
+    /**
+     * Get the process runner.
+     */
     public function processRunner(): ProcessRunner
     {
         return $this->process;
     }
 
+    /**
+     * Get the composer instance.
+     */
     public function composer(): Composer
     {
         return $this->composer;
     }
 
+    /**
+     * Get the scaffold config.
+     */
     public function config(): ScaffoldConfig
     {
         return $this->config;
     }
 
+    /**
+     * Get the path resolver.
+     */
     public function paths(): PathResolver
     {
         return $this->paths;
     }
 
+    /**
+     * Get the git client.
+     */
     public function git(): GitClient
     {
         return $this->git;
     }
 
+    /**
+     * Get the PHP binary path.
+     */
     public function phpBinary(): string
     {
         return $this->phpBinary;
     }
 
+    /**
+     * Get the node package manager runner.
+     */
     public function nodePackageManager(): NodePackageManagerRunner
     {
         return $this->nodePackageManager;

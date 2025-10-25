@@ -35,6 +35,9 @@ final readonly class PintInstallable implements Installable
         return [];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function stubs(): array
     {
         return [
