@@ -189,14 +189,34 @@ final class NewCommand extends Command
 
         $this->setUpGitRepository($process, $directory);
 
-        // Install testing framework
-        new TestingFrameworkInstaller($process, $this->composer, $this->config, $this->paths, $this->git)->install();
+        if ($this->input->isInteractive()) {
+            // Install testing framework
+            new TestingFrameworkInstaller(
+                $process,
+                $this->composer,
+                $this->config,
+                $this->paths,
+                $this->git
+            )->install();
 
-        // Install Stacktify Recommendations
-        new BaseApplicationInstaller($process, $this->composer, $this->config, $this->paths, $this->git)->install();
+            // Install Stacktify Recommendations
+            new BaseApplicationInstaller(
+                $process,
+                $this->composer,
+                $this->config,
+                $this->paths,
+                $this->git
+            )->install();
 
-        // Install developer tools
-        new DeveloperToolsInstaller($process, $this->composer, $this->config, $this->paths, $this->git)->install();
+            // Install developer tools
+            new DeveloperToolsInstaller(
+                $process,
+                $this->composer,
+                $this->config,
+                $this->paths,
+                $this->git
+            )->install();
+        }
 
         $this->io->newLine();
 
