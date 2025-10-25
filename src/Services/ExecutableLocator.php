@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services;
 
+use Illuminate\Support\ProcessUtils;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\PhpExecutableFinder;
 
@@ -20,17 +21,11 @@ final readonly class ExecutableLocator
     private ExecutableFinder $finder;
 
     /**
-     * The PhpExecutableFinder instance.
-     */
-    private PhpExecutableFinder $phpFinder;
-
-    /**
      * Create a new ExecutableLocator instance.
      */
     public function __construct()
     {
         $this->finder = new ExecutableFinder();
-        $this->phpFinder = new PhpExecutableFinder();
     }
 
     /**
@@ -38,7 +33,11 @@ final readonly class ExecutableLocator
      */
     public function findPhp(): string
     {
-        return $this->phpFinder->find(false) ?: 'php';
+        $phpBinary = (new PhpExecutableFinder)->find(false);
+
+        return $phpBinary !== false
+            ? ProcessUtils::escapeArgument($phpBinary)
+            : 'php';
     }
 
     /**
@@ -46,7 +45,11 @@ final readonly class ExecutableLocator
      */
     public function findComposer(): string
     {
-        return $this->finder->find('composer') ?? 'composer';
+        $composer = $this->finder->find('composer');
+
+        return $composer !== null
+            ? ProcessUtils::escapeArgument($composer)
+            : 'composer';
     }
 
     /**
@@ -54,7 +57,11 @@ final readonly class ExecutableLocator
      */
     public function findGit(): string
     {
-        return $this->finder->find('git') ?? 'git';
+        $git = $this->finder->find('git');
+
+        return $git !== null
+            ? ProcessUtils::escapeArgument($git)
+            : 'git';
     }
 
     /**
@@ -62,6 +69,10 @@ final readonly class ExecutableLocator
      */
     public function findExecutable(string $binary): ?string
     {
-        return $this->finder->find($binary);
+        $executable = $this->finder->find($binary);
+
+        return $executable !== null
+            ? ProcessUtils::escapeArgument($executable)
+            : null;
     }
 }
