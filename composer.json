@@ -27,6 +27,7 @@
     },
     "require-dev": {
         "laravel/pint": "^1.25",
+        "pestphp/pest": "^4.1",
         "phpstan/phpstan": "^2.1",
         "rector/rector": "2.2"
     },
@@ -38,6 +39,11 @@
             "Techieni3\\StacktifyCli\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "scripts": {
         "format": [
             "rector",
@@ -46,7 +52,10 @@
         "test:types": "phpstan analyse"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true
