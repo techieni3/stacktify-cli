@@ -83,6 +83,8 @@ final readonly class GitRunner implements GitClient
 
     /**
      * Ensure Git is available.
+     *
+     * @throws GitNotAvailable
      */
     public function ensureAvailable(): void
     {
@@ -144,7 +146,7 @@ final readonly class GitRunner implements GitClient
      */
     private function readConfig(string $key): ?string
     {
-        $process = $this->proc->execute([$this->git, 'config', '--get', $key]);
+        $process = $this->proc->execute([$this->git, 'config', '--get', $key], $this->cwd);
 
         $output = mb_trim($process->getOutput());
 
@@ -156,6 +158,6 @@ final readonly class GitRunner implements GitClient
      */
     private function setConfig(string $key, string $value): void
     {
-        $this->proc->execute([$this->git, 'config', '--local', $key, mb_trim($value)]);
+        $this->proc->execute([$this->git, 'config', '--local', $key, mb_trim($value)], $this->cwd);
     }
 }
