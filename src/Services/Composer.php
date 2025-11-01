@@ -52,6 +52,27 @@ final readonly class Composer
     /**
      * Install given dependencies
      *
+     * @param  array<string>  $env
+     */
+    public function runScript(string $command, array $env = []): void
+    {
+        if (mb_trim($command) === '') {
+            return;
+        }
+
+        $this->process->runCommands(
+            commands: [
+                sprintf('%s run %s', $this->composer, $command),
+            ],
+            workingPath: $this->cwd,
+            env: $env,
+            description: sprintf('Running %s', $command)
+        );
+    }
+
+    /**
+     * Install given dependencies
+     *
      * @param  array<int, mixed>  $dependencies
      * @param  array<string>  $env
      */

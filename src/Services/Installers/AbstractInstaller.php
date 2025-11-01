@@ -136,4 +136,31 @@ abstract class AbstractInstaller
             throw new RuntimeException("Unable to save composer.json: {$exception->getMessage()}", $exception->getCode(), $exception);
         }
     }
+
+    /**
+     * Run commands after tool installation
+     *
+     * @param  array<string>  $commands
+     */
+    protected function runScripts(array $commands): void
+    {
+        foreach ($commands as $command) {
+            if (str_starts_with('composer run ', $command)) {
+                $this->composer()->runScript($command);
+
+                continue;
+            }
+
+            $this->process()->runCommands([$command]);
+        }
+    }
+
+    /**
+     * Commit changes
+     */
+    protected function commitChanges(string $message): void
+    {
+        $this->git()->addAll();
+        $this->git()->commit($message);
+    }
 }

@@ -8,10 +8,22 @@ use Override;
 use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
- * An installable for Pint.
+ * An installable for Rector.
  */
-final readonly class PintInstallable extends AbstractInstallable
+final readonly class RectorInstallable extends AbstractInstallable
 {
+    /**
+     * @return array{}
+     */
+    #[Override]
+    public function devDependencies(): array
+    {
+        return [
+            'rector/rector',
+            'driftingly/rector-laravel',
+        ];
+    }
+
     /**
      * @return array<string, string>
      */
@@ -19,7 +31,7 @@ final readonly class PintInstallable extends AbstractInstallable
     public function stubs(): array
     {
         return [
-            __DIR__.'/../../stubs/Pint/pint.stub' => 'pint.json',
+            __DIR__.'/../../stubs/Rector/rector.stub' => 'rector.php',
         ];
     }
 
@@ -30,8 +42,8 @@ final readonly class PintInstallable extends AbstractInstallable
     public function composerScripts(): array
     {
         return [
-            new Script(name: 'lint', command: 'pint'),
-            new Script(name: 'test:lint', command: 'pint --test'),
+            new Script(name: 'refactor', command: 'rector'),
+            new Script(name: 'test:refactor', command: 'rector --dry-run'),
         ];
     }
 
@@ -42,7 +54,7 @@ final readonly class PintInstallable extends AbstractInstallable
     public function runAfterInstall(): array
     {
         return [
-            'composer run lint',
+            'composer run refactor',
         ];
     }
 }

@@ -47,6 +47,13 @@ interface Installable
     public function composerScripts(): array;
 
     /**
+     * Get npm scripts to add to package.json.
+     *
+     * @return array<Script>
+     */
+    public function npmScripts(): array;
+
+    /**
      * Post-installation hook for additional setup.
      *
      * @return array<string>
@@ -59,4 +66,11 @@ interface Installable
      * @return array<string>
      */
     public function postUpdate(): array;
+
+    /**
+     * Run after installation.
+     *
+     * @return array<string>
+     */
+    public function runAfterInstall(): array;
 }
