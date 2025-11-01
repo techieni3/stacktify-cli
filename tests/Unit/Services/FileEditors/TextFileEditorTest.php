@@ -75,5 +75,5 @@ it('throws when regex pattern is invalid', function () use ($destinationDirector
     $editor = new TextFileEditor($destinationDirectory.'/sample.txt');
 
     expect(static fn (): TextFileEditor => $editor->pregReplace(new PregReplacement('/(?:\D+|<\d+>)*[!?]/', 'foobar foobar foobar')))
-        ->toThrow(RuntimeException::class, "Regex error in pattern: '/(?:\D+|<\d+>)*[!?]/':");
+        ->toThrow(InvalidArgumentException::class, "Invalid regex pattern: '/(?:\D+|<\d+>)*[!?]/':");
 });

@@ -6,7 +6,7 @@ namespace Techieni3\StacktifyCli\Services\FileEditors;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use RuntimeException;
+use InvalidArgumentException;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\PregReplacement;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 
@@ -84,8 +84,8 @@ final class TextFileEditor extends BaseFileEditor
         $newContent = @preg_replace($replacement->regex, $replacement->replace, $this->content);
 
         if ($newContent === null) {
-            throw new RuntimeException(
-                "Regex error in pattern: '{$replacement->regex}': ".preg_last_error_msg()
+            throw new InvalidArgumentException(
+                "Invalid regex pattern: '{$replacement->regex}': ".preg_last_error_msg()
             );
         }
 
@@ -170,8 +170,8 @@ final class TextFileEditor extends BaseFileEditor
             );
 
             if ($newContent === null) {
-                throw new RuntimeException(
-                    "Regex error in pattern: '{$replacement->regex}': ".preg_last_error_msg()
+                throw new InvalidArgumentException(
+                    "Invalid regex pattern: '{$replacement->regex}': ".preg_last_error_msg()
                 );
             }
 
