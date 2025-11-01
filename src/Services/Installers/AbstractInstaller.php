@@ -13,6 +13,7 @@ use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
 use Techieni3\StacktifyCli\Services\NodePackageManagerRunner;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
+use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
  * Base class for installers.
@@ -115,7 +116,7 @@ abstract class AbstractInstaller
     /**
      * Add scripts to the composer.json file.
      *
-     * @param  array<string, string>  $scripts
+     * @param  array<Script>  $scripts
      */
     protected function addScripts(array $scripts): void
     {
@@ -125,8 +126,8 @@ abstract class AbstractInstaller
             throw new RuntimeException("Unable to read composer.json: {$exception->getMessage()}", $exception->getCode(), $exception);
         }
 
-        foreach ($scripts as $name => $command) {
-            $composerJson->addScript($name, $command);
+        foreach ($scripts as $script) {
+            $composerJson->addScript($script);
         }
 
         try {

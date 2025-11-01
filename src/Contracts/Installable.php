@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Contracts;
 
+use Techieni3\StacktifyCli\ValueObjects\Script;
+
 /**
  * Defines the contract for an installable package.
  */
@@ -40,7 +42,7 @@ interface Installable
     /**
      * Get composer scripts to add to composer.json.
      *
-     * @return array<string, string>
+     * @return array<Script>
      */
     public function composerScripts(): array;
 

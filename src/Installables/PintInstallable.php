@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Techieni3\StacktifyCli\Installables;
 
 use Techieni3\StacktifyCli\Contracts\Installable;
+use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
  * An installable for Pint.
@@ -46,13 +47,13 @@ final readonly class PintInstallable implements Installable
     }
 
     /**
-     * @return array<string, string>
+     * @return array<Script>
      */
     public function composerScripts(): array
     {
         return [
-            'lint' => 'pint',
-            'test:lint' => 'pint --test',
+            new Script(name: 'lint', command: 'pint'),
+            new Script(name: 'test:lint', command: 'pint --test'),
         ];
     }
 

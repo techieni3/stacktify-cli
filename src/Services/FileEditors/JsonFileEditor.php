@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Techieni3\StacktifyCli\Services\FileEditors;
 
 use JsonException;
+use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
  * A file editor for JSON files.
@@ -27,21 +28,48 @@ final class JsonFileEditor extends BaseFileEditor
     }
 
     /**
-     * Add a script to the JSON content.
-     *
-     * @param  string|array<string, string>  $command
+     * Check if a script exists.
      */
-    public function addScript(string $name, string|array $command): self
+    public function hasScript(string $name): bool
     {
-        if ( ! array_key_exists('scripts', $this->jsonContent)) {
+        return isset($this->jsonContent['scripts'][$name]);
+    }
+
+    /**
+     * Add a script to the JSON content.
+     */
+    public function addScript(Script $script): self
+    {
+        if ( ! $this->hasScriptsSection()) {
             $this->jsonContent['scripts'] = [];
         }
 
-        $this->jsonContent['scripts'][$name] = $command;
+        $this->jsonContent['scripts'][$script->getName()] = $script->getCommand();
 
         $this->isChanged = true;
 
         return $this;
+    }
+
+    /**
+     * Remove a script from the JSON content.
+     */
+    public function removeScript(string $name): self
+    {
+        if ($this->hasScript($name)) {
+            unset($this->jsonContent['scripts'][$name]);
+            $this->isChanged = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Update an existing script or add if it doesn't exist.
+     */
+    public function updateScript(Script $script): self
+    {
+        return $this->addScript($script);
     }
 
     /**
@@ -66,5 +94,13 @@ final class JsonFileEditor extends BaseFileEditor
     private function getJsonContent(): array
     {
         return json_decode($this->getContent(), associative: true, flags: JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * Check if the JSON content has a scripts section.
+     */
+    private function hasScriptsSection(): bool
+    {
+        return array_key_exists('scripts', $this->jsonContent);
     }
 }

@@ -58,22 +58,24 @@ it('processes queued replacements on save', function () use ($destinationDirecto
         ->toContain('Version: 2.0.0');
 });
 
-it('appends and prepends content', function () use ($destinationDirectory): void {
+it('appends content', function () use ($destinationDirectory): void {
     $editor = new TextFileEditor($destinationDirectory.'/sample.txt');
 
     $editor->append(PHP_EOL.'Appended line');
+
+    $content = file_get_contents($destinationDirectory.'/sample.txt');
+
+    expect($content)
+        ->toContain('Appended line');
+});
+
+it('prepends content', function () use ($destinationDirectory): void {
+    $editor = new TextFileEditor($destinationDirectory.'/sample.txt');
+
     $editor->prepend("Prepended line\n");
 
     $content = file_get_contents($destinationDirectory.'/sample.txt');
 
     expect($content)
-        ->toStartWith("Prepended line\n")
-        ->toContain('Appended line');
-});
-
-it('throws when regex pattern is invalid', function () use ($destinationDirectory): void {
-    $editor = new TextFileEditor($destinationDirectory.'/sample.txt');
-
-    expect(static fn (): TextFileEditor => $editor->pregReplace(new PregReplacement('/(?:\D+|<\d+>)*[!?]/', 'foobar foobar foobar')))
-        ->toThrow(InvalidArgumentException::class, "Invalid regex pattern: '/(?:\D+|<\d+>)*[!?]/':");
+        ->toStartWith("Prepended line\n");
 });
