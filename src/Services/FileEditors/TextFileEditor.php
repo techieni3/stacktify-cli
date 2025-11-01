@@ -20,14 +20,14 @@ final class TextFileEditor extends BaseFileEditor
      *
      * @var Collection<int, Replacement>
      */
-    private readonly Collection $replacements;
+    private Collection $replacements;
 
     /**
      * The collection of regex replacements.
      *
      * @var Collection<int, PregReplacement>
      */
-    private readonly Collection $pregReplacements;
+    private Collection $pregReplacements;
 
     public function __construct(string $filePath)
     {
@@ -42,6 +42,10 @@ final class TextFileEditor extends BaseFileEditor
      */
     public function append(string $data): void
     {
+        if ($data === '') {
+            return;
+        }
+
         new Filesystem()->append($this->filePath, $data);
     }
 
@@ -50,6 +54,10 @@ final class TextFileEditor extends BaseFileEditor
      */
     public function prepend(string $data): void
     {
+        if ($data === '') {
+            return;
+        }
+
         new Filesystem()->prepend($this->filePath, $data);
     }
 
@@ -73,10 +81,12 @@ final class TextFileEditor extends BaseFileEditor
      */
     public function pregReplace(PregReplacement $replacement): self
     {
-        $newContent = preg_replace($replacement->regex, $replacement->replace, $this->content);
+        $newContent = @preg_replace($replacement->regex, $replacement->replace, $this->content);
 
         if ($newContent === null) {
-            throw new RuntimeException("Regex error in pattern: {$replacement->regex}");
+            throw new RuntimeException(
+                "Regex error in pattern: '{$replacement->regex}': ".preg_last_error_msg()
+            );
         }
 
         if ($newContent !== $this->content) {
@@ -118,7 +128,20 @@ final class TextFileEditor extends BaseFileEditor
             $this->writeFile($this->content);
         }
 
+        $this->clearQueue();
+
         return $this->isChanged;
+    }
+
+    /**
+     * Clear all queued replacements without applying them.
+     */
+    public function clearQueue(): self
+    {
+        $this->replacements = collect();
+        $this->pregReplacements = collect();
+
+        return $this;
     }
 
     /**
@@ -140,14 +163,16 @@ final class TextFileEditor extends BaseFileEditor
         });
 
         $this->pregReplacements->each(function (PregReplacement $replacement): void {
-            $newContent = preg_replace(
+            $newContent = @preg_replace(
                 $replacement->regex,
                 $replacement->replace,
                 $this->content
             );
 
             if ($newContent === null) {
-                throw new RuntimeException("Regex error in pattern: {$replacement->regex}");
+                throw new RuntimeException(
+                    "Regex error in pattern: '{$replacement->regex}': ".preg_last_error_msg()
+                );
             }
 
             if ($newContent !== $this->content) {
