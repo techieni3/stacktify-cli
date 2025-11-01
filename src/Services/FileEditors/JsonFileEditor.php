@@ -26,6 +26,11 @@ final class JsonFileEditor extends BaseFileEditor
         $this->jsonContent = $this->getJsonContent();
     }
 
+    /**
+     * Add a script to the JSON content.
+     *
+     * @param  string|array<string, string>  $command
+     */
     public function addScript(string $name, string|array $command): self
     {
         if ( ! array_key_exists('scripts', $this->jsonContent)) {

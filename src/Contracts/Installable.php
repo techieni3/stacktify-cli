@@ -46,11 +46,15 @@ interface Installable
 
     /**
      * Post-installation hook for additional setup.
+     *
+     * @return array<string>
      */
     public function postInstall(): array;
 
     /**
      * Post-update hook for additional setup.
+     *
+     * @return array<string>
      */
     public function postUpdate(): array;
 }

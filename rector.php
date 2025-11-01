@@ -26,7 +26,6 @@ return RectorConfig::configure()
         typeDeclarationDocblocks: true,
         privatization: true,
         earlyReturn: true,
-        strictBooleans: true,
     )
     ->withRules([
         ArraySpreadInsteadOfArrayMergeRector::class,

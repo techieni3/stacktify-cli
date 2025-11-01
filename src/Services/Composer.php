@@ -32,6 +32,8 @@ final readonly class Composer
 
     /**
      * Update the Composer dependencies.
+     *
+     * @param  array<string>  $env
      */
     public function updateDependencies(array $env = []): void
     {
@@ -51,6 +53,7 @@ final readonly class Composer
      * Install given dependencies
      *
      * @param  array<int, mixed>  $dependencies
+     * @param  array<string>  $env
      */
     public function installDependencies(array $dependencies, array $env = []): void
     {
@@ -72,6 +75,7 @@ final readonly class Composer
      * Remove given dependencies
      *
      * @param  array<int, mixed>  $dependencies
+     * @param  array<string>  $env
      */
     public function removeDependencies(array $dependencies, array $env = []): void
     {
@@ -93,6 +97,7 @@ final readonly class Composer
      * Install given dev dependencies
      *
      * @param  array<int, mixed>  $dependencies
+     * @param  array<string>  $env
      */
     public function installDevDependencies(array $dependencies, array $env = []): void
     {
@@ -114,6 +119,7 @@ final readonly class Composer
      * Remove given dev dependencies
      *
      * @param  array<int, mixed>  $dependencies
+     * @param  array<string>  $env
      */
     public function removeDevDependencies(array $dependencies, array $env = []): void
     {

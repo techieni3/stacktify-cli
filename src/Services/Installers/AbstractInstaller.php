@@ -84,6 +84,9 @@ abstract class AbstractInstaller
 
     /**
      * Install composer dependencies.
+     *
+     * @param  array<int, string>  $dependencies
+     * @param  array<int, string>  $devDependencies
      */
     protected function installPackages(array $dependencies, array $devDependencies): void
     {
@@ -98,6 +101,8 @@ abstract class AbstractInstaller
 
     /**
      * Publish stub files to the project.
+     *
+     * @param  array<string, string>  $stubs
      */
     protected function publishStubs(array $stubs): void
     {

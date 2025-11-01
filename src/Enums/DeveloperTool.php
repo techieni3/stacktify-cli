@@ -31,7 +31,7 @@ enum DeveloperTool: string implements PromptSelectableEnum
     }
 
     /**
-     * @return DeveloperTool[]
+     * @return array<int, string>
      */
     public static function recommended(): array
     {

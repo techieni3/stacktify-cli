@@ -18,6 +18,7 @@ final readonly class NodePackageManagerRunner
      * Install given dependencies as production dependencies.
      *
      * @param  array<int, mixed>  $dependencies
+     * @param  array<string>  $env
      */
     public function installDependencies(array $dependencies, array $env = []): void
     {
@@ -39,6 +40,7 @@ final readonly class NodePackageManagerRunner
      * Install given dependencies as development dependencies.
      *
      * @param  array<int, mixed>  $dependencies
+     * @param  array<string>  $env
      */
     public function installDevDependencies(array $dependencies, array $env = []): void
     {
@@ -60,6 +62,7 @@ final readonly class NodePackageManagerRunner
      * Remove given packages.
      *
      * @param  array<int, string>  $dependencies
+     * @param  array<string>  $env
      */
     public function removeDependencies(array $dependencies, array $env = []): void
     {
@@ -79,6 +82,8 @@ final readonly class NodePackageManagerRunner
 
     /**
      * Update all packages.
+     *
+     * @param  array<string>  $env
      */
     public function updateDependencies(array $env = []): void
     {
@@ -92,6 +97,8 @@ final readonly class NodePackageManagerRunner
 
     /**
      * Run a script defined in package.json.
+     *
+     * @param  array<string>  $env
      */
     public function run(string $script, array $env = []): void
     {
@@ -107,6 +114,8 @@ final readonly class NodePackageManagerRunner
 
     /**
      * Build the project.
+     *
+     * @param  array<string>  $env
      */
     public function build(array $env = []): void
     {
@@ -120,6 +129,9 @@ final readonly class NodePackageManagerRunner
 
     /**
      * Execute a package (npx equivalent).
+     *
+     * @param  array<string>  $env
+     * @param  array<string>  $args
      */
     public function execute(string $package, array $args = [], array $env = []): void
     {
