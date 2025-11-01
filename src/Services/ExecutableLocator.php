@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services;
 
-use Illuminate\Support\ProcessUtils;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\PhpExecutableFinder;
 
@@ -35,9 +34,7 @@ final readonly class ExecutableLocator
     {
         $phpBinary = (new PhpExecutableFinder)->find(false);
 
-        return $phpBinary !== false
-            ? ProcessUtils::escapeArgument($phpBinary)
-            : 'php';
+        return $phpBinary !== false ? $phpBinary : 'php';
     }
 
     /**
@@ -45,11 +42,7 @@ final readonly class ExecutableLocator
      */
     public function findComposer(): string
     {
-        $composer = $this->finder->find('composer');
-
-        return $composer !== null
-            ? ProcessUtils::escapeArgument($composer)
-            : 'composer';
+        return $this->finder->find('composer') ?? 'composer';
     }
 
     /**
@@ -57,11 +50,7 @@ final readonly class ExecutableLocator
      */
     public function findGit(): string
     {
-        $git = $this->finder->find('git');
-
-        return $git !== null
-            ? ProcessUtils::escapeArgument($git)
-            : 'git';
+        return $this->finder->find('git') ?? 'git';
     }
 
     /**
@@ -69,10 +58,6 @@ final readonly class ExecutableLocator
      */
     public function findExecutable(string $binary): ?string
     {
-        $executable = $this->finder->find($binary);
-
-        return $executable !== null
-            ? ProcessUtils::escapeArgument($executable)
-            : null;
+        return $this->finder->find($binary);
     }
 }
