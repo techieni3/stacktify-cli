@@ -153,7 +153,7 @@ abstract class AbstractInstaller
     protected function runScripts(array $commands): void
     {
         foreach ($commands as $command) {
-            if (str_starts_with('composer run ', $command)) {
+            if (str_starts_with($command, 'composer run')) {
                 $this->composer()->runScript($command);
 
                 continue;

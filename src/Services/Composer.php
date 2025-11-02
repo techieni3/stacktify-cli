@@ -60,6 +60,8 @@ final readonly class Composer
             return;
         }
 
+        $command = str_replace('composer run ', '', $command);
+
         $this->process->runCommands(
             commands: [
                 sprintf('%s run %s', $this->composer, $command),
