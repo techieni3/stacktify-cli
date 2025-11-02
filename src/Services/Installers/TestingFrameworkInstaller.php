@@ -39,6 +39,10 @@ final class TestingFrameworkInstaller extends AbstractInstaller
         $this->installPestPlugins();
 
         $this->addComposerScripts();
+
+        $this->commitChanges('Configure Pest for the project');
+
+        $this->notifySuccess('Pest installed successfully');
     }
 
     /**
