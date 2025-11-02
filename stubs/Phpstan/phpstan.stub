@@ -1,0 +1,22 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    paths:
+        - app
+        - bootstrap
+        - config
+        - database/factories
+        - routes
+    level: 5
+    checkConfigTypes: true
+    checkOctaneCompatibility: true
+    checkModelProperties: true
+    checkAuthCallsWhenInRequestScope: true
+    disableMigrationScan: true
+    disableSchemaScan: true
+    treatPhpDocTypesAsCertain: false
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+    tmpDir: /tmp/phpstan

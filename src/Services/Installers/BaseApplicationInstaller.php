@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services\Installers;
 
+use Techieni3\StacktifyCli\Installables\PhpstanInstallable;
 use Techieni3\StacktifyCli\Installables\PintInstallable;
 use Techieni3\StacktifyCli\Installables\RectorInstallable;
 
@@ -26,6 +27,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
         $this->configurePint();
         $this->configureRector();
+        $this->configurePhpstan();
     }
 
     /**
@@ -74,5 +76,21 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->commitChanges('Configure Rector for the project');
 
         $this->notifySuccess('Rector configured successfully');
+    }
+
+    private function configurePhpstan(): void
+    {
+        $installable = new PhpstanInstallable();
+
+        // install phpstan
+        $this->composer()->installDevDependencies($installable->devDependencies());
+
+        // publish phpstan config
+        $this->publishStubs($installable->stubs());
+
+        // commit changes
+        $this->commitChanges('Configure Phpstan for the project');
+
+        $this->notifySuccess('Phpstan configured successfully');
     }
 }
