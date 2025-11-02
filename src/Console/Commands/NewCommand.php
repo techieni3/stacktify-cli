@@ -190,6 +190,8 @@ final class NewCommand extends Command
         }
 
         $this->success('Application created successfully');
+        // update dependencies to latest version
+        $this->composer->updateDependencies();
 
         $this->setAppUrlInEnv();
 
