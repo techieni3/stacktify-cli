@@ -41,7 +41,7 @@ final class TestingFrameworkInstaller extends AbstractInstaller
 
         $this->addComposerScripts();
 
-        $this->commitChanges('Configure Pest for the project');
+        $this->commitChanges('chore: configure Pest testing framework');
 
         $this->notifySuccess('Pest installed successfully');
     }

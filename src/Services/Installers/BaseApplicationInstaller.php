@@ -45,7 +45,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->runScripts($this->pintInstallable->runAfterInstall());
 
         // commit changes
-        $this->commitChanges('Configure Pint for the project');
+        $this->commitChanges('chore: configure Pint code formatter');
 
         $this->notifySuccess('Pint configured successfully');
     }
@@ -73,7 +73,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->runScripts($this->pintInstallable->runAfterInstall());
 
         // commit changes
-        $this->commitChanges('Configure Rector for the project');
+        $this->commitChanges('chore: configure Rector for code refactoring');
 
         $this->notifySuccess('Rector configured successfully');
     }
@@ -89,7 +89,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->publishStubs($installable->stubs());
 
         // commit changes
-        $this->commitChanges('Configure Phpstan for the project');
+        $this->commitChanges('chore: configure Phpstan for static analysis');
 
         $this->notifySuccess('Phpstan configured successfully');
     }

@@ -46,7 +46,7 @@ final readonly class GitRunner implements GitClient
 
         $commands = [
             'git add .',
-            'git commit -q -m "Set up a fresh Laravel app"',
+            'git commit -q -m "set up a fresh Laravel app"',
             "git branch -M {$branch}",
         ];
 
