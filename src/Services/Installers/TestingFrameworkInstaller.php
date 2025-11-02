@@ -11,6 +11,7 @@ use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
+use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
  * Installs the testing framework for the project.
@@ -48,7 +49,15 @@ final class TestingFrameworkInstaller extends AbstractInstaller
     /**
      * Adds the composer scripts for running tests.
      */
-    private function addComposerScripts(): void {}
+    private function addComposerScripts(): void
+    {
+        $this->addScripts([
+            new Script(name: 'test', command: [
+                '@php artisan config:clear --ansi',
+                '@php artisan test --parallel',
+            ]),
+        ]);
+    }
 
     /**
      * Installs Pest and its dependencies.
