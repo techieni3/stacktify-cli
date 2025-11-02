@@ -7,6 +7,7 @@ namespace Techieni3\StacktifyCli\Services\Installers;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Services\Composer;
+use Techieni3\StacktifyCli\Services\ConsoleNotifier;
 use Techieni3\StacktifyCli\Services\ExecutableLocator;
 use Techieni3\StacktifyCli\Services\NodePackageManagerRunner;
 use Techieni3\StacktifyCli\Services\PathResolver;
@@ -26,6 +27,7 @@ final readonly class InstallerContext
         private ScaffoldConfig $config,
         private PathResolver $paths,
         private GitClient $git,
+        private ConsoleNotifier $notifier,
         ?string $phpBinary = null,
     ) {
         $this->phpBinary = $phpBinary ?? new ExecutableLocator()->findPhp();
@@ -85,5 +87,13 @@ final readonly class InstallerContext
     public function nodePackageManager(): NodePackageManagerRunner
     {
         return $this->nodePackageManager;
+    }
+
+    /**
+     * Get the console notifier.
+     */
+    public function notifier(): ConsoleNotifier
+    {
+        return $this->notifier;
     }
 }

@@ -71,6 +71,7 @@ final readonly class Script
             }
 
             foreach ($this->command as $command) {
+                /** @phpstan-ignore-next-line */
                 if ( ! is_string($command)) {
                     throw new InvalidArgumentException('Script command array values must be strings.');
                 }

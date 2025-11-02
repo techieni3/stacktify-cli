@@ -13,7 +13,7 @@ use Techieni3\StacktifyCli\ValueObjects\Script;
 final readonly class RectorInstallable extends AbstractInstallable
 {
     /**
-     * @return array{}
+     * @return array<string>
      */
     #[Override]
     public function devDependencies(): array

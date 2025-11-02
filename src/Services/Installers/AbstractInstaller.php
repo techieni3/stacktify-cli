@@ -84,6 +84,14 @@ abstract class AbstractInstaller
     }
 
     /**
+     * Display a success message.
+     */
+    protected function notifySuccess(string $message): void
+    {
+        $this->context->notifier()->success($message);
+    }
+
+    /**
      * Install composer dependencies.
      *
      * @param  array<int, string>  $dependencies

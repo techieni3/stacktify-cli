@@ -18,6 +18,7 @@ use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
 use Techieni3\StacktifyCli\Services\AppUrlGenerator;
 use Techieni3\StacktifyCli\Services\Composer;
+use Techieni3\StacktifyCli\Services\ConsoleNotifier;
 use Techieni3\StacktifyCli\Services\DatabaseConfigurator;
 use Techieni3\StacktifyCli\Services\ExecutableLocator;
 use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
@@ -39,11 +40,6 @@ final class NewCommand extends Command
 {
     use CollectsScaffoldInputs;
     use ConfiguresLaravelPrompts;
-
-    /**
-     * The output interface implementation.
-     */
-    private OutputInterface $output;
 
     /**
      * The input interface implementation.
@@ -75,7 +71,15 @@ final class NewCommand extends Command
      */
     private PathResolver $paths;
 
+    /**
+     * The path to the PHP executable.
+     */
     private string $php;
+
+    /**
+     * The console notifier instance.
+     */
+    private ConsoleNotifier $notifier;
 
     /**
      * Create a new command instance.
@@ -117,8 +121,8 @@ final class NewCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->input = $input;
-        $this->output = $output;
         $this->io = new SymfonyStyle($input, $output);
+        $this->notifier = new ConsoleNotifier($output);
 
         if ( ! $input->isInteractive()) {
             $this->prepareNonInteractiveConfiguration();
@@ -165,8 +169,8 @@ final class NewCommand extends Command
 
         $process = new ProcessRunner(
             isQuiet: (bool) $this->input->getOption('quiet'),
-            isDecorated: $this->output->isDecorated(),
-            isVerbose: $this->output->isVerbose()
+            isDecorated: $output->isDecorated(),
+            isVerbose: $output->isVerbose()
         );
 
         $nodePackageManager = new NodePackageManagerRunner(
@@ -189,9 +193,10 @@ final class NewCommand extends Command
             return Command::FAILURE;
         }
 
-        $this->success('Application created successfully');
         // update dependencies to latest version
         $this->composer->updateDependencies();
+
+        $this->notifier->success('Application created successfully');
 
         $this->setAppUrlInEnv();
 
@@ -210,6 +215,7 @@ final class NewCommand extends Command
                 config: $this->config,
                 paths: $this->paths,
                 git: $this->git,
+                notifier: $this->notifier,
             );
             // Install testing framework
             new TestingFrameworkInstaller($context)->install();
@@ -360,7 +366,7 @@ final class NewCommand extends Command
 
         $git->createInitialCommit();
 
-        $this->success('Git repository initialized');
+        $this->notifier->success('Git repository initialized');
 
         $this->git = $git;
     }
@@ -391,13 +397,5 @@ final class NewCommand extends Command
         if ($directory !== getcwd() && (is_dir($directory) || is_file($directory))) {
             throw new RuntimeException('Application already exists!');
         }
-    }
-
-    /**
-     * Write a formatted success message to the output.
-     */
-    private function success(string $message): void
-    {
-        $this->output->writeln(sprintf('<info> ✅ </info> %s', $message));
     }
 }

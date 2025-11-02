@@ -13,12 +13,19 @@ use Techieni3\StacktifyCli\Installables\RectorInstallable;
 final class BaseApplicationInstaller extends AbstractInstaller
 {
     /**
+     * The installable for Pint.
+     */
+    private PintInstallable $pintInstallable;
+
+    /**
      * Run all baseline customisations.
      */
     public function install(): void
     {
-        $this->configureRector();
+        $this->pintInstallable = new PintInstallable();
+
         $this->configurePint();
+        $this->configureRector();
     }
 
     /**
@@ -26,19 +33,19 @@ final class BaseApplicationInstaller extends AbstractInstaller
      */
     private function configurePint(): void
     {
-        $installable = new PintInstallable();
-
         // publish pint config
-        $this->publishStubs($installable->stubs());
+        $this->publishStubs($this->pintInstallable->stubs());
 
         // add a composer script
-        $this->addScripts($installable->composerScripts());
+        $this->addScripts($this->pintInstallable->composerScripts());
 
         // run pint for all files
-        $this->runScripts($installable->runAfterInstall());
+        $this->runScripts($this->pintInstallable->runAfterInstall());
 
         // commit changes
         $this->commitChanges('Configure Pint for the project');
+
+        $this->notifySuccess('Pint configured successfully');
     }
 
     /**
@@ -60,7 +67,12 @@ final class BaseApplicationInstaller extends AbstractInstaller
         // run rector for all files
         $this->runScripts($installable->runAfterInstall());
 
+        // run pint for all files
+        $this->runScripts($this->pintInstallable->runAfterInstall());
+
         // commit changes
         $this->commitChanges('Configure Rector for the project');
+
+        $this->notifySuccess('Rector configured successfully');
     }
 }
