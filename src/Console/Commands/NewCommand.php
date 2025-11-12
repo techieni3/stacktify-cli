@@ -160,7 +160,7 @@ final class NewCommand extends Command
         $directory = $this->paths->getInstallationDirectory();
 
         if ( ! $input->getOption('force')) {
-            $this->verifyApplicationDoesntExist($directory);
+            $this->ensureApplicationDoesNotExist($directory);
         }
 
         if ($directory === '.' && $input->getOption('force')) {
@@ -388,11 +388,11 @@ final class NewCommand extends Command
     }
 
     /**
-     * Verify that the application does not already exist.
+     * Ensure that the application does not already exist.
      *
      * @throws RuntimeException
      */
-    private function verifyApplicationDoesntExist(string $directory): void
+    private function ensureApplicationDoesNotExist(string $directory): void
     {
         if ($directory !== getcwd() && (is_dir($directory) || is_file($directory))) {
             throw new RuntimeException('Application already exists!');

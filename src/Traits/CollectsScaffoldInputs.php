@@ -32,7 +32,7 @@ trait CollectsScaffoldInputs
     /**
      * Ensure the application directory does not already exist.
      */
-    abstract protected function verifyApplicationDoesntExist(string $directory): void;
+    abstract protected function ensureApplicationDoesNotExist(string $directory): void;
 
     /**
      * Collect all scaffold selections from interactive prompts.
@@ -55,7 +55,7 @@ trait CollectsScaffoldInputs
 
                     if ($this->input->getOption('force') !== true) {
                         try {
-                            $this->verifyApplicationDoesntExist(new PathResolver($value)->getInstallationDirectory());
+                            $this->ensureApplicationDoesNotExist(new PathResolver($value)->getInstallationDirectory());
                         } catch (RuntimeException) {
                             return 'Application already exists.';
                         }
