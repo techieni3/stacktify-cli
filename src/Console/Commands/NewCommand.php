@@ -257,7 +257,15 @@ final class NewCommand extends Command
     /**
      * Get the commands to install the application.
      *
-     * @return list<string>
+     * Builds a list of shell commands to:
+     * 1. Create Laravel project via Composer (with --remove-vcs, --prefer-dist, --no-scripts)
+     * 2. Run post-installation scripts (creates .env from .env.example)
+     * 3. Generate application key (required for encryption)
+     * 4. Make artisan executable on Unix systems (chmod 755)
+     *
+     * @param  string  $directory  The installation directory path
+     * @param  InputInterface  $input  Console input for reading options
+     * @return list<string> Array of commands to execute sequentially
      */
     private function getInstallCommands(string $directory, InputInterface $input): array
     {
@@ -266,15 +274,26 @@ final class NewCommand extends Command
         $version = $this->config->getVersion();
 
         $commands = [
+            // Create Laravel project with specific flags:
+            // --remove-vcs: Remove Git from Laravel skeleton (we'll init our own)
+            // --prefer-dist: Download distribution packages (faster)
+            // --no-scripts: Skip auto-running scripts (we run them manually next)
             $composer." create-project laravel/laravel \"{$directory}\" {$version} --remove-vcs --prefer-dist --no-scripts",
+
+            // Run post-installation script to create .env file
             $composer." run post-root-package-install -d \"{$directory}\"",
+
+            // Generate unique application key for encryption
             $phpBinary." \"{$directory}/artisan\" key:generate --ansi",
         ];
 
+        // Prepend force removal command if --force flag is used
+        // Note: This is destructive and will delete the existing directory
         if ($directory !== '.' && $input->getOption('force')) {
             $commands = [...$this->getForceInstallCommand($directory), ...$commands];
         }
 
+        // Make artisan executable on Unix-like systems
         if (PHP_OS_FAMILY !== 'Windows') {
             $commands[] = "chmod 755 \"{$directory}/artisan\"";
         }
@@ -285,14 +304,23 @@ final class NewCommand extends Command
     /**
      * Get the command to force install the application.
      *
-     * @return list<string>
+     * Returns platform-specific command to remove an existing directory.
+     * This is a destructive operation that permanently deletes all directory contents.
+     *
+     * Windows: Uses 'rd /s /q' (remove directory, subdirectories, quiet mode)
+     * Unix/Linux/macOS: Uses 'rm -rf' (remove recursive, force)
+     *
+     * @param  string  $directory  The directory path to remove
+     * @return list<string> Single-element array containing the removal command
      */
     private function getForceInstallCommand(string $directory): array
     {
         if (PHP_OS_FAMILY === 'Windows') {
+            // Windows: rd /s (remove subdirectories) /q (quiet mode, no confirmation)
             return ["(if exist \"{$directory}\" rd /s /q \"{$directory}\")"];
         }
 
+        // Unix/Linux/macOS: rm -rf (recursive, force without prompt)
         return ["rm -rf \"{$directory}\""];
     }
 

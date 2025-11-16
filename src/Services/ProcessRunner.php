@@ -118,15 +118,25 @@ final readonly class ProcessRunner
 
     /**
      * Determine if an option should be added to a command.
+     *
+     * Excludes system commands (chmod, rm, git) and test frameworks (pest)
+     * as they don't support --quiet and --no-ansi flags consistently.
+     * Adding these flags to unsupported commands would cause errors.
+     * *
+     * @param  string  $value  The command string to check
+     * @return bool True if the option can be safely added, false otherwise
      */
     private function shouldAddOption(string $value): bool
     {
+        // Commands that don't support --quiet and --no-ansi options
         $commands = ['chmod', 'rm', 'git', './vendor/bin/pest'];
 
+        // Check if the command starts with any excluded command
         if (array_any($commands, static fn ($needle): bool => str_starts_with($value, (string) $needle))) {
             return false;
         }
 
+        // Additional check: exclude Pest test commands in any location
         return ! str_contains($value, './vendor/bin/pest');
     }
 

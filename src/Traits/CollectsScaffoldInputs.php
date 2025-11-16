@@ -114,10 +114,14 @@ trait CollectsScaffoldInputs
         if ($testingFramework === TestingFramework::Pest) {
             $pestPluginOptions = PestPlugin::options();
 
+            // Remove browser testing plugin for API-only applications
+            // API applications don't have a frontend to test with browser automation
             if ($this->config->getFrontend() === Frontend::Api) {
                 unset($pestPluginOptions[PestPlugin::BrowserTest->value]);
             }
 
+            // Filter default plugins to only include those still available after removal
+            // array_values() is used to re-index the array for proper default selection
             $defaultPestPlugins = array_values(
                 array_filter(PestPlugin::default(), static fn (string $plugin): bool => array_key_exists($plugin, $pestPluginOptions))
             );
