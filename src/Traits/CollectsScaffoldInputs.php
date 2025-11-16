@@ -13,6 +13,7 @@ use Techieni3\StacktifyCli\Enums\NodePackageManager;
 use Techieni3\StacktifyCli\Enums\PestPlugin;
 use Techieni3\StacktifyCli\Enums\TestingFramework;
 use Techieni3\StacktifyCli\Enums\ToolingPreference;
+use Techieni3\StacktifyCli\Services\ApplicationValidator;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Traits\Prompts\PromptsForGitCredentials;
 use Techieni3\StacktifyCli\Traits\Prompts\PromptsForPackageManager;
@@ -28,11 +29,6 @@ trait CollectsScaffoldInputs
 {
     use PromptsForGitCredentials;
     use PromptsForPackageManager;
-
-    /**
-     * Ensure the application directory does not already exist.
-     */
-    abstract protected function ensureApplicationDoesNotExist(string $directory): void;
 
     /**
      * Collect all scaffold selections from interactive prompts.
@@ -55,7 +51,8 @@ trait CollectsScaffoldInputs
 
                     if ($this->input->getOption('force') !== true) {
                         try {
-                            $this->ensureApplicationDoesNotExist(new PathResolver($value)->getInstallationDirectory());
+                            $validator = new ApplicationValidator();
+                            $validator->ensureApplicationDoesNotExist(new PathResolver($value)->getInstallationDirectory());
                         } catch (RuntimeException) {
                             return 'Application already exists.';
                         }
@@ -176,101 +173,10 @@ trait CollectsScaffoldInputs
     }
 
     /**
-     * Present a summary of selections and ask for confirmation.
-     */
-    private function reviewAndConfirm(): bool
-    {
-        if ( ! $this->input->isInteractive()) {
-            return true;
-        }
-
-        $projectPath = $this->paths->getInstallationDirectory();
-
-        $selections = [
-            ['Project name' => $this->config->getName()],
-            ['Path' => realpath($projectPath) ?: $projectPath],
-            ['Frontend stack' => $this->config->getFrontend()->label()],
-        ];
-
-        if ($this->config->getFrontend() !== Frontend::Api) {
-            $selections[] = ['Package manager' => $this->config->getPackageManager()->label()];
-        }
-
-        $selections[] = ['Authentication provider' => $this->config->getAuthentication()->label()];
-        $selections[] = ['Database' => $this->config->getDatabase()->label()];
-        $selections[] = ['Testing framework' => $this->config->getTestingFramework()->label()];
-
-        if ($this->config->getTestingFramework() === TestingFramework::Pest) {
-            $selections[] = ['Pest plugins' => $this->pestPluginsSummary()];
-        }
-
-        $selections[] = ['Tooling setup' => $this->toolingSummary()];
-        $selections[] = ['Developer tools' => $this->developerToolsSummary()];
-        $selections[] = ['Git' => $this->config->isGitEnabled() ? 'Enabled' : 'Skipped'];
-
-        $this->io->section('Review your selections');
-        $this->io->definitionList(...$selections);
-
-        return $this->io->confirm('Proceed with installation?');
-    }
-
-    /**
      * Resolve the project name provided via input.
      */
     private function getNameFromInput(): string
     {
         return mb_rtrim((string) $this->input->getArgument('name'), '/\\');
-    }
-
-    /**
-     * Build a description of the tooling preference selection.
-     */
-    private function toolingSummary(): string
-    {
-        return match ($this->config->getToolingPreference()) {
-            ToolingPreference::Recommended => 'Recommended settings and tools',
-            ToolingPreference::Custom => 'Custom selection',
-            ToolingPreference::Skip => 'Installation only',
-        };
-    }
-
-    /**
-     * Build a description of the selected developer tools.
-     */
-    private function developerToolsSummary(): string
-    {
-        $tools = $this->config->getDeveloperTools();
-
-        if ($tools === []) {
-            return $this->config->getToolingPreference() === ToolingPreference::Custom
-                ? 'None selected'
-                : 'Managed automatically';
-        }
-
-        return implode(', ', array_map(
-            static fn (DeveloperTool $tool): string => $tool->label(),
-            $tools
-        ));
-    }
-
-    /**
-     * Build a description of the selected Pest plugins.
-     */
-    private function pestPluginsSummary(): string
-    {
-        if ($this->config->getTestingFramework() !== TestingFramework::Pest) {
-            return 'Not applicable';
-        }
-
-        $plugins = $this->config->getPestPlugins();
-
-        if ($plugins === []) {
-            return 'None selected';
-        }
-
-        return implode(', ', array_map(
-            static fn (PestPlugin $plugin): string => $plugin->label(),
-            $plugins
-        ));
     }
 }

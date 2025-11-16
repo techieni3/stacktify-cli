@@ -16,6 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Techieni3\StacktifyCli\Config\ScaffoldConfig;
 use Techieni3\StacktifyCli\Contracts\GitClient;
 use Techieni3\StacktifyCli\Exceptions\GitNotAvailable;
+use Techieni3\StacktifyCli\Services\ApplicationValidator;
 use Techieni3\StacktifyCli\Services\AppUrlGenerator;
 use Techieni3\StacktifyCli\Services\Composer;
 use Techieni3\StacktifyCli\Services\ConsoleNotifier;
@@ -31,6 +32,7 @@ use Techieni3\StacktifyCli\Services\Installers\TestingFrameworkInstaller;
 use Techieni3\StacktifyCli\Services\NodePackageManagerRunner;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
+use Techieni3\StacktifyCli\Services\SelectionPresenter;
 use Techieni3\StacktifyCli\Traits\CollectsScaffoldInputs;
 use Techieni3\StacktifyCli\Traits\ConfiguresLaravelPrompts;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
@@ -149,23 +151,23 @@ final class NewCommand extends Command
         $this->paths = new PathResolver($this->config->getName());
         $this->php = new ExecutableLocator()->findPhp();
 
-        $confirmed = $this->reviewAndConfirm();
+        $presenter = new SelectionPresenter($this->config, $this->paths);
+        $confirmed = $presenter->reviewAndConfirm($input, $this->io);
 
         if ( ! $confirmed) {
             return Command::FAILURE;
         }
 
-        $this->ensureExtensionsAreAvailable();
+        $validator = new ApplicationValidator();
+        $validator->ensureRequiredExtensionsAreAvailable();
 
         $directory = $this->paths->getInstallationDirectory();
 
         if ( ! $input->getOption('force')) {
-            $this->ensureApplicationDoesNotExist($directory);
+            $validator->ensureApplicationDoesNotExist($directory);
         }
 
-        if ($directory === '.' && $input->getOption('force')) {
-            throw new RuntimeException('Cannot use --force option when using current directory for installation!');
-        }
+        $validator->ensureForceNotUsedWithCurrentDirectory($directory, (bool) $input->getOption('force'));
 
         $process = new ProcessRunner(
             isQuiet: (bool) $this->input->getOption('quiet'),
@@ -250,39 +252,6 @@ final class NewCommand extends Command
  ███████║    ██║    ██║  ██║ ╚██████╗ ██║  ██╗    ██║    ██║ ██║         ██║
  ╚══════╝    ╚═╝    ╚═╝  ╚═╝  ╚═════╝ ╚═╝  ╚═╝    ╚═╝    ╚═╝ ╚═╝         ╚═╝
         </>'.PHP_EOL);
-    }
-
-    /**
-     * Ensure all required PHP extensions are available.
-     *
-     * @throws RuntimeException
-     */
-    private function ensureExtensionsAreAvailable(): void
-    {
-        $availableExtensions = get_loaded_extensions();
-
-        $requiredExtensions = [
-            'ctype',
-            'filter',
-            'hash',
-            'mbstring',
-            'openssl',
-            'session',
-            'tokenizer',
-        ];
-
-        $missingExtensions = array_filter(
-            $requiredExtensions,
-            static fn (string $extension): bool => ! in_array($extension, $availableExtensions)
-        );
-
-        if ($missingExtensions === []) {
-            return;
-        }
-
-        throw new RuntimeException(
-            sprintf('The following PHP extensions are required but are not installed: %s', implode(', ', $missingExtensions))
-        );
     }
 
     /**
@@ -385,17 +354,5 @@ final class NewCommand extends Command
                 replace: 'APP_URL='.$url,
             )
         );
-    }
-
-    /**
-     * Ensure that the application does not already exist.
-     *
-     * @throws RuntimeException
-     */
-    private function ensureApplicationDoesNotExist(string $directory): void
-    {
-        if ($directory !== getcwd() && (is_dir($directory) || is_file($directory))) {
-            throw new RuntimeException('Application already exists!');
-        }
     }
 }
