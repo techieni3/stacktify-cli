@@ -22,13 +22,13 @@ final class FileEditor
         return new TextFileEditor($filePath);
     }
 
-    // /**
-    //  * Open an environment file for editing.
-    //  */
-    // public static function env(string $filePath = '.env'): EnvFileEditor
-    // {
-    //     return new EnvFileEditor($filePath);
-    // }
+    /**
+     * Open an environment file for editing.
+     */
+    public static function env(string $filePath = '.env'): EnvFileEditor
+    {
+        return new EnvFileEditor($filePath);
+    }
 
     /**
      * Open a JSON file for editing.
