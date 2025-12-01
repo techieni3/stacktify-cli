@@ -41,6 +41,14 @@ final class FileEditor
     }
 
     /**
+     * Open a config file for editing.
+     */
+    public static function config(string $filePath): ConfigFileEditor
+    {
+        return new ConfigFileEditor($filePath);
+    }
+
+    /**
      * Copy a file to a new location.
      */
     public static function copyFile(string $sourceFile, string $destination): void
