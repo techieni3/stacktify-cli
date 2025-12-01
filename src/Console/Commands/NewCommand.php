@@ -35,7 +35,6 @@ use Techieni3\StacktifyCli\Services\ProcessRunner;
 use Techieni3\StacktifyCli\Services\SelectionPresenter;
 use Techieni3\StacktifyCli\Traits\CollectsScaffoldInputs;
 use Techieni3\StacktifyCli\Traits\ConfiguresLaravelPrompts;
-use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 
 #[AsCommand(name: 'new', description: 'Create a new Laravel application')]
 final class NewCommand extends Command
@@ -375,12 +374,8 @@ final class NewCommand extends Command
     {
         $url = new AppUrlGenerator($this->config->getName())->generate();
 
-        FileEditor::replaceInFile(
-            filePath: $this->paths->getEnvPath(),
-            replacement: new Replacement(
-                search: 'APP_URL=http://localhost',
-                replace: 'APP_URL='.$url,
-            )
-        );
+        FileEditor::env($this->paths->getEnvPath())
+            ->set('APP_URL', $url)
+            ->save();
     }
 }
