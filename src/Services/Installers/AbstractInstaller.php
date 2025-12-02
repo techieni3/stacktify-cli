@@ -146,6 +146,93 @@ abstract class AbstractInstaller
     }
 
     /**
+     * Append scripts to the composer.json file.
+     *
+     * @param  array<string, string|array<string>>  $scripts
+     */
+    protected function appendComposerScripts(array $scripts): void
+    {
+        try {
+            $composerJson = FileEditor::json($this->paths()->getInstallationDirectory().DIRECTORY_SEPARATOR.'composer.json');
+        } catch (Exception $exception) {
+            throw new RuntimeException("Unable to read composer.json: {$exception->getMessage()}", $exception->getCode(), $exception);
+        }
+
+        foreach ($scripts as $name => $command) {
+            $composerJson->appendToScript($name, $command);
+        }
+
+        try {
+            $composerJson->save();
+        } catch (Exception $exception) {
+            throw new RuntimeException("Unable to save composer.json: {$exception->getMessage()}", $exception->getCode(), $exception);
+        }
+    }
+
+    /**
+     * Add scripts to the package.json file.
+     *
+     * @param  array<Script>  $scripts
+     */
+    protected function addNpmScripts(array $scripts): void
+    {
+        try {
+            $packageJson = FileEditor::json($this->paths()->getInstallationDirectory().DIRECTORY_SEPARATOR.'package.json');
+        } catch (Exception $exception) {
+            throw new RuntimeException("Unable to read package.json: {$exception->getMessage()}", $exception->getCode(), $exception);
+        }
+
+        foreach ($scripts as $script) {
+            $packageJson->addScript($script);
+        }
+
+        try {
+            $packageJson->save();
+        } catch (Exception $exception) {
+            throw new RuntimeException("Unable to save package.json: {$exception->getMessage()}", $exception->getCode(), $exception);
+        }
+    }
+
+    /**
+     * Add environment variables to .env & .env.example file
+     *
+     * @param  array<string, string|bool>  $variables
+     */
+    protected function addEnvironmentVariables(array $variables): void
+    {
+        $env = FileEditor::env($this->paths()->getEnvPath());
+        $envExample = FileEditor::env($this->paths()->getEnvExamplePath());
+
+        foreach ($variables as $key => $value) {
+            $env->set($key, $value);
+            $envExample->set($key);
+        }
+
+        $env->save();
+        $envExample->save();
+    }
+
+    /**
+     * Add configs to a specified file
+     *
+     * @param  array<string, string|bool|array|callable>  $configs
+     */
+    protected function addConfigs(string $file, array $configs): void
+    {
+        if ($file === '' && $configs !== []) {
+            throw new RuntimeException('Config file name cannot be empty.');
+        }
+
+        $config = FileEditor::config($this->paths()->getPath('config/'.$file));
+
+        foreach ($configs as $name => $value) {
+            $config->set($name, $value);
+        }
+
+        $config->save();
+    }
+
+    /**
      * Run commands after tool installation
      *
      * @param  array<string>  $commands

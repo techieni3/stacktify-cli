@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services\Installers;
 
+use Techieni3\StacktifyCli\Enums\DeveloperTool;
+
 /**
  * Installs the selected developer tools.
  */
@@ -19,6 +21,8 @@ final class DeveloperToolsInstaller extends AbstractInstaller
         if ($tools === []) {
             return;
         }
+
+        $isStacktifySelected = in_array(DeveloperTool::Stacktify, $tools, true);
 
         foreach ($tools as $tool) {
             if ($tool->requiresSpecialHandling()) {
@@ -36,7 +40,33 @@ final class DeveloperToolsInstaller extends AbstractInstaller
                 devDependencies: $installable->devDependencies(),
             );
 
+            if ($tool === DeveloperTool::Octane) {
+                $this->runCommands($installable->postInstall($isStacktifySelected));
+            } else {
+                $this->runCommands($installable->postInstall());
+            }
+
             $this->publishStubs($installable->stubs());
+
+            $this->addComposerScripts($installable->composerScripts());
+            $this->appendComposerScripts($installable->composerPostUpdateScripts());
+
+            $this->addNpmScripts($installable->npmScripts());
+
+            $this->addEnvironmentVariables($installable->environmentVariables());
+
+            $this->addConfigs($installable->configFile(), $installable->configs());
+
+            if ($isStacktifySelected) {
+                $this->runCommands([
+                    'composer run refactor',
+                    'composer run lint',
+                ]);
+            }
+
+            $this->commitChanges("chore: install and configure {$tool->name}");
+
+            $this->notifySuccess($tool->name.' installed successfully');
         }
     }
 }

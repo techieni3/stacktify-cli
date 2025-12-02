@@ -49,7 +49,7 @@ interface Installable
     /**
      * Get composer scripts to add to composer.json 'post-update-cmd' section.
      *
-     * @return array<Script>
+     * @return array<string, string|array<string>>
      */
     public function composerPostUpdateScripts(): array;
 
@@ -59,6 +59,18 @@ interface Installable
      * @return array<Script>
      */
     public function npmScripts(): array;
+
+    /**
+     * Get the name of a config file.
+     */
+    public function configFile(): string;
+
+    /**
+     * Get configs to update.
+     *
+     * @return array<string, string|bool|array|callable>
+     */
+    public function configs(): array;
 
     /**
      * Commands / Scripts to run after package install.

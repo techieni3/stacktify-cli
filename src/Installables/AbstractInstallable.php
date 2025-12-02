@@ -64,6 +64,19 @@ abstract readonly class AbstractInstallable implements Installable
         return [];
     }
 
+    public function configFile(): string
+    {
+        return '';
+    }
+
+    /**
+     * @return array{}
+     */
+    public function configs(): array
+    {
+        return [];
+    }
+
     /**
      * @return array{}
      */
