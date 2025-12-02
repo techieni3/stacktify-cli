@@ -147,6 +147,10 @@ trait CollectsScaffoldInputs
 
         $this->config->setToolingPreference($toolingPreference);
 
+        if ($toolingPreference === ToolingPreference::Recommended) {
+            $this->config->setDeveloperTools(ToolingPreference::recommendedTools());
+        }
+
         if ($toolingPreference === ToolingPreference::Custom) {
             $selectedTools = multiselect(
                 label: 'Select the tools you want to include:',
@@ -155,7 +159,9 @@ trait CollectsScaffoldInputs
             );
 
             $this->config->setDeveloperTools(DeveloperTool::fromSelection($selectedTools));
-        } else {
+        }
+
+        if ($toolingPreference === ToolingPreference::Skip) {
             $this->config->setDeveloperTools([]);
         }
 

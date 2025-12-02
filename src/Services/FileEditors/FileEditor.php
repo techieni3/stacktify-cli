@@ -41,6 +41,14 @@ final class FileEditor
     }
 
     /**
+     * Open a service provider file for editing.
+     */
+    public static function serviceProvider(string $filePath): ServiceProviderEditor
+    {
+        return new ServiceProviderEditor($filePath);
+    }
+
+    /**
      * Open a config file for editing.
      */
     public static function config(string $filePath): ConfigFileEditor

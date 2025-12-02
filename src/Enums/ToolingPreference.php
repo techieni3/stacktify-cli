@@ -23,6 +23,18 @@ enum ToolingPreference: string implements PromptSelectableEnum
         return self::Recommended->value;
     }
 
+    /**
+     * @return DeveloperTool[]
+     */
+    public static function recommendedTools(): array
+    {
+        return [
+            DeveloperTool::Stacktify,
+            DeveloperTool::Octane,
+            DeveloperTool::Telescope,
+        ];
+    }
+
     public function label(): string
     {
         return match ($this) {
