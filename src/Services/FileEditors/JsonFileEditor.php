@@ -52,6 +52,41 @@ final class JsonFileEditor extends BaseFileEditor
     }
 
     /**
+     * Append a command to an existing script.
+     *
+     * @param  string|array<string>  $command
+     */
+    public function appendToScript(string $name, string|array $command): self
+    {
+        if ( ! $this->hasScriptsSection()) {
+            $this->jsonContent['scripts'] = [];
+        }
+
+        if ( ! $this->hasScript($name)) {
+            // Convert command to array if it's a string
+            $commandsToAdd = is_array($command) ? $command : [$command];
+            // Script doesn't exist, create it as an array
+            $this->jsonContent['scripts'][$name] = $commandsToAdd;
+        } else {
+            $existingValue = $this->jsonContent['scripts'][$name];
+
+            // Convert an existing value to array if it's a string
+            if (is_string($existingValue)) {
+                $existingValue = [$existingValue];
+            }
+
+            // Append new commands to an existing array
+            is_array($command) ? $existingValue = [...$existingValue, ...$command] : $existingValue[] = $command;
+
+            $this->jsonContent['scripts'][$name] = $existingValue;
+        }
+
+        $this->isChanged = true;
+
+        return $this;
+    }
+
+    /**
      * Remove a script from the JSON content.
      */
     public function removeScript(string $name): self

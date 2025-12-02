@@ -112,6 +112,126 @@ it('preserves existing scripts in package.json when adding new ones', function (
         ->toContain('"lint": "eslint ."');
 });
 
+it('appends a command to a non-existent script', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->appendToScript('post-update-cmd', '@php artisan optimize');
+
+    expect($composerJson->save())->toBeTrue();
+
+    $content = json_decode(file_get_contents($destinationDirectory.'/composer.json'), true);
+
+    expect($content['scripts']['post-update-cmd'])
+        ->toBeArray()
+        ->toHaveCount(1)
+        ->toContain('@php artisan optimize');
+});
+
+it('appends a command to an existing script with string value', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    // First add a script as a string
+    $composerJson->addScript(new Script('post-update-cmd', '@php artisan migrate'));
+    $composerJson->save();
+
+    // Reload the file
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    // Append to it - should convert to array
+    $composerJson->appendToScript(
+        'post-update-cmd',
+        '@php artisan optimize',
+    );
+
+    expect($composerJson->save())->toBeTrue();
+
+    $content = json_decode(file_get_contents($destinationDirectory.'/composer.json'), true);
+
+    expect($content['scripts']['post-update-cmd'])
+        ->toBeArray()
+        ->toHaveCount(2)
+        ->toContain('@php artisan migrate')
+        ->toContain('@php artisan optimize');
+});
+
+it('appends a command to an existing script with array value', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    // Add a script with array value
+    $composerJson->addScript(
+        new Script('post-update-cmd', [
+            '@php artisan migrate',
+            '@php artisan cache:clear',
+        ]),
+    );
+
+    $composerJson->save();
+
+    // Reload and append
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->appendToScript('post-update-cmd', '@php artisan optimize');
+
+    expect($composerJson->save())->toBeTrue();
+
+    $content = json_decode(file_get_contents($destinationDirectory.'/composer.json'), true);
+
+    expect($content['scripts']['post-update-cmd'])
+        ->toBeArray()
+        ->toHaveCount(3)
+        ->toContain('@php artisan migrate')
+        ->toContain('@php artisan cache:clear')
+        ->toContain('@php artisan optimize');
+});
+
+it('appends multiple commands at once', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->appendToScript('post-update-cmd', [
+        '@php artisan migrate',
+        '@php artisan optimize',
+        '@php artisan cache:clear',
+    ]);
+
+    expect($composerJson->save())->toBeTrue();
+
+    $content = json_decode(file_get_contents($destinationDirectory.'/composer.json'), true);
+
+    expect($content['scripts']['post-update-cmd'])
+        ->toBeArray()
+        ->toHaveCount(3)
+        ->toContain('@php artisan migrate')
+        ->toContain('@php artisan optimize')
+        ->toContain('@php artisan cache:clear');
+});
+
+it('appends multiple commands to existing script', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    // Add initial script
+    $composerJson->addScript(new Script('post-install-cmd', '@php artisan key:generate'));
+
+    expect($composerJson->save())->toBeTrue();
+
+    // Reload and append multiple
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+    $composerJson->appendToScript('post-install-cmd', [
+        '@php artisan migrate',
+        '@php artisan db:seed',
+    ]);
+
+    expect($composerJson->save())->toBeTrue();
+
+    $content = json_decode(file_get_contents($destinationDirectory.'/composer.json'), true);
+
+    expect($content['scripts']['post-install-cmd'])
+        ->toBeArray()
+        ->toHaveCount(3)
+        ->toContain('@php artisan key:generate')
+        ->toContain('@php artisan migrate')
+        ->toContain('@php artisan db:seed');
+});
+
 it('properly writes composer.json file', function () use ($destinationDirectory): void {
     $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
 
