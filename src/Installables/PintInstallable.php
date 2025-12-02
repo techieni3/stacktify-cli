@@ -30,7 +30,7 @@ final readonly class PintInstallable extends AbstractInstallable
     public function composerScripts(): array
     {
         return [
-            new Script(name: 'lint', command: 'pint'),
+            new Script(name: 'lint', command: 'pint --parallel'),
             new Script(name: 'test:lint', command: 'pint --test'),
         ];
     }
