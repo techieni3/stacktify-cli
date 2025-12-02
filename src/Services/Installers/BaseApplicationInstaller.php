@@ -159,6 +159,9 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
         $editor->save();
 
+        // run pint for all files
+        $this->runCommands($this->pintInstallable->postInstall());
+
         $this->commitChanges('feat: configure AppServiceProvider with stacktify recommended defaults');
 
         $this->notifySuccess('AppServiceProvider configured successfully');
