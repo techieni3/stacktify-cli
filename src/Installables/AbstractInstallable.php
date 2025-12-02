@@ -51,6 +51,14 @@ abstract readonly class AbstractInstallable implements Installable
     /**
      * @return array{}
      */
+    public function composerPostUpdateScripts(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array{}
+     */
     public function npmScripts(): array
     {
         return [];
@@ -60,22 +68,6 @@ abstract readonly class AbstractInstallable implements Installable
      * @return array{}
      */
     public function postInstall(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array{}
-     */
-    public function postUpdate(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array{}
-     */
-    public function runAfterInstall(): array
     {
         return [];
     }

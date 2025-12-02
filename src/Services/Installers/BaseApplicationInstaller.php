@@ -54,7 +54,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->addScripts($this->pintInstallable->composerScripts());
 
         // run pint for all files
-        $this->runScripts($this->pintInstallable->runAfterInstall());
+        $this->runCommands($this->pintInstallable->postInstall());
 
         // commit changes
         $this->commitChanges('chore: configure Pint code formatter');
@@ -70,7 +70,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $installable = new RectorInstallable();
 
         // install rector
-        $this->composer()->installDevDependencies($installable->devDependencies());
+        $this->installPackages(devDependencies: $installable->devDependencies());
 
         // publish pint config
         $this->publishStubs($installable->stubs());
@@ -79,10 +79,10 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->addScripts($installable->composerScripts());
 
         // run rector for all files
-        $this->runScripts($installable->runAfterInstall());
+        $this->runCommands($installable->postInstall());
 
         // run pint for all files
-        $this->runScripts($this->pintInstallable->runAfterInstall());
+        $this->runCommands($this->pintInstallable->postInstall());
 
         // commit changes
         $this->commitChanges('chore: configure Rector for code refactoring');
@@ -98,10 +98,13 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $installable = new PhpstanInstallable();
 
         // install phpstan
-        $this->composer()->installDevDependencies($installable->devDependencies());
+        $this->installPackages(devDependencies: $installable->devDependencies());
 
         // publish phpstan config
         $this->publishStubs($installable->stubs());
+
+        // add a composer script
+        $this->addScripts($installable->composerScripts());
 
         // commit changes
         $this->commitChanges('chore: configure Phpstan for static analysis');

@@ -51,7 +51,7 @@ final readonly class RectorInstallable extends AbstractInstallable
      * @return array<int, string>
      */
     #[Override]
-    public function runAfterInstall(): array
+    public function postInstall(): array
     {
         return [
             'composer run refactor',

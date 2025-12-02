@@ -313,6 +313,7 @@ it('properly writes .env file', function () use ($destinationDirectory): void {
         if ($trim === '') {
             continue;
         }
+
         if (str_starts_with($trim, '#')) {
             continue;
         }

@@ -47,6 +47,13 @@ interface Installable
     public function composerScripts(): array;
 
     /**
+     * Get composer scripts to add to composer.json 'post-update-cmd' section.
+     *
+     * @return array<Script>
+     */
+    public function composerPostUpdateScripts(): array;
+
+    /**
      * Get npm scripts to add to package.json.
      *
      * @return array<Script>
@@ -54,23 +61,9 @@ interface Installable
     public function npmScripts(): array;
 
     /**
-     * Post-installation hook for additional setup.
+     * Commands / Scripts to run after package install.
      *
      * @return array<string>
      */
     public function postInstall(): array;
-
-    /**
-     * Post-update hook for additional setup.
-     *
-     * @return array<string>
-     */
-    public function postUpdate(): array;
-
-    /**
-     * Run after installation.
-     *
-     * @return array<string>
-     */
-    public function runAfterInstall(): array;
 }

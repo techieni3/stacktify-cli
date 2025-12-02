@@ -97,7 +97,7 @@ abstract class AbstractInstaller
      * @param  array<int, string>  $dependencies
      * @param  array<int, string>  $devDependencies
      */
-    protected function installPackages(array $dependencies, array $devDependencies): void
+    protected function installPackages(array $dependencies = [], array $devDependencies = []): void
     {
         if ($dependencies !== []) {
             $this->composer()->installDependencies($dependencies);
@@ -150,7 +150,7 @@ abstract class AbstractInstaller
      *
      * @param  array<string>  $commands
      */
-    protected function runScripts(array $commands): void
+    protected function runCommands(array $commands): void
     {
         foreach ($commands as $command) {
             if (str_starts_with($command, 'composer run')) {

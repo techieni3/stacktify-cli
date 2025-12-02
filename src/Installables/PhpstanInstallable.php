@@ -49,7 +49,7 @@ final readonly class PhpstanInstallable extends AbstractInstallable
      * @return array<int, string>
      */
     #[Override]
-    public function runAfterInstall(): array
+    public function postInstall(): array
     {
         return [
             'composer run analyse',
