@@ -126,7 +126,7 @@ abstract class AbstractInstaller
      *
      * @param  array<Script>  $scripts
      */
-    protected function addScripts(array $scripts): void
+    protected function addComposerScripts(array $scripts): void
     {
         try {
             $composerJson = FileEditor::json($this->paths()->getInstallationDirectory().DIRECTORY_SEPARATOR.'composer.json');

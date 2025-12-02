@@ -39,24 +39,16 @@ final class TestingFrameworkInstaller extends AbstractInstaller
 
         $this->installPestPlugins();
 
-        $this->addComposerScripts();
-
-        $this->commitChanges('chore: configure Pest testing framework');
-
-        $this->notifySuccess('Pest installed successfully');
-    }
-
-    /**
-     * Adds the composer scripts for running tests.
-     */
-    private function addComposerScripts(): void
-    {
-        $this->addScripts([
+        $this->addComposerScripts([
             new Script(name: 'test', command: [
                 '@php artisan config:clear --ansi',
                 '@php artisan test --parallel',
             ]),
         ]);
+
+        $this->commitChanges('chore: configure Pest testing framework');
+
+        $this->notifySuccess('Pest installed successfully');
     }
 
     /**

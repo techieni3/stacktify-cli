@@ -51,7 +51,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->publishStubs($this->pintInstallable->stubs());
 
         // add a composer script
-        $this->addScripts($this->pintInstallable->composerScripts());
+        $this->addComposerScripts($this->pintInstallable->composerScripts());
 
         // run pint for all files
         $this->runCommands($this->pintInstallable->postInstall());
@@ -76,7 +76,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->publishStubs($installable->stubs());
 
         // add a composer script
-        $this->addScripts($installable->composerScripts());
+        $this->addComposerScripts($installable->composerScripts());
 
         // run rector for all files
         $this->runCommands($installable->postInstall());
@@ -104,7 +104,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->publishStubs($installable->stubs());
 
         // add a composer script
-        $this->addScripts($installable->composerScripts());
+        $this->addComposerScripts($installable->composerScripts());
 
         // commit changes
         $this->commitChanges('chore: configure Phpstan for static analysis');
