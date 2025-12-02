@@ -44,6 +44,23 @@ describe('set', function () use ($destinationDirectory): void {
         expect($content)->toContain("'name' => env('APP_NAME', 'My App')");
     });
 
+    it('sets a env function as value from array', function () use ($destinationDirectory): void {
+        $editor = new ConfigFileEditor($destinationDirectory.'/app.php');
+
+        $configs = [
+            'name' => static fn () => env('APP_NAME', 'My App'),
+        ];
+
+        foreach ($configs as $name => $value) {
+            $editor->set($name, $value);
+        }
+        $editor->save();
+
+        $content = file_get_contents($destinationDirectory.'/app.php');
+
+        expect($content)->toContain("'name' => env('APP_NAME', 'My App')");
+    });
+
     it('sets multiple values', function () use ($destinationDirectory): void {
         $editor = new ConfigFileEditor($destinationDirectory.'/app.php');
 

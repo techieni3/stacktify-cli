@@ -7,9 +7,11 @@ namespace Techieni3\StacktifyCli\Services\FileEditors;
 use PhpParser\Error;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
+use PhpParser\Token;
 use RuntimeException;
 
 /**
@@ -23,6 +25,13 @@ abstract class BasePhpEditor extends BaseFileEditor
      * @var array<Stmt>|null
      */
     protected ?array $ast = null;
+
+    /**
+     * Tokens of the PHP file.
+     *
+     * @var Token[]
+     */
+    protected array $token;
 
     /**
      * Save changes to the PHP file.
@@ -45,6 +54,7 @@ abstract class BasePhpEditor extends BaseFileEditor
         try {
             $parser = new ParserFactory()->createForNewestSupportedVersion();
             $this->ast = $parser->parse($this->content);
+            $this->token = $parser->getTokens();
 
             if ($this->ast === null) {
                 throw new RuntimeException('Failed to parse PHP file');
@@ -65,10 +75,13 @@ abstract class BasePhpEditor extends BaseFileEditor
     {
         $ast = $this->parse();
 
+        $traverser = new NodeTraverser(new CloningVisitor());
+        $newStmts = $traverser->traverse($ast);
+
         $traverser = new NodeTraverser();
         $traverser->addVisitor($visitor);
 
-        return $traverser->traverse($ast);
+        return $traverser->traverse($newStmts);
     }
 
     /**
@@ -78,6 +91,6 @@ abstract class BasePhpEditor extends BaseFileEditor
      */
     protected function prettyPrint(array $ast): string
     {
-        return new Standard()->prettyPrintFile($ast);
+        return new Standard()->printFormatPreserving($ast, $this->ast, $this->token);
     }
 }

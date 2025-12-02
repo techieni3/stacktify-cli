@@ -281,6 +281,13 @@ final class ConfigFileVisitor extends NodeVisitorAbstract
         // Extract the closure source lines
         $closureBody = implode('', array_slice($fileContent, $startLine - 1, $endLine - $startLine + 1));
 
+        if (substr_count($closureBody, '=>') === 2 && str_ends_with($closureBody, ','.PHP_EOL)) {
+            $parts = explode('=>', $closureBody);
+
+            array_shift($parts);
+            $closureBody = str_replace(','.PHP_EOL, ';', implode('=>', $parts));
+        }
+
         $parser = new ParserFactory()->createForNewestSupportedVersion();
 
         try {
