@@ -36,10 +36,29 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
         $this->pintInstallable = new PintInstallable();
 
+        $this->updateEnvironmentFile();
         $this->configurePint();
         $this->configureAppServiceProvider();
         $this->configureRector();
         $this->configurePhpstan();
+    }
+
+    /**
+     * Update the .env file with the default values.
+     */
+    private function updateEnvironmentFile(): void
+    {
+        FileEditor::env($this->paths()->getEnvExamplePath())
+            ->set([
+                'APP_ENV' => 'production',
+                'APP_DEBUG' => 'false',
+            ])
+            ->save();
+
+        // commit changes
+        $this->commitChanges('chore: update env.example with recommended defaults');
+
+        $this->notifySuccess('Environment file updated successfully');
     }
 
     /**
