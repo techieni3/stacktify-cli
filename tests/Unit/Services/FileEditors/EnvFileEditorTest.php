@@ -293,3 +293,40 @@ describe('real-world scenarios', function () use ($destinationDirectory): void {
             ->and($env->get('MAIL_PASSWORD'))->toBe('test#pass');
     });
 });
+
+it('properly writes .env file', function () use ($destinationDirectory): void {
+    $env = new EnvFileEditor($destinationDirectory.'/.env');
+
+    $env->set('APP_NAME', 'My App')
+        ->set('DB_DATABASE', 'stacktify')
+        ->set('DB_PASSWORD', 's3cr3t p@ss')
+        ->setBoolean('APP_DEBUG', true)
+        ->comment('DB_PASSWORD')
+        ->uncomment('DB_PASSWORD')
+        ->save();
+
+    $content = file_get_contents($destinationDirectory.'/.env');
+    $lines = preg_split('/\r\n|\r|\n/', $content) ?: [];
+
+    foreach ($lines as $line) {
+        $trim = mb_trim($line);
+        if ($trim === '') {
+            continue;
+        }
+        if (str_starts_with($trim, '#')) {
+            continue;
+        }
+
+        // Basic .env syntax check: KEY=VALUE format
+        expect((bool) preg_match('/^[A-Z0-9_]+=.*/', $trim))->toBeTrue();
+    }
+
+    // Spot-check quoting rules and loaded values using the editor
+    expect($content)->toContain('APP_NAME="My App"')
+        ->and($content)->toContain('APP_DEBUG=true');
+
+    $fresh = new EnvFileEditor($destinationDirectory.'/.env');
+    expect($fresh->get('APP_NAME'))->toBe('My App')
+        ->and($fresh->get('APP_DEBUG'))->toBe('true')
+        ->and($fresh->isCommented('DB_PASSWORD'))->toBeFalse();
+});

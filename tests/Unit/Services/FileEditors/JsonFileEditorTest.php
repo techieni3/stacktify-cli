@@ -53,3 +53,18 @@ it('adds a script with array command', function () use ($destinationDirectory): 
     expect($content)->toContain('"npm run dev"')
         ->and($content)->toContain('"npm run build"');
 });
+
+it('properly writes composer.json file', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->addScript(new Script('coverage', 'php artisan test --coverage'))
+        ->save();
+
+    $json = file_get_contents($destinationDirectory.'/composer.json');
+    $decoded = json_decode($json, true);
+
+    expect(json_last_error())->toBe(JSON_ERROR_NONE)
+        ->and($decoded)->toBeArray()
+        ->and($decoded)->toHaveKey('scripts')
+        ->and($decoded['scripts'])->toHaveKey('coverage', 'php artisan test --coverage');
+});

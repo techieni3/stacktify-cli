@@ -383,3 +383,24 @@ PHP;
             ->and($content)->toContain('$this->configureModels()');
     });
 });
+
+it('properly write AppServiceProvider file', function () use ($destinationDirectory): void {
+    $editor = new ServiceProviderEditor($destinationDirectory.'/AppServiceProvider.php');
+
+    $editor->addUseStatements('Illuminate\Database\Eloquent\Model')
+        ->addToBoot([
+            'Model::preventLazyLoading(!$this->app->isProduction());',
+            'Model::preventSilentlyDiscardingAttributes(!$this->app->isProduction());',
+        ])
+        ->save();
+
+    // Verify the file has valid PHP syntax
+    $result = exec(
+        command: 'php -l '.escapeshellarg($destinationDirectory.'/AppServiceProvider.php').' 2>&1',
+        output: $output,
+        result_code: $returnCode
+    );
+
+    expect($returnCode)->toBe(0)
+        ->and($result)->toContain('No syntax errors detected');
+});

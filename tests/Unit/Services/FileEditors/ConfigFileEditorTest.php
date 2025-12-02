@@ -281,3 +281,23 @@ describe('real-world scenarios', function () use ($destinationDirectory): void {
             ->and($content)->toContain('MyFacade');
     });
 });
+
+it('properly write config file', function () use ($destinationDirectory): void {
+    $editor = new ConfigFileEditor($destinationDirectory.'/app.php');
+
+    $editor->set('name', 'MyApp')
+        ->set('env', 'local')
+        ->set('debug', true)
+        ->set('timezone', 'America/New_York')
+        ->save();
+
+    // Verify the file has valid PHP syntax
+    $result = exec(
+        command: 'php -l '.escapeshellarg($destinationDirectory.'/app.php').' 2>&1',
+        output: $output,
+        result_code: $returnCode
+    );
+
+    expect($returnCode)->toBe(0)
+        ->and($result)->toContain('No syntax errors detected');
+});
