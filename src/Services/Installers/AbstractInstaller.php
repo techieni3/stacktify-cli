@@ -159,7 +159,11 @@ abstract class AbstractInstaller
                 continue;
             }
 
-            $this->process()->runCommands([$command]);
+            $this->process()->runCommands(
+                commands: [$command],
+                workingPath: $this->paths()->getInstallationDirectory(),
+                description: sprintf('Running %s', $command)
+            );
         }
     }
 
