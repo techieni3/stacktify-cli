@@ -38,6 +38,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
         $this->updateEnvironmentFile();
         $this->installSecurityAdvisoryPackage();
+        $this->installOpinionatedStubs();
         $this->configurePint();
         $this->configureAppServiceProvider();
         $this->configureRector();
@@ -73,6 +74,25 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->commitChanges('chore: install Roave Security Advisory package');
 
         $this->notifySuccess('Installed Roave security advisory package');
+    }
+
+    /**
+     * Install opinionated stubs.
+     */
+    private function installOpinionatedStubs(): void
+    {
+        $this->installPackages(devDependencies: ['techieni3/laravel-stubs']);
+
+        $this->appendComposerScripts([
+            'post-update-cmd' => '@php artisan publish:stubs --force',
+        ]);
+
+        $this->runCommands(['php artisan publish:stubs']);
+
+        // commit changes
+        $this->commitChanges('chore: install opinionated stubs');
+
+        $this->notifySuccess('Installed opinionated stubs');
     }
 
     /**
