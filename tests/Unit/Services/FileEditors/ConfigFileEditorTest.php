@@ -54,6 +54,7 @@ describe('set', function () use ($destinationDirectory): void {
         foreach ($configs as $name => $value) {
             $editor->set($name, $value);
         }
+
         $editor->save();
 
         $content = file_get_contents($destinationDirectory.'/app.php');
