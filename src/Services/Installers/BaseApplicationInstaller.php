@@ -37,6 +37,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->pintInstallable = new PintInstallable();
 
         $this->updateEnvironmentFile();
+        $this->installSecurityAdvisoryPackage();
         $this->configurePint();
         $this->configureAppServiceProvider();
         $this->configureRector();
@@ -59,6 +60,19 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->commitChanges('chore: update env.example with recommended defaults');
 
         $this->notifySuccess('Environment file updated successfully');
+    }
+
+    /**
+     * Install Roave Security Advisory package.
+     */
+    private function installSecurityAdvisoryPackage(): void
+    {
+        $this->installPackages(devDependencies: ['roave/security-advisories:dev-latest']);
+
+        // commit changes
+        $this->commitChanges('chore: install Roave Security Advisory package');
+
+        $this->notifySuccess('Installed Roave security advisory package');
     }
 
     /**
