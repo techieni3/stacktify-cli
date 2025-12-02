@@ -204,8 +204,14 @@ abstract class AbstractInstaller
         $envExample = FileEditor::env($this->paths()->getEnvExamplePath());
 
         foreach ($variables as $key => $value) {
-            $env->set($key, $value);
-            $envExample->set($key);
+            if (is_bool($value)) {
+                $env->setBoolean($key, $value);
+                $envExample->setBoolean($key, $value);
+            } else {
+                $env->set($key, $value);
+                $envExample->set($key, $value);
+            }
+
         }
 
         $env->save();
