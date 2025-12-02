@@ -44,15 +44,4 @@ final readonly class PhpstanInstallable extends AbstractInstallable
             new Script(name: 'analyse', command: 'phpstan analyse'),
         ];
     }
-
-    /**
-     * @return array<int, string>
-     */
-    #[Override]
-    public function postInstall(): array
-    {
-        return [
-            'composer run analyse',
-        ];
-    }
 }
