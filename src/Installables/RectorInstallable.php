@@ -9,6 +9,9 @@ use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
  * An installable for Rector.
+ *
+ * @see https://getrector.com/documentation/
+ * @see https://github.com/driftingly/rector-laravel
  */
 final readonly class RectorInstallable extends AbstractInstallable
 {

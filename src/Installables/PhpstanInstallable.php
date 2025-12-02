@@ -8,7 +8,10 @@ use Override;
 use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
- * An installable for Pint.
+ * An installable for Phpstan & Larastan.
+ *
+ * @see https://phpstan.org/user-guide/getting-started
+ * @see https://github.com/larastan/larastan
  */
 final readonly class PhpstanInstallable extends AbstractInstallable
 {

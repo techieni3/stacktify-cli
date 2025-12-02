@@ -9,6 +9,9 @@ use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
  * An installable for Pint.
+ *
+ * @see https://laravel.com/docs/pint
+ * @see https://cs.symfony.com/doc/rules/index.html
  */
 final readonly class PintInstallable extends AbstractInstallable
 {

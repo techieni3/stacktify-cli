@@ -53,6 +53,8 @@ final class TestingFrameworkInstaller extends AbstractInstaller
 
     /**
      * Installs Pest and its dependencies.
+     *
+     * @see https://pestphp.com/docs/installation
      */
     private function installPest(): void
     {

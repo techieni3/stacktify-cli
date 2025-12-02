@@ -9,6 +9,9 @@ use Override;
 
 /**
  * An installable for Laravel Octane.
+ *
+ * @see https://laravel.com/docs/octane
+ * @see https://frankenphp.dev
  */
 final readonly class OctaneInstallable extends AbstractInstallable
 {

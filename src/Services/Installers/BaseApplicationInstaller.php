@@ -65,6 +65,8 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
     /**
      * Install Roave Security Advisory package.
+     *
+     * @see https://github.com/Roave/SecurityAdvisories
      */
     private function installSecurityAdvisoryPackage(): void
     {
@@ -78,6 +80,8 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
     /**
      * Install opinionated stubs.
+     *
+     * @see https://github.com/techieni3/laravel-stubs
      */
     private function installOpinionatedStubs(): void
     {
@@ -97,6 +101,9 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
     /**
      * Configure Pint for the project.
+     *
+     * @see https://laravel.com/docs/pint
+     * @see https://cs.symfony.com/doc/rules/index.html
      */
     private function configurePint(): void
     {
@@ -117,6 +124,9 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
     /**
      * Configure Rector for the project.
+     *
+     * @see https://getrector.com/documentation/
+     * @see https://github.com/driftingly/rector-laravel
      */
     private function configureRector(): void
     {
@@ -145,6 +155,9 @@ final class BaseApplicationInstaller extends AbstractInstaller
 
     /**
      * Configure Phpstan & larastan for the project.
+     *
+     * @see https://phpstan.org/user-guide/getting-started
+     * @see https://github.com/larastan/larastan
      */
     private function configurePhpstan(): void
     {
