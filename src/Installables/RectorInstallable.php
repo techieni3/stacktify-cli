@@ -44,6 +44,10 @@ final readonly class RectorInstallable extends AbstractInstallable
         return [
             new Script(name: 'refactor', command: 'rector'),
             new Script(name: 'test:refactor', command: 'rector --dry-run'),
+            new Script(name: 'format', command: [
+                'rector',
+                'pint --parallel',
+            ]),
         ];
     }
 
