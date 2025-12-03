@@ -37,6 +37,8 @@ enum DeveloperTool: string implements PromptSelectableEnum
     {
         return [
             self::Stacktify->value,
+            self::Octane->value,
+            self::Telescope->value,
         ];
     }
 
