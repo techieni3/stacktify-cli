@@ -27,6 +27,22 @@ abstract readonly class AbstractInstallable implements Installable
     /**
      * @return array{}
      */
+    public function npmDependencies(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array{}
+     */
+    public function npmDevDependencies(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array{}
+     */
     public function environmentVariables(): array
     {
         return [];

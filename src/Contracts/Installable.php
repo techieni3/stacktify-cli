@@ -26,6 +26,20 @@ interface Installable
     public function devDependencies(): array;
 
     /**
+     * Get the NPM package name(s) to install.
+     *
+     * @return array<string>
+     */
+    public function npmDependencies(): array;
+
+    /**
+     * Get the development NPM package name(s) to install.
+     *
+     * @return array<string>
+     */
+    public function npmDevDependencies(): array;
+
+    /**
      * Get the environment variables to add to .env.
      *
      * @return array<string, string>

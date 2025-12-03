@@ -109,6 +109,23 @@ abstract class AbstractInstaller
     }
 
     /**
+     * Install NPM dependencies.
+     *
+     * @param  array<int, string>  $dependencies
+     * @param  array<int, string>  $devDependencies
+     */
+    protected function installNpmPackages(array $dependencies = [], array $devDependencies = []): void
+    {
+        if ($dependencies !== []) {
+            $this->node()->installDependencies($dependencies);
+        }
+
+        if ($devDependencies !== []) {
+            $this->node()->installDevDependencies($devDependencies);
+        }
+    }
+
+    /**
      * Publish stub files to the project.
      *
      * @param  array<string, string>  $stubs

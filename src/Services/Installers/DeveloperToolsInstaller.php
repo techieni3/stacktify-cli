@@ -40,6 +40,11 @@ final class DeveloperToolsInstaller extends AbstractInstaller
                 devDependencies: $installable->devDependencies(),
             );
 
+            $this->installNpmPackages(
+                dependencies: $installable->npmDependencies(),
+                devDependencies: $installable->npmDevDependencies(),
+            );
+
             if ($tool === DeveloperTool::Octane) {
                 $this->runCommands($installable->postInstall($isStacktifySelected));
             } else {
