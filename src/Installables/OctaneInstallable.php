@@ -28,6 +28,15 @@ final readonly class OctaneInstallable extends AbstractInstallable
      * @return array<int, string>
      */
     #[Override]
+    public function npmDevDependencies(): array
+    {
+        return ['chokidar'];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    #[Override]
     public function postInstall(bool $useRecommended = true): array
     {
         if ($useRecommended) {
