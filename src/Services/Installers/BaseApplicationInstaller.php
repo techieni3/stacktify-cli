@@ -40,6 +40,7 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->installSecurityAdvisoryPackage();
         $this->installOpinionatedStubs();
         $this->configurePint();
+        $this->configureSqliteConnection();
         $this->configureAppServiceProvider();
         $this->configureRector();
         $this->configurePhpstan();
@@ -61,6 +62,25 @@ final class BaseApplicationInstaller extends AbstractInstaller
         $this->commitChanges('chore: update env.example with recommended defaults');
 
         $this->notifySuccess('Environment file updated successfully');
+    }
+
+    /**
+     * Configure SQLite database settings.
+     */
+    private function configureSqliteConnection(): void
+    {
+        FileEditor::config($this->paths()->getPath('config/database.php'))
+            ->set('connections.sqlite.busy_timeout', static fn () => env('DB_BUSY_TIMEOUT', 5000))
+            ->set('connections.sqlite.journal_mode', static fn () => env('DB_JOURNAL_MODE', 'WAL'))
+            ->set('connections.sqlite.synchronous', static fn () => env('DB_SYNCHRONOUS', 'NORMAL'))
+            ->save();
+
+        // run pint for all files
+        $this->runCommands($this->pintInstallable->postInstall());
+
+        // commit changes
+        $this->commitChanges('chore: configure SQLite database settings');
+        $this->notifySuccess('SQLite database settings configured successfully');
     }
 
     /**
