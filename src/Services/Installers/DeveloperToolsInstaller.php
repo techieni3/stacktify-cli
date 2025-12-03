@@ -45,13 +45,13 @@ final class DeveloperToolsInstaller extends AbstractInstaller
                 devDependencies: $installable->npmDevDependencies(),
             );
 
+            $this->publishStubs($installable->stubs());
+
             if ($tool === DeveloperTool::Octane) {
                 $this->runCommands($installable->postInstall($isStacktifySelected));
             } else {
                 $this->runCommands($installable->postInstall());
             }
-
-            $this->publishStubs($installable->stubs());
 
             $this->addComposerScripts($installable->composerScripts());
             $this->appendComposerScripts($installable->composerPostUpdateScripts());
