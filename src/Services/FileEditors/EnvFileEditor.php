@@ -87,6 +87,20 @@ final class EnvFileEditor extends BaseFileEditor
     }
 
     /**
+     * Add an empty line.
+     */
+    public function emptyLine(): self
+    {
+        $this->lines[] = [
+            'type' => 'empty',
+        ];
+
+        $this->isChanged = true;
+
+        return $this;
+    }
+
+    /**
      * Set with forced quoting (even if not needed).
      */
     public function setQuoted(string $key, string $value): self

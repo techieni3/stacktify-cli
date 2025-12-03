@@ -247,7 +247,10 @@ abstract class AbstractInstaller
 
         }
 
+        $env->emptyLine();
         $env->save();
+
+        $envExample->emptyLine();
         $envExample->save();
     }
 
