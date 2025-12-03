@@ -114,7 +114,7 @@ trait CollectsScaffoldInputs
         if ($testingFramework === TestingFramework::Pest) {
             $pestPluginOptions = PestPlugin::options();
 
-            // Remove browser testing plugin for API-only applications
+            // Remove the browser testing plugin for API-only applications
             // API applications don't have a frontend to test with browser automation
             if ($this->config->getFrontend() === Frontend::Api) {
                 unset($pestPluginOptions[PestPlugin::BrowserTest->value]);
@@ -152,10 +152,25 @@ trait CollectsScaffoldInputs
         }
 
         if ($toolingPreference === ToolingPreference::Custom) {
+
+            $developerToolOptions = DeveloperTool::options();
+
+            // Remove RoleAndPermissions when authentication is None or not set (API-only apps)
+            // Role and permission management requires authentication to be configured
+            if ($this->config->getAuthentication() === null || $this->config->getAuthentication() === Authentication::None) {
+                unset($developerToolOptions[DeveloperTool::RoleAndPermissions->value]);
+            }
+
+            // Filter default tools to only include those still available after removal
+            // array_values() is used to re-index the array for proper default selection
+            $defaultDeveloperTools = array_values(
+                array_filter(DeveloperTool::recommended(), static fn (string $tool): bool => array_key_exists($tool, $developerToolOptions))
+            );
+
             $selectedTools = multiselect(
                 label: 'Select the tools you want to include:',
-                options: DeveloperTool::options(),
-                default: DeveloperTool::recommended()
+                options: $developerToolOptions,
+                default: $defaultDeveloperTools
             );
 
             $this->config->setDeveloperTools(DeveloperTool::fromSelection($selectedTools));

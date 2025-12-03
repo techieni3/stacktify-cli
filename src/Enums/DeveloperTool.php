@@ -7,6 +7,7 @@ namespace Techieni3\StacktifyCli\Enums;
 use Techieni3\StacktifyCli\Contracts\Installable;
 use Techieni3\StacktifyCli\Contracts\PromptSelectableEnum;
 use Techieni3\StacktifyCli\Installables\OctaneInstallable;
+use Techieni3\StacktifyCli\Installables\RoleAndPermissionsInstallable;
 use Techieni3\StacktifyCli\Traits\BuildsPromptOptions;
 
 /**
@@ -18,6 +19,7 @@ enum DeveloperTool: string implements PromptSelectableEnum
 
     case Stacktify = 'stacktify';
     case Octane = 'octane';
+    case RoleAndPermissions = 'role_and_permissions';
     case Telescope = 'telescope';
     case Horizon = 'horizon';
     case Scout = 'scout';
@@ -50,6 +52,7 @@ enum DeveloperTool: string implements PromptSelectableEnum
             self::Telescope => 'Laravel Telescope',
             self::Horizon => 'Laravel Horizon',
             self::Scout => 'Laravel Scout',
+            self::RoleAndPermissions => 'Laravel User Permissions',
         };
     }
 
@@ -57,6 +60,7 @@ enum DeveloperTool: string implements PromptSelectableEnum
     {
         return match ($this) {
             self::Octane => new OctaneInstallable(),
+            self::RoleAndPermissions => new RoleAndPermissionsInstallable(),
             default => null,
         };
     }
