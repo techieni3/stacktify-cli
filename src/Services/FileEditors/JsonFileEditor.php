@@ -87,6 +87,152 @@ final class JsonFileEditor extends BaseFileEditor
     }
 
     /**
+     * Set a value in the JSON content using dot notation.
+     */
+    public function set(string $key, mixed $value): self
+    {
+        $keys = explode('.', $key);
+        $current = &$this->jsonContent;
+
+        foreach ($keys as $i => $nestedKey) {
+            if ($i === count($keys) - 1) {
+                $current[$nestedKey] = $value;
+            } else {
+                if ( ! isset($current[$nestedKey]) || ! is_array($current[$nestedKey])) {
+                    $current[$nestedKey] = [];
+                }
+
+                $current = &$current[$nestedKey];
+            }
+        }
+
+        $this->isChanged = true;
+
+        return $this;
+    }
+
+    /**
+     * Get a value from the JSON content using dot notation.
+     */
+    public function get(string $key, mixed $default = null): mixed
+    {
+        $keys = explode('.', $key);
+        $current = $this->jsonContent;
+
+        foreach ($keys as $nestedKey) {
+            if (
+                ! is_array($current) ||
+                ! array_key_exists($nestedKey, $current)
+            ) {
+                return $default;
+            }
+
+            $current = $current[$nestedKey];
+        }
+
+        return $current;
+    }
+
+    /**
+     * Check if a key exists in the JSON content using dot notation.
+     */
+    public function has(string $key): bool
+    {
+        $keys = explode('.', $key);
+        $current = $this->jsonContent;
+
+        foreach ($keys as $nestedKey) {
+            if (
+                ! is_array($current) ||
+                ! array_key_exists($nestedKey, $current)
+            ) {
+                return false;
+            }
+
+            $current = $current[$nestedKey];
+        }
+
+        return true;
+    }
+
+    /**
+     * Append a value to an array in the JSON content using dot notation.
+     */
+    public function append(string $key, mixed $value): self
+    {
+        $current = $this->get($key, []);
+
+        if ( ! is_array($current)) {
+            $current = [$current];
+        }
+
+        $current[] = $value;
+
+        return $this->set($key, $current);
+    }
+
+    /**
+     * Merge values into an array in the JSON content using dot notation.
+     */
+    public function merge(string $key, array $values): self
+    {
+        $current = $this->get($key, []);
+
+        if ( ! is_array($current)) {
+            $current = [];
+        }
+
+        $merged = [...$current, ...$values];
+
+        return $this->set($key, $merged);
+    }
+
+    /**
+     * Remove a value from an array in the JSON content using dot notation.
+     */
+    public function removeValue(string $key, mixed $value): self
+    {
+        $current = $this->get($key);
+
+        if (is_array($current)) {
+            $filtered = array_values(
+                array_filter($current, static fn ($item): bool => $item !== $value),
+            );
+            $this->set($key, $filtered);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Delete a key from the JSON content using dot notation.
+     */
+    public function delete(string $key): self
+    {
+        $keys = explode('.', $key);
+        $lastKey = array_pop($keys);
+        $current = &$this->jsonContent;
+
+        foreach ($keys as $nestedKey) {
+            if (
+                ! is_array($current) ||
+                ! array_key_exists($nestedKey, $current)
+            ) {
+                return $this;
+            }
+
+            $current = &$current[$nestedKey];
+        }
+
+        if (is_array($current) && array_key_exists($lastKey, $current)) {
+            unset($current[$lastKey]);
+            $this->isChanged = true;
+        }
+
+        return $this;
+    }
+
+    /**
      * Remove a script from the JSON content.
      */
     public function removeScript(string $name): self

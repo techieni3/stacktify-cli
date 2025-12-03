@@ -232,6 +232,225 @@ it('appends multiple commands to existing script', function () use ($destination
         ->toContain('@php artisan db:seed');
 });
 
+it('sets a simple value using dot notation', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('version', '1.0.0');
+
+    expect($composerJson->save())
+        ->toBeTrue()
+        ->and(file_get_contents($destinationDirectory.'/composer.json'))
+        ->toContain('"version": "1.0.0"');
+});
+
+it('sets a nested value using dot notation', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('extra.laravel.dont-discover', ['laravel/telescope']);
+
+    expect($composerJson->save())->toBeTrue();
+
+    $content = file_get_contents($destinationDirectory.'/composer.json');
+
+    expect($content)
+        ->toContain('"extra"')
+        ->and($content)
+        ->toContain('"laravel"')
+        ->and($content)
+        ->toContain('"dont-discover"')
+        ->and($content)
+        ->toContain('"laravel/telescope"');
+});
+
+it('sets deeply nested values', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('config.platform.php', '8.3');
+
+    expect($composerJson->save())->toBeTrue();
+
+    $content = file_get_contents($destinationDirectory.'/composer.json');
+
+    expect($content)
+        ->toContain('"config"')
+        ->and($content)
+        ->toContain('"platform"')
+        ->and($content)
+        ->toContain('"php": "8.3"');
+});
+
+it('gets a value using dot notation', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('extra.laravel.dont-discover', ['laravel/telescope']);
+    $composerJson->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $value = $composerJson->get('extra.laravel.dont-discover');
+
+    expect($value)->toBe(['laravel/telescope']);
+});
+
+it('gets a value with default when key does not exist', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $value = $composerJson->get('nonexistent.key', 'default');
+
+    expect($value)->toBe('default');
+});
+
+it('checks if a key exists using dot notation', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('extra.laravel.dont-discover', ['laravel/telescope']);
+
+    expect($composerJson->has('extra.laravel.dont-discover'))
+        ->toBeTrue()
+        ->and($composerJson->has('nonexistent.key'))
+        ->toBeFalse();
+});
+
+it('appends a value to an array using dot notation', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('extra.laravel.dont-discover', ['laravel/telescope']);
+    $composerJson->append('extra.laravel.dont-discover', 'laravel/tinker');
+    $composerJson->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $value = $composerJson->get('extra.laravel.dont-discover');
+
+    expect($value)->toBe(['laravel/telescope', 'laravel/tinker']);
+});
+
+it('appends to a non-existent array', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->append('keywords', 'laravel');
+    $composerJson->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $value = $composerJson->get('keywords');
+
+    expect($value)->toBe(['laravel']);
+});
+
+it('merges values into an array', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('extra.laravel.dont-discover', ['laravel/telescope']);
+    $composerJson->merge('extra.laravel.dont-discover', [
+        'laravel/tinker',
+        'laravel/dusk',
+    ]);
+    $composerJson->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $value = $composerJson->get('extra.laravel.dont-discover');
+
+    expect($value)->toBe([
+        'laravel/telescope',
+        'laravel/tinker',
+        'laravel/dusk',
+    ]);
+});
+
+it('merges into a non-existent array', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->merge('keywords', ['laravel', 'cli']);
+    $composerJson->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $value = $composerJson->get('keywords');
+
+    expect($value)->toBe(['laravel', 'cli']);
+});
+
+it('removes a value from an array', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('extra.laravel.dont-discover', [
+        'laravel/telescope',
+        'laravel/tinker',
+        'laravel/dusk',
+    ]);
+    $composerJson->removeValue('extra.laravel.dont-discover', 'laravel/tinker');
+    $composerJson->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $value = $composerJson->get('extra.laravel.dont-discover');
+
+    expect($value)->toBe(['laravel/telescope', 'laravel/dusk']);
+});
+
+it('does nothing when removing from non-existent array', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->removeValue('nonexistent.key', 'value');
+
+    expect($composerJson->save())->toBeFalse();
+});
+
+it('deletes a key using dot notation', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->set('extra.laravel.dont-discover', ['laravel/telescope']);
+    $composerJson->set('extra.laravel.aliases', [
+        'MyAlias' => 'App\\Facades\\MyFacade',
+    ]);
+
+    $composerJson->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+    $composerJson->delete('extra.laravel.dont-discover');
+    $composerJson->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    expect($composerJson->has('extra.laravel.dont-discover'))
+        ->toBeFalse()
+        ->and($composerJson->has('extra.laravel.aliases'))
+        ->toBeTrue();
+});
+
+it('does nothing when deleting non-existent key', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson->delete('nonexistent.key');
+
+    expect($composerJson->save())->toBeFalse();
+});
+
+it('supports method chaining', function () use ($destinationDirectory): void {
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    $composerJson
+        ->set('version', '2.0.0')
+        ->append('keywords', 'laravel')
+        ->append('keywords', 'cli')
+        ->set('extra.laravel.dont-discover', ['laravel/telescope'])
+        ->addScript(new Script('test', 'phpunit'))
+        ->save();
+
+    $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
+
+    expect($composerJson->get('version'))
+        ->toBe('2.0.0')
+        ->and($composerJson->get('keywords'))
+        ->toBe(['laravel', 'cli'])
+        ->and($composerJson->get('extra.laravel.dont-discover'))
+        ->toBe(['laravel/telescope'])
+        ->and($composerJson->hasScript('test'))
+        ->toBeTrue();
+});
+
 it('properly writes composer.json file', function () use ($destinationDirectory): void {
     $composerJson = new JsonFileEditor($destinationDirectory.'/composer.json');
 
