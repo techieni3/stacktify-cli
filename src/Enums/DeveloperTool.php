@@ -8,6 +8,7 @@ use Techieni3\StacktifyCli\Contracts\Installable;
 use Techieni3\StacktifyCli\Contracts\PromptSelectableEnum;
 use Techieni3\StacktifyCli\Installables\OctaneInstallable;
 use Techieni3\StacktifyCli\Installables\RoleAndPermissionsInstallable;
+use Techieni3\StacktifyCli\Installables\TelescopeInstallable;
 use Techieni3\StacktifyCli\Traits\BuildsPromptOptions;
 
 /**
@@ -61,6 +62,7 @@ enum DeveloperTool: string implements PromptSelectableEnum
         return match ($this) {
             self::Octane => new OctaneInstallable(),
             self::RoleAndPermissions => new RoleAndPermissionsInstallable(),
+            self::Telescope => new TelescopeInstallable(),
             default => null,
         };
     }

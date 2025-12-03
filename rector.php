@@ -7,6 +7,7 @@ use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Enum_\EnumCaseToPascalCaseRector;
 use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
+use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
@@ -36,6 +37,7 @@ return RectorConfig::configure()
     ->withSkip([
         EncapsedStringsToSprintfRector::class,
         StringClassNameToClassConstantRector::class,
+        UseClassKeywordForClassNameResolutionRector::class,
     ])
     ->withCache(
         cacheDirectory: '/tmp/rector',
