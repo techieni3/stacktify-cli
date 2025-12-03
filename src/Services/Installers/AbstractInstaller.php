@@ -145,6 +145,10 @@ abstract class AbstractInstaller
      */
     protected function addComposerScripts(array $scripts): void
     {
+        if ($scripts === []) {
+            return;
+        }
+
         try {
             $composerJson = FileEditor::json($this->paths()->getInstallationDirectory().DIRECTORY_SEPARATOR.'composer.json');
         } catch (Exception $exception) {
@@ -169,6 +173,10 @@ abstract class AbstractInstaller
      */
     protected function appendComposerScripts(array $scripts): void
     {
+        if ($scripts === []) {
+            return;
+        }
+
         try {
             $composerJson = FileEditor::json($this->paths()->getInstallationDirectory().DIRECTORY_SEPARATOR.'composer.json');
         } catch (Exception $exception) {
@@ -193,6 +201,10 @@ abstract class AbstractInstaller
      */
     protected function addNpmScripts(array $scripts): void
     {
+        if ($scripts === []) {
+            return;
+        }
+
         try {
             $packageJson = FileEditor::json($this->paths()->getInstallationDirectory().DIRECTORY_SEPARATOR.'package.json');
         } catch (Exception $exception) {
@@ -217,6 +229,10 @@ abstract class AbstractInstaller
      */
     protected function addEnvironmentVariables(array $variables): void
     {
+        if ($variables === []) {
+            return;
+        }
+
         $env = FileEditor::env($this->paths()->getEnvPath());
         $envExample = FileEditor::env($this->paths()->getEnvExamplePath());
 
