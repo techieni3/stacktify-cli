@@ -91,19 +91,25 @@ final class JsonFileEditor extends BaseFileEditor
      */
     public function set(string $key, mixed $value): self
     {
+        // Normalize value: always store as an array, unique if an array given
+        $newValue = is_array($value) ? array_unique(array_unique($value)) : $value;
+
         $keys = explode('.', $key);
         $current = &$this->jsonContent;
+        $lastKey = array_key_last($keys);
 
         foreach ($keys as $i => $nestedKey) {
-            if ($i === count($keys) - 1) {
-                $current[$nestedKey] = $value;
-            } else {
-                if ( ! isset($current[$nestedKey]) || ! is_array($current[$nestedKey])) {
-                    $current[$nestedKey] = [];
-                }
-
-                $current = &$current[$nestedKey];
+            if ($i === $lastKey) {
+                $current[$nestedKey] = $newValue;
+                break;
             }
+
+            // Ensure the path exists and is an array
+            if ( ! isset($current[$nestedKey]) || ! is_array($current[$nestedKey])) {
+                $current[$nestedKey] = [];
+            }
+
+            $current = &$current[$nestedKey];
         }
 
         $this->isChanged = true;
