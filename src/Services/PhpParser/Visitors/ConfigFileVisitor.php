@@ -281,13 +281,32 @@ final class ConfigFileVisitor extends NodeVisitorAbstract
         // Extract the closure source lines
         $closureBody = implode('', array_slice($fileContent, $startLine - 1, $endLine - $startLine + 1));
 
-        if (mb_substr_count($closureBody, '=>') === 2 && str_ends_with($closureBody, ','.PHP_EOL)) {
+        $lines = array_filter(explode(PHP_EOL, $closureBody));
+        $lineCount = count($lines);
+
+        // Handle single-line closures
+        if ($lineCount === 1) {
+            $closureBody = str_replace(PHP_EOL, '', $closureBody);
+
+            if (!str_ends_with($closureBody, ';')) {
+                $closureBody = rtrim($closureBody, ", \t\n\r\0\x0B") . ';' . PHP_EOL;
+            }
+
+            // Remove the leading arrow operator in short closures
+            if (str_starts_with(trim($closureBody), '->')) {
+                $closureBody = ltrim($closureBody, " \t\n\r\0\x0B->");
+            }
+        }
+
+        // Handle "double arrow" logic ( => occurrences == 2 )
+        if (mb_substr_count($closureBody, '=>') === 2 && (str_ends_with($closureBody, ','.PHP_EOL) || str_ends_with($closureBody, PHP_EOL) || str_ends_with($closureBody, ';'.PHP_EOL))) {
             $parts = explode('=>', $closureBody);
 
             array_shift($parts);
             $closureBody = str_replace(','.PHP_EOL, ';', implode('=>', $parts));
         }
 
+        $closureBody = trim($closureBody);
         $parser = new ParserFactory()->createForNewestSupportedVersion();
 
         try {

@@ -44,6 +44,19 @@ describe('set', function () use ($destinationDirectory): void {
         expect($content)->toContain("'name' => env('APP_NAME', 'My App')");
     });
 
+    it('sets nested env function as value', function () use ($destinationDirectory): void {
+        $editor = new ConfigFileEditor($destinationDirectory.'/app.php');
+
+        $editor->set('connections.sqlite.busy_timeout', static fn () => env('DB_BUSY_TIMEOUT', 5000))
+            ->set('connections.sqlite.journal_mode', static fn () => env('DB_JOURNAL_MODE', 'WAL'))
+            ->set('connections.sqlite.synchronous', static fn () => env('DB_SYNCHRONOUS', 'NORMAL'))
+            ->save();
+
+        $content = file_get_contents($destinationDirectory.'/app.php');
+
+        expect($content)->toContain("'busy_timeout' => env('DB_BUSY_TIMEOUT', 5000)");
+    });
+
     it('sets a env function as value from array', function () use ($destinationDirectory): void {
         $editor = new ConfigFileEditor($destinationDirectory.'/app.php');
 
