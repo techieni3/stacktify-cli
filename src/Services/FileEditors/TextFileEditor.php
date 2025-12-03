@@ -98,6 +98,34 @@ final class TextFileEditor extends BaseFileEditor
     }
 
     /**
+     * Remove lines from the file based on a callback or text match.
+     */
+    public function removeLine(callable|string $text): self
+    {
+        $lines = explode(PHP_EOL, $this->content);
+        $filteredLines = [];
+
+        foreach ($lines as $line) {
+            $shouldRemove = is_callable($text)
+                ? $text($line)
+                : $text === $line;
+
+            if ( ! $shouldRemove) {
+                $filteredLines[] = $line;
+            }
+        }
+
+        $newContent = implode("\n", $filteredLines);
+
+        if ($newContent !== $this->content) {
+            $this->isChanged = true;
+            $this->content = $newContent;
+        }
+
+        return $this;
+    }
+
+    /**
      * Queue a Replacement for batch processing.
      */
     public function queueReplacement(Replacement $replacement): self
