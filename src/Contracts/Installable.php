@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Contracts;
 
+use Techieni3\StacktifyCli\Services\Installers\InstallerContext;
 use Techieni3\StacktifyCli\ValueObjects\Script;
 
 /**
@@ -104,4 +105,10 @@ interface Installable
      * }
      */
     public function serviceProviderConfig(): array;
+
+    /**
+     * Perform custom installation steps that cannot be represented declaratively.
+     * This method is called after all standard installation steps are completed.
+     */
+    public function customInstall(InstallerContext $context): void;
 }

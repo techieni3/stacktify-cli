@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Techieni3\StacktifyCli\Installables;
 
 use Techieni3\StacktifyCli\Contracts\Installable;
+use Techieni3\StacktifyCli\Services\Installers\InstallerContext;
 
 abstract readonly class AbstractInstallable implements Installable
 {
@@ -117,5 +118,10 @@ abstract readonly class AbstractInstallable implements Installable
             'boot' => [],
             'newMethods' => [],
         ];
+    }
+
+    public function customInstall(InstallerContext $context): void
+    {
+        // The default implementation does nothing
     }
 }

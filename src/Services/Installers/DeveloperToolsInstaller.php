@@ -47,6 +47,8 @@ final class DeveloperToolsInstaller extends AbstractInstaller
 
             $this->publishStubs($installable->stubs());
 
+            $installable->customInstall($this->context);
+
             if ($tool === DeveloperTool::Octane) {
                 $this->runCommands($installable->postInstall($isStacktifySelected));
             } else {
