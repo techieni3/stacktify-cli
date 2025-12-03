@@ -100,4 +100,22 @@ abstract readonly class AbstractInstallable implements Installable
     {
         return [];
     }
+
+    /**
+     * @return array{
+     *     useStatements: array{},
+     *     register: array{},
+     *     boot: array{},
+     *     newMethods: array{}
+     * }
+     */
+    public function serviceProviderConfig(): array
+    {
+        return [
+            'useStatements' => [],
+            'register' => [],
+            'boot' => [],
+            'newMethods' => [],
+        ];
+    }
 }

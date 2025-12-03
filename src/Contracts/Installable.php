@@ -92,4 +92,16 @@ interface Installable
      * @return array<string>
      */
     public function postInstall(): array;
+
+    /**
+     * Get service provider configuration to add to AppServiceProvider.
+     *
+     * @return array{
+     *     useStatements: array<string>,
+     *     register: array<string>,
+     *     boot: array<string>,
+     *     newMethods: array<string>
+     * }
+     */
+    public function serviceProviderConfig(): array;
 }

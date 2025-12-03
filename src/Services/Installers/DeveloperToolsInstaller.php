@@ -62,6 +62,8 @@ final class DeveloperToolsInstaller extends AbstractInstaller
 
             $this->addConfigs($installable->configFile(), $installable->configs());
 
+            $this->configureServiceProvider($installable->serviceProviderConfig());
+
             if ($isStacktifySelected) {
                 $this->runCommands([
                     'composer run refactor',

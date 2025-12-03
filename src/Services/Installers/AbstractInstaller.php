@@ -297,6 +297,49 @@ abstract class AbstractInstaller
     }
 
     /**
+     * Configure the AppServiceProvider with the provided configuration.
+     *
+     * @param  array{
+     *     useStatements: array<string>,
+     *     register: array<string>,
+     *     boot: array<string>,
+     *     newMethods: array<string>
+     * }  $config
+     */
+    protected function configureServiceProvider(array $config): void
+    {
+        if ($config['useStatements'] === [] &&
+            $config['register'] === [] &&
+            $config['boot'] === [] &&
+            $config['newMethods'] === []
+        ) {
+            return;
+        }
+
+        $serviceProviderPath = $this->paths()->getPath('app/Providers/AppServiceProvider.php');
+
+        $editor = FileEditor::serviceProvider($serviceProviderPath);
+
+        if ($config['useStatements'] !== []) {
+            $editor->addUseStatements($config['useStatements']);
+        }
+
+        if ($config['register'] !== []) {
+            $editor->addToRegister($config['register']);
+        }
+
+        if ($config['boot'] !== []) {
+            $editor->addToBoot($config['boot']);
+        }
+
+        if ($config['newMethods'] !== []) {
+            $editor->addMethods($config['newMethods']);
+        }
+
+        $editor->save();
+    }
+
+    /**
      * Commit changes
      */
     protected function commitChanges(string $message): void
