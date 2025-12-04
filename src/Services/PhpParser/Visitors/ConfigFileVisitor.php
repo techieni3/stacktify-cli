@@ -23,6 +23,15 @@ use ReflectionException;
 use ReflectionFunction;
 use RuntimeException;
 
+use function array_slice;
+use function count;
+use function is_array;
+use function is_bool;
+use function is_callable;
+use function is_float;
+use function is_int;
+use function is_string;
+
 /**
  * AST visitor for modifying Laravel config files.
  */
@@ -288,13 +297,13 @@ final class ConfigFileVisitor extends NodeVisitorAbstract
         if ($lineCount === 1) {
             $closureBody = str_replace(PHP_EOL, '', $closureBody);
 
-            if (!str_ends_with($closureBody, ';')) {
-                $closureBody = rtrim($closureBody, ", \t\n\r\0\x0B") . ';' . PHP_EOL;
+            if ( ! str_ends_with($closureBody, ';')) {
+                $closureBody = mb_rtrim($closureBody, ", \t\n\r\0\x0B").';'.PHP_EOL;
             }
 
             // Remove the leading arrow operator in short closures
-            if (str_starts_with(trim($closureBody), '->')) {
-                $closureBody = ltrim($closureBody, " \t\n\r\0\x0B->");
+            if (str_starts_with(mb_trim($closureBody), '->')) {
+                $closureBody = mb_ltrim($closureBody, " \t\n\r\0\x0B->");
             }
         }
 
@@ -306,7 +315,7 @@ final class ConfigFileVisitor extends NodeVisitorAbstract
             $closureBody = str_replace(','.PHP_EOL, ';', implode('=>', $parts));
         }
 
-        $closureBody = trim($closureBody);
+        $closureBody = mb_trim($closureBody);
         $parser = new ParserFactory()->createForNewestSupportedVersion();
 
         try {
@@ -321,18 +330,14 @@ final class ConfigFileVisitor extends NodeVisitorAbstract
                 }
 
                 if ($found instanceof Closure) {
-                    throw new RuntimeException(
-                        'Only arrow functions are supported. Please use arrow function syntax (fn() => ...) instead of closure syntax (function() {...})',
-                    );
+                    throw new RuntimeException('Only arrow functions are supported. Please use arrow function syntax (fn() => ...) instead of closure syntax (function() {...})');
                 }
             }
         } catch (Error $error) {
             throw new RuntimeException("Failed to parse callable: {$error->getMessage()}", $error->getCode(), $error);
         }
 
-        throw new RuntimeException(
-            'Only arrow functions are supported. Please provide an arrow function (fn() => ...)',
-        );
+        throw new RuntimeException('Only arrow functions are supported. Please provide an arrow function (fn() => ...)');
     }
 
     private function findClosureNode(Node $node): ?Node

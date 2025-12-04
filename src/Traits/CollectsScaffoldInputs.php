@@ -18,6 +18,7 @@ use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Traits\Prompts\PromptsForGitCredentials;
 use Techieni3\StacktifyCli\Traits\Prompts\PromptsForPackageManager;
 
+use function array_key_exists;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;

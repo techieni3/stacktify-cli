@@ -11,6 +11,8 @@ use Techieni3\StacktifyCli\Installables\PintInstallable;
 use Techieni3\StacktifyCli\Installables\RectorInstallable;
 use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
 
+use function in_array;
+
 /**
  * Apply baseline tweaks to a freshly scaffolded Laravel application.
  */
@@ -280,14 +282,14 @@ final class BaseApplicationInstaller extends AbstractInstaller
     private function getConfigureCommandsMethod(): string
     {
         return <<<'PHP'
-    /**
-     * Configure the application's commands.
-     */
-    private function configureCommands(): void
-    {
-        DB::prohibitDestructiveCommands($this->app->isProduction());
-    }
-PHP;
+                /**
+                 * Configure the application's commands.
+                 */
+                private function configureCommands(): void
+                {
+                    DB::prohibitDestructiveCommands($this->app->isProduction());
+                }
+            PHP;
     }
 
     /**
@@ -296,16 +298,16 @@ PHP;
     private function getConfigureDatesMethod(): string
     {
         return <<<'PHP'
-    /**
-     * It's recommended to use CarbonImmutable as it's immutable and thread-safe to avoid issues with mutability.
-     *
-     * @see https://dyrynda.com.au/blog/laravel-immutable-dates
-     */
-    private function configureDates(): void
-    {
-        Date::use(CarbonImmutable::class);
-    }
-PHP;
+                /**
+                 * It's recommended to use CarbonImmutable as it's immutable and thread-safe to avoid issues with mutability.
+                 *
+                 * @see https://dyrynda.com.au/blog/laravel-immutable-dates
+                 */
+                private function configureDates(): void
+                {
+                    Date::use(CarbonImmutable::class);
+                }
+            PHP;
     }
 
     /**
@@ -314,20 +316,20 @@ PHP;
     private function getConfigureModelsMethod(): string
     {
         return <<<'PHP'
-    /**
-     * Configure the application's models.
-     *
-     * @see https://laravel.com/docs/eloquent#configuring-eloquent-strictness
-     */
-    private function configureModels(): void
-    {
-        Model::unguard();
+                /**
+                 * Configure the application's models.
+                 *
+                 * @see https://laravel.com/docs/eloquent#configuring-eloquent-strictness
+                 */
+                private function configureModels(): void
+                {
+                    Model::unguard();
 
-        Model::shouldBeStrict($this->app->isLocal());
+                    Model::shouldBeStrict($this->app->isLocal());
 
-        Model::automaticallyEagerLoadRelationships($this->app->isProduction());
-    }
-PHP;
+                    Model::automaticallyEagerLoadRelationships($this->app->isProduction());
+                }
+            PHP;
     }
 
     /**
@@ -336,16 +338,16 @@ PHP;
     private function getConfigureUrlMethod(): string
     {
         return <<<'PHP'
-    /**
-     * Configure the application's URL.
-     *
-     * @see https://laravel.com/docs/octane#serving-your-application-via-https
-     */
-    private function configureUrl(): void
-    {
-        URL::forceHttps($this->app->isProduction());
-    }
-PHP;
+                /**
+                 * Configure the application's URL.
+                 *
+                 * @see https://laravel.com/docs/octane#serving-your-application-via-https
+                 */
+                private function configureUrl(): void
+                {
+                    URL::forceHttps($this->app->isProduction());
+                }
+            PHP;
     }
 
     /**
@@ -354,14 +356,14 @@ PHP;
     private function getConfigureViteMethod(): string
     {
         return <<<'PHP'
-    /**
-     * Configure the application's Vite loading strategy.
-     */
-    private function configureVite(): void
-    {
-        Vite::useAggressivePrefetching();
-    }
-PHP;
+                /**
+                 * Configure the application's Vite loading strategy.
+                 */
+                private function configureVite(): void
+                {
+                    Vite::useAggressivePrefetching();
+                }
+            PHP;
     }
 
     /**
@@ -370,15 +372,15 @@ PHP;
     private function getConfigureValidationsMethod(): string
     {
         return <<<'PHP'
-    /**
-     * Configure validation rules.
-     */
-    private function configureValidations(): void
-    {
-        Password::defaults(fn () => $this->app->isProduction() ? Password::min(8)->max(125) : null);
-        Email::defaults(fn () => $this->app->isProduction() ? Email::default()->validateMxRecord()->preventSpoofing() : null);
-    }
-PHP;
+                /**
+                 * Configure validation rules.
+                 */
+                private function configureValidations(): void
+                {
+                    Password::defaults(fn () => $this->app->isProduction() ? Password::min(8)->max(125) : null);
+                    Email::defaults(fn () => $this->app->isProduction() ? Email::default()->validateMxRecord()->preventSpoofing() : null);
+                }
+            PHP;
     }
 
     /**
@@ -387,15 +389,15 @@ PHP;
     private function getOptimizeTestsMethod(): string
     {
         return <<<'PHP'
-    /**
-     * Configure Stray Requests & sleep when running tests.
-     */
-    private function optimizeTests(): void
-    {
-        Http::preventStrayRequests($this->app->runningUnitTests());
+                /**
+                 * Configure Stray Requests & sleep when running tests.
+                 */
+                private function optimizeTests(): void
+                {
+                    Http::preventStrayRequests($this->app->runningUnitTests());
 
-        Sleep::fake($this->app->runningUnitTests());
-    }
-PHP;
+                    Sleep::fake($this->app->runningUnitTests());
+                }
+            PHP;
     }
 }

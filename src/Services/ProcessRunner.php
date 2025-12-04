@@ -9,6 +9,7 @@ use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
+use function function_exists;
 use function Laravel\Prompts\spin;
 
 /**

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services;
 
+use function count;
+use function sprintf;
+
 /**
  * A wrapper for running Composer commands.
  */

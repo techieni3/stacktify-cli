@@ -9,6 +9,9 @@ use Techieni3\StacktifyCli\Enums\Database;
 use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
 
+use function in_array;
+use function sprintf;
+
 /**
  * Runs database migrations for the application.
  */

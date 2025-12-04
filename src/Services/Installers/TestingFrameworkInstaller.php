@@ -13,6 +13,8 @@ use Techieni3\StacktifyCli\Services\FileEditors\FileEditor;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 use Techieni3\StacktifyCli\ValueObjects\Script;
 
+use function sprintf;
+
 /**
  * Installs the testing framework for the project.
  */

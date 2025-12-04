@@ -15,6 +15,9 @@ use Techieni3\StacktifyCli\Services\PathResolver;
 use Techieni3\StacktifyCli\Services\ProcessRunner;
 use Techieni3\StacktifyCli\ValueObjects\Script;
 
+use function is_bool;
+use function sprintf;
+
 /**
  * Base class for installers.
  */

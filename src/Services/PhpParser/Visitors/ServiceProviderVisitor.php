@@ -16,6 +16,9 @@ use PhpParser\Node\UseItem;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 
+use function count;
+use function in_array;
+
 /**
  * AST visitor for modifying Laravel service provider files.
  */

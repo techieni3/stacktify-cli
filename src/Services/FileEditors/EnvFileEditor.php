@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Techieni3\StacktifyCli\Services\FileEditors;
 
+use function count;
+use function in_array;
+use function is_array;
+
 /**
  * A file editor for .env files with auto-quoting support.
  */

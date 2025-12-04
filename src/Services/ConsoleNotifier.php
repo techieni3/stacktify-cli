@@ -6,6 +6,8 @@ namespace Techieni3\StacktifyCli\Services;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function sprintf;
+
 /**
  * Helper for writing consistent console notifications.
  */

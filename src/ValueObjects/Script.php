@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\ValueObjects;
 
 use InvalidArgumentException;
 
+use function is_array;
+use function is_string;
+
 /**
  * A generic script value object for package manager scripts.
  */

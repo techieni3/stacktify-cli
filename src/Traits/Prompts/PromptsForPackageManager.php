@@ -7,6 +7,7 @@ namespace Techieni3\StacktifyCli\Traits\Prompts;
 use Techieni3\StacktifyCli\Enums\NodePackageManager;
 use Techieni3\StacktifyCli\Services\ExecutableLocator;
 
+use function count;
 use function Laravel\Prompts\select;
 
 /**

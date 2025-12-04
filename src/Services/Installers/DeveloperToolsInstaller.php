@@ -6,6 +6,8 @@ namespace Techieni3\StacktifyCli\Services\Installers;
 
 use Techieni3\StacktifyCli\Enums\DeveloperTool;
 
+use function in_array;
+
 /**
  * Installs the selected developer tools.
  */

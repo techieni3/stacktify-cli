@@ -95,17 +95,17 @@ final readonly class TelescopeInstallable extends AbstractInstallable
             'boot' => [],
             'newMethods' => [
                 <<<'PHP'
-                    /**
-                     * Configure telescope for local development.
-                     */
-                    private function configureTelescope(): void
-                    {
-                        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
-                             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-                             $this->app->register(TelescopeServiceProvider::class);
-                         };
-                    }
-                PHP,
+                        /**
+                         * Configure telescope for local development.
+                         */
+                        private function configureTelescope(): void
+                        {
+                            if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+                                 $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+                                 $this->app->register(TelescopeServiceProvider::class);
+                             };
+                        }
+                    PHP,
             ],
         ];
     }

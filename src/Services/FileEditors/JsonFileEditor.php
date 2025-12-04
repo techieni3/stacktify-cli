@@ -7,6 +7,10 @@ namespace Techieni3\StacktifyCli\Services\FileEditors;
 use JsonException;
 use Techieni3\StacktifyCli\ValueObjects\Script;
 
+use function array_key_exists;
+use function is_array;
+use function is_string;
+
 /**
  * A file editor for JSON files.
  */

@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\Services;
 
 use Techieni3\StacktifyCli\Enums\NodePackageManager;
 
+use function count;
+use function sprintf;
+
 final readonly class NodePackageManagerRunner
 {
     public function __construct(

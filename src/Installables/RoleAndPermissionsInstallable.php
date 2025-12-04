@@ -95,14 +95,14 @@ final readonly class RoleAndPermissionsInstallable extends AbstractInstallable
             'boot' => ['$this->configurePermissionsDashboardGate();'],
             'newMethods' => [
                 <<<'PHP'
-                    /**
-                     * Configure a permission dashboard gate.
-                     */
-                    private function configurePermissionsDashboardGate(): void
-                    {
-                        Gate::define('viewPermissionsDashboard', fn ($user) => $user->hasPermission('view_permissions_dashboard'));
-                    }
-                PHP,
+                        /**
+                         * Configure a permission dashboard gate.
+                         */
+                        private function configurePermissionsDashboardGate(): void
+                        {
+                            Gate::define('viewPermissionsDashboard', fn ($user) => $user->hasPermission('view_permissions_dashboard'));
+                        }
+                    PHP,
             ],
         ];
     }

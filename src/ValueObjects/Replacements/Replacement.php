@@ -6,6 +6,10 @@ namespace Techieni3\StacktifyCli\ValueObjects\Replacements;
 
 use InvalidArgumentException;
 
+use function count;
+use function is_array;
+use function is_string;
+
 /**
  * A value object representing a string replacement.
  */

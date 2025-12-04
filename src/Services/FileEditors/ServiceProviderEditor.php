@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\Services\FileEditors;
 
 use Techieni3\StacktifyCli\Services\PhpParser\Visitors\ServiceProviderVisitor;
 
+use function in_array;
+use function is_array;
+
 /**
  * Editor for Laravel service provider files using PHP AST manipulation.
  */
@@ -95,7 +98,7 @@ final class ServiceProviderEditor extends BasePhpEditor
     /**
      * Add new methods to the service provider class.
      *
-     * @param  array<string>|string  $methods  Complete method definitions including PHPDoc, visibility, etc.
+     * @param  array<string>|string  $methods  complete method definitions including PHPDoc, visibility, etc
      */
     public function addMethods(array|string $methods): self
     {

@@ -126,14 +126,14 @@ describe('new methods', function () use ($destinationDirectory): void {
         $editor = new ServiceProviderEditor($destinationDirectory.'/AppServiceProvider.php');
 
         $method = <<<'PHP'
-    /**
-     * Configure the application's commands.
-     */
-    private function configureCommands(): void
-    {
-        DB::prohibitDestructiveCommands($this->app->isProduction());
-    }
-PHP;
+                /**
+                 * Configure the application's commands.
+                 */
+                private function configureCommands(): void
+                {
+                    DB::prohibitDestructiveCommands($this->app->isProduction());
+                }
+            PHP;
 
         $editor->addMethods($method)->save();
 
@@ -149,17 +149,17 @@ PHP;
 
         $methods = [
             <<<'PHP'
-    private function configureCommands(): void
-    {
-        DB::prohibitDestructiveCommands($this->app->isProduction());
-    }
-PHP,
+                    private function configureCommands(): void
+                    {
+                        DB::prohibitDestructiveCommands($this->app->isProduction());
+                    }
+                PHP,
             <<<'PHP'
-    private function configureDates(): void
-    {
-        Date::use(CarbonImmutable::class);
-    }
-PHP,
+                    private function configureDates(): void
+                    {
+                        Date::use(CarbonImmutable::class);
+                    }
+                PHP,
         ];
 
         $editor->addMethods($methods)->save();
@@ -176,14 +176,14 @@ PHP,
         $editor = new ServiceProviderEditor($destinationDirectory.'/AppServiceProvider.php');
 
         $method = <<<'PHP'
-    /**
-     * Configure the application's models.
-     */
-    private function configureModels(): void
-    {
-        Model::shouldBeStrict($this->app->isLocal());
-    }
-PHP;
+                /**
+                 * Configure the application's models.
+                 */
+                private function configureModels(): void
+                {
+                    Model::shouldBeStrict($this->app->isLocal());
+                }
+            PHP;
 
         $editor->addMethods($method)
             ->addToBoot('$this->configureModels();')
@@ -261,11 +261,11 @@ describe('change tracking', function () use ($destinationDirectory): void {
         $editor = new ServiceProviderEditor($destinationDirectory.'/AppServiceProvider.php');
 
         $method = <<<'PHP'
-    private function configureCommands(): void
-    {
-        DB::prohibitDestructiveCommands($this->app->isProduction());
-    }
-PHP;
+                private function configureCommands(): void
+                {
+                    DB::prohibitDestructiveCommands($this->app->isProduction());
+                }
+            PHP;
 
         $editor->addMethods($method);
 
@@ -335,25 +335,25 @@ describe('real-world scenarios', function () use ($destinationDirectory): void {
         $editor = new ServiceProviderEditor($destinationDirectory.'/AppServiceProvider.php');
 
         $configureCommandsMethod = <<<'PHP'
-    /**
-     * Configure the application's commands.
-     */
-    private function configureCommands(): void
-    {
-        DB::prohibitDestructiveCommands($this->app->isProduction());
-    }
-PHP;
+                /**
+                 * Configure the application's commands.
+                 */
+                private function configureCommands(): void
+                {
+                    DB::prohibitDestructiveCommands($this->app->isProduction());
+                }
+            PHP;
 
         $configureModelsMethod = <<<'PHP'
-    /**
-     * Configure the application's models.
-     */
-    private function configureModels(): void
-    {
-        Model::shouldBeStrict($this->app->isLocal());
-        Model::unguard();
-    }
-PHP;
+                /**
+                 * Configure the application's models.
+                 */
+                private function configureModels(): void
+                {
+                    Model::shouldBeStrict($this->app->isLocal());
+                    Model::unguard();
+                }
+            PHP;
 
         $editor->addUseStatements([
             DB::class,

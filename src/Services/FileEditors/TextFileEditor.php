@@ -10,6 +10,8 @@ use InvalidArgumentException;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\PregReplacement;
 use Techieni3\StacktifyCli\ValueObjects\Replacements\Replacement;
 
+use function is_callable;
+
 /**
  * A file editor for text files.
  */
@@ -84,9 +86,7 @@ final class TextFileEditor extends BaseFileEditor
         $newContent = @preg_replace($replacement->regex, $replacement->replace, $this->content);
 
         if ($newContent === null) {
-            throw new InvalidArgumentException(
-                "Invalid regex pattern: '{$replacement->regex}': ".preg_last_error_msg()
-            );
+            throw new InvalidArgumentException("Invalid regex pattern: '{$replacement->regex}': ".preg_last_error_msg());
         }
 
         if ($newContent !== $this->content) {
@@ -198,9 +198,7 @@ final class TextFileEditor extends BaseFileEditor
             );
 
             if ($newContent === null) {
-                throw new InvalidArgumentException(
-                    "Invalid regex pattern: '{$replacement->regex}': ".preg_last_error_msg()
-                );
+                throw new InvalidArgumentException("Invalid regex pattern: '{$replacement->regex}': ".preg_last_error_msg());
             }
 
             if ($newContent !== $this->content) {

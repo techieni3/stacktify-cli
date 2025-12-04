@@ -35,9 +35,7 @@ final readonly class PregReplacement
         $result = @preg_match($pattern, '');
 
         if ($result === false) {
-            throw new InvalidArgumentException(
-                "Invalid regex pattern: '{$pattern}': ".preg_last_error_msg()
-            );
+            throw new InvalidArgumentException("Invalid regex pattern: '{$pattern}': ".preg_last_error_msg());
         }
     }
 }

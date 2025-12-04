@@ -6,6 +6,9 @@ namespace Techieni3\StacktifyCli\Services;
 
 use RuntimeException;
 
+use function in_array;
+use function sprintf;
+
 /**
  * Validates application requirements and preconditions.
  */
@@ -39,9 +42,7 @@ final readonly class ApplicationValidator
             return;
         }
 
-        throw new RuntimeException(
-            sprintf('The following PHP extensions are required but are not installed: %s', implode(', ', $missingExtensions))
-        );
+        throw new RuntimeException(sprintf('The following PHP extensions are required but are not installed: %s', implode(', ', $missingExtensions)));
     }
 
     /**
