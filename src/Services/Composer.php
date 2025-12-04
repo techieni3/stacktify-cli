@@ -50,7 +50,7 @@ final readonly class Composer
     }
 
     /**
-     * Install given dependencies
+     * Install given dependencies.
      *
      * @param  array<string>  $env
      */
@@ -73,7 +73,7 @@ final readonly class Composer
     }
 
     /**
-     * Install given dependencies
+     * Install given dependencies.
      *
      * @param  array<int, mixed>  $dependencies
      * @param  array<string>  $env
@@ -95,7 +95,7 @@ final readonly class Composer
     }
 
     /**
-     * Remove given dependencies
+     * Remove given dependencies.
      *
      * @param  array<int, mixed>  $dependencies
      * @param  array<string>  $env
@@ -117,7 +117,7 @@ final readonly class Composer
     }
 
     /**
-     * Install given dev dependencies
+     * Install given dev dependencies.
      *
      * @param  array<int, mixed>  $dependencies
      * @param  array<string>  $env
@@ -139,7 +139,7 @@ final readonly class Composer
     }
 
     /**
-     * Remove given dev dependencies
+     * Remove given dev dependencies.
      *
      * @param  array<int, mixed>  $dependencies
      * @param  array<string>  $env

@@ -223,7 +223,7 @@ abstract class AbstractInstaller
     }
 
     /**
-     * Add environment variables to .env & .env.example file
+     * Add environment variables to .env & .env.example file.
      *
      * @param  array<string, string|bool>  $variables
      */
@@ -255,7 +255,7 @@ abstract class AbstractInstaller
     }
 
     /**
-     * Add configs to a specified file
+     * Add configs to a specified file.
      *
      * @param  array<string, string|bool|array|callable>  $configs
      */
@@ -275,7 +275,7 @@ abstract class AbstractInstaller
     }
 
     /**
-     * Run commands after tool installation
+     * Run commands after tool installation.
      *
      * @param  array<string>  $commands
      */
@@ -340,7 +340,7 @@ abstract class AbstractInstaller
     }
 
     /**
-     * Commit changes
+     * Commit changes.
      */
     protected function commitChanges(string $message): void
     {

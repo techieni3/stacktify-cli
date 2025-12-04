@@ -17,9 +17,9 @@ trait BuildsPromptOptions
      *
      * Format: [value => label], where "value" is the enum's string-backed value and "label" is provided by label().
      *
-     * @return array<string, string>|array<int, string> Map of enum value to human-readable label.
+     * @return array<string, string>|array<int, string> map of enum value to human-readable label
      *
-     * @throws LogicException If used on a non-backed or non-string-backed enum.
+     * @throws LogicException if used on a non-backed or non-string-backed enum
      */
     public static function options(): array
     {
@@ -42,8 +42,8 @@ trait BuildsPromptOptions
      * For single-select, pass a string and receive the corresponding enum case.
      * For multi-select, pass an array of strings and receive an array of enum cases (in the same order).
      *
-     * @param  array<int|string>  $selection  Selected value or list of values.
-     * @return array<static> Enum case for single-select or array of cases for multi-select.
+     * @param  array<int|string>  $selection  selected value or list of values
+     * @return array<static> enum case for single-select or array of cases for multi-select
      */
     public static function fromSelection(array $selection): array
     {
