@@ -1,4 +1,8 @@
-<img src="assets/banner.png" alt="Stacktify CLI">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark-banner.png">
+  <source media="(prefers-color-scheme: light)" srcset="assets/banner.jpg">
+  <img alt="Fallback image description" src="assets/banner.jpg">
+</picture>
 
 # Stacktify CLI
 
